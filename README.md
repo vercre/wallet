@@ -8,6 +8,10 @@ An conformant issuer service can be constructed using the Vercre Issuer crate, a
 
 TODO:
 
+## Multiplatform with Crux
+
+The Vercre Wallet is built using the [Crux](https://github.com/redbadger/crux) framework which allows for targeting multiple platforms with a single codebase. The Vercre Wallet is currently built for the web, desktop and iOS platforms.
+
 ## Additional
 
 [![ci](https://github.com/vercre/wallet/actions/workflows/ci.yaml/badge.svg)](https://github.com/vercre/wallet/actions/workflows/ci.yaml)
