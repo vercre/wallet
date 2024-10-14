@@ -1,0 +1,7 @@
+[bindings.kotlin]
+package_name = "io.vercre.wallet"
+cdylib_name = "vercre_wallet"
+
+[bindings.swift]
+cdylib_name = "wallet_ffi"
+omit_argument_labels = true

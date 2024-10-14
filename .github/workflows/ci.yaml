@@ -14,9 +14,6 @@ on:
       - 'Cargo.toml'
       - 'Cargo.lock'
   
-  # workflow_dispatch:
-  # schedule: [cron: "40 1 * * *"]
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -25,7 +22,9 @@ permissions:
   contents: read
 
 env:
-  RUSTFLAGS: -Dwarnings
+  RUSTFLAGS: "-D warnings"
+  RUST_BACKTRACE: short
+  NEXTEST_PROFILE: ci
 
 jobs:
   test:
@@ -38,21 +37,8 @@ jobs:
       - uses: taiki-e/install-action@nextest
       - run: |
           sudo apt-get update
-          sudo apt-get -y install libwebkit2gtk-4.1-dev
-          mkdir examples/wallet/dist
       
       - run: cargo nextest run
-
-  # windows:
-  #   name: Test suite (windows)
-  #   runs-on: windows-latest
-  #   timeout-minutes: 45
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: dtolnay/rust-toolchain@nightly
-  #     - uses: taiki-e/install-action@nextest
-  #     - run: cargo nextest run
-  #     # - run: cargo test -- --skip ui --exact
 
   test-doc:
     name: Test docs
@@ -63,54 +49,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@nightly
       - run: |
           sudo apt-get update
-          sudo apt-get -y install libwebkit2gtk-4.1-dev
-          mkdir examples/wallet/dist
 
       - run: cargo test --doc
-
-  # stable:
-  #   name: Rust ${{matrix.rust}}
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       rust: [stable, beta]
-  #   timeout-minutes: 45
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: dtolnay/rust-toolchain@master
-  #       with:
-  #         toolchain: ${{matrix.rust}}
-  #     - run: cargo build
-
-  # nightly:
-  #   name: Rust nightly ${{matrix.os == 'windows' && '(windows)' || ''}}
-  #   runs-on: ${{matrix.os}}-latest
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       os: [ubuntu, windows]
-  #   timeout-minutes: 45
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: dtolnay/rust-toolchain@nightly
-  #     - run: cargo build
-  #     - run: cargo test
-  #       if: matrix.os != 'windows'
-  #     - run: cargo check --tests
-  #       env:
-  #         RUSTFLAGS: --cfg exhaustive ${{env.RUSTFLAGS}}
-  #       if: matrix.os != 'windows'
-
-  # minimal:
-  #   name: Minimal versions
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 45
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: dtolnay/rust-toolchain@nightly
-  #     - run: cargo generate-lockfile -Z minimal-versions
-  #     - run: cargo check --locked --workspace
 
   # doc:
   #   name: Documentation
@@ -137,36 +77,5 @@ jobs:
       - run: |
           sudo apt-get update
           sudo apt-get -y install libwebkit2gtk-4.1-dev
-          mkdir examples/wallet/dist
 
       - run: cargo clippy
-
-  # miri:
-  #   name: Miri
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 45
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: dtolnay/rust-toolchain@miri
-  #     - run: cargo miri setup
-  #     - run: cd vercre && cargo miri test --features derive,rc,unstable
-  #       env:
-  #         MIRIFLAGS: -Zmiri-strict-provenance
-  #     - run: cd test_suite && cargo miri test --features unstable
-  #       env:
-  #         MIRIFLAGS: -Zmiri-strict-provenance
-
-  # outdated:
-  #   name: Outdated
-  #   runs-on: ubuntu-latest
-  #   if: github.event_name != 'pull_request'
-  #   timeout-minutes: 45
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: dtolnay/install@cargo-outdated
-  #     - run: |
-  #         sudo apt-get update
-  #         sudo apt-get -y install libwebkit2gtk-4.1-dev
-
-  #     - run: cargo outdated --packages vercre-holder,vercre-issuer,vercre-verifier --exit-code 1
-      # - run: cargo outdated --workspace --exit-code 1

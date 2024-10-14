@@ -1,5 +1,5 @@
 [workspace]
-members = ["shared"]
+members = ["wallet"]
 resolver = "1"
 
 [workspace.package]
@@ -8,6 +8,7 @@ edition = "2021"
 repository = "https://github.com/vercre/wallet"
 rust-version = "1.80"
 version = "0.1.0-alpha.0"
+license = "MIT OR Apache-2.0"
 
 [workspace.lints.rust]
 missing_docs = "warn"
@@ -22,7 +23,7 @@ nursery = "warn"
 anyhow = "1.0.89"
 crux_core = "0.9.0"
 crux_http = "0.10.1"
-serde = "1.0.210"
+serde = { version = "1.0.210", features = ["derive"] }
 
 [workspace.metadata.bin]
 cargo-xcode = { version = "=1.11.0" }
