@@ -33,6 +33,11 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - name: Remove rust-toolchain.toml
+        shell: bash
+        run: |
+          # so we don't add tooling for all targets
+          rm rust-toolchain.toml
       - uses: dtolnay/rust-toolchain@nightly
       - uses: taiki-e/install-action@nextest
       - run: |
@@ -46,6 +51,11 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - name: Remove rust-toolchain.toml
+        shell: bash
+        run: |
+          # so we don't add tooling for all targets
+          rm rust-toolchain.toml
       - uses: dtolnay/rust-toolchain@nightly
       - run: |
           sudo apt-get update
@@ -73,6 +83,11 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+      - name: Remove rust-toolchain.toml
+        shell: bash
+        run: |
+          # so we don't add tooling for all targets
+          rm rust-toolchain.toml
       - uses: dtolnay/install@cargo-outdated
       - run: |
           sudo apt-get update

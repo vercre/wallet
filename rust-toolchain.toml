@@ -1,6 +1,6 @@
 [toolchain]
 channel = "nightly"
-components = ["clippy", "rustfmt", "rust-src"]
+components = ["clippy", "rustfmt", "rust-src", "rust-dev"]
 targets = [
   "aarch64-apple-darwin",
   "aarch64-apple-ios",
