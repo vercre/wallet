@@ -1,0 +1,17 @@
+[package]
+name = "shared"
+description = "Shared types used to generate types in other languages"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+
+[build-dependencies]
+anyhow.workspace = true
+crux_core.workspace = true
+crux_http.workspace = true
+vercre-wallet = { path = "../wallet", features = ["typegen"] }

@@ -4,13 +4,37 @@ The Vercre Wallet is a simple example of a wallet that can be used to receive, s
 
 An conformant issuer service can be constructed using the Vercre Issuer crate, and a conformant verification service can be constructed using the Vercre Verifier crate. This wallet is built using the Vercre Holder crate. See the open source [Vercre](https://github.com/vercre/vercre) repository for details.
 
-## Getting Started
-
-TODO:
-
 ## Multiplatform with Crux
 
 The Vercre Wallet is built using the [Crux](https://github.com/redbadger/crux) framework which allows for targeting multiple platforms with a single codebase. The Vercre Wallet is currently built for the web, desktop and iOS platforms.
+
+## Getting Started
+
+### Prerequisites
+
+See the `rust-toolchain.toml` file for cross-platform targets that should be installed. This is done
+by running the following command:
+
+```shell
+rustup target list --installed
+```
+
+The version of Crux used in this project uses the `pnpm` package manager for generating TypeScript.
+There are [various ways to install `pnpm`](https://pnpm.io/installation).
+
+### Rust core application
+
+1. Make sure the core builds (located in the `wallet` directory):
+
+```shell
+cargo build --package vercre-wallet
+```
+
+2. Generate shared types
+
+```shell
+cargo build --package shared
+```
 
 ## Additional
 

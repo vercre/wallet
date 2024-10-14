@@ -1,5 +1,5 @@
 [workspace]
-members = ["wallet"]
+members = ["shared", "wallet"]
 resolver = "1"
 
 [workspace.package]
