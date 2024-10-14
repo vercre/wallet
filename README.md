@@ -36,6 +36,10 @@ cargo build --package vercre-wallet
 cargo build --package shared
 ```
 
+### Mobile application - iOS
+
+
+
 ## Additional
 
 [![ci](https://github.com/vercre/wallet/actions/workflows/ci.yaml/badge.svg)](https://github.com/vercre/wallet/actions/workflows/ci.yaml)
