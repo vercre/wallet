@@ -13,7 +13,7 @@ class Core: ObservableObject {
     @Published var view: ViewModel
     
     init() {
-        self.view = try! .bincodeDeserialize(input: [UInt8](VercreWalletApp.view()))
+        self.view = try! .bincodeDeserialize(input: [UInt8](VercreWallet.view()))
     }
     
     func update(_ event: Event) {
@@ -28,7 +28,7 @@ class Core: ObservableObject {
     func processEffect(_ request: Request) {
         switch request.effect {
         case .render:
-            view = try! .bincodeDeserialize(input: [UInt8](VercreWalletApp.view()))
+            view = try! .bincodeDeserialize(input: [UInt8](VercreWallet.view()))
         case let .http(req):
             Task {
                 let response = try! await requestHttp(req).get()
