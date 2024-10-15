@@ -12,6 +12,8 @@ The Vercre Wallet is built using the [Crux](https://github.com/redbadger/crux) f
 
 ### Prerequisites
 
+#### Rust targets
+
 See the `rust-toolchain.toml` file for cross-platform targets that should be installed. This is done
 by running the following command:
 
@@ -19,8 +21,16 @@ by running the following command:
 rustup target list --installed
 ```
 
+#### pnpm
+
 The version of Crux used in this project uses the `pnpm` package manager for generating TypeScript.
 There are [various ways to install `pnpm`](https://pnpm.io/installation).
+
+#### Xcode
+
+For building the iOS application, you will need Xcode installed with an iOS simulator. (This alpha code has only been tested on the iOS 18 simulator.)
+
+You will also need to install the [command line tools for Xcode](https://developer.apple.com/download/all/).
 
 ### Rust core application
 
@@ -38,7 +48,10 @@ cargo build --package shared
 
 ### Mobile application - iOS
 
-
+```shell
+cd iOS
+open VercreWallet.xcodeproj
+```
 
 ## Additional
 

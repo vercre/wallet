@@ -26,4 +26,4 @@ crux_http = "0.10.1"
 serde = { version = "1.0.210", features = ["derive"] }
 
 [workspace.metadata.bin]
-cargo-xcode = { version = "=1.11.0" }
+cargo-xcode = { version = "=1.7.0" }
