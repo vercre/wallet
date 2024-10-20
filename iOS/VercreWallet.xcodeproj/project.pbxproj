@@ -15,6 +15,8 @@
 		E29F76472CBF0B9100496B37 /* core.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7EA2CBDF8FF0070F7A5 /* core.swift */; };
 		E29F76482CBF0B9100496B37 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7E92CBDF84C0070F7A5 /* ContentView.swift */; };
 		E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7E52CBDF7F40070F7A5 /* VercreWalletApp.swift */; };
+		E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513922CC5953800D5A957 /* CredentialList.swift */; };
+		E2B513962CC5A9F100D5A957 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513952CC5A9F100D5A957 /* ActionButton.swift */; };
 		E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */ = {isa = PBXBuildFile; fileRef = 608E5734A631C27F19673C40 /* wallet.udl */; };
 /* End PBXBuildFile section */
 
@@ -87,6 +89,8 @@
 		E295C7EA2CBDF8FF0070F7A5 /* core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = core.swift; sourceTree = "<group>"; };
 		E295C7EB2CBE042F0070F7A5 /* http.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = http.swift; sourceTree = "<group>"; };
 		E295C7EC2CBE05E70070F7A5 /* sse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sse.swift; sourceTree = "<group>"; };
+		E2B513922CC5953800D5A957 /* CredentialList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialList.swift; sourceTree = "<group>"; };
+		E2B513952CC5A9F100D5A957 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		E87317161D4E9F5AB16EA2A3 /* SharedTypes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SharedTypes; path = ../shared/generated/swift/SharedTypes; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -122,9 +126,9 @@
 		6D5A7EBBC5FAE24EA47023DA /* VercreWallet */ = {
 			isa = PBXGroup;
 			children = (
-				E295C7EC2CBE05E70070F7A5 /* sse.swift */,
-				E295C7EB2CBE042F0070F7A5 /* http.swift */,
-				E295C7EA2CBDF8FF0070F7A5 /* core.swift */,
+				E2B513942CC5A79C00D5A957 /* Components */,
+				E2B513912CC594F600D5A957 /* Credential */,
+				E2B513902CC594D400D5A957 /* Crux */,
 				E295C7E92CBDF84C0070F7A5 /* ContentView.swift */,
 				E295C7E52CBDF7F40070F7A5 /* VercreWalletApp.swift */,
 				8D9939D8923D10F21E0FE9DC /* Info.plist */,
@@ -168,6 +172,32 @@
 				5C8A15AD59C4BE22CF1366E5 /* Products */,
 				4855A0B2F9620CBDBCE625A9 /* Projects */,
 			);
+			sourceTree = "<group>";
+		};
+		E2B513902CC594D400D5A957 /* Crux */ = {
+			isa = PBXGroup;
+			children = (
+				E295C7EC2CBE05E70070F7A5 /* sse.swift */,
+				E295C7EB2CBE042F0070F7A5 /* http.swift */,
+				E295C7EA2CBDF8FF0070F7A5 /* core.swift */,
+			);
+			path = Crux;
+			sourceTree = "<group>";
+		};
+		E2B513912CC594F600D5A957 /* Credential */ = {
+			isa = PBXGroup;
+			children = (
+				E2B513922CC5953800D5A957 /* CredentialList.swift */,
+			);
+			path = Credential;
+			sourceTree = "<group>";
+		};
+		E2B513942CC5A79C00D5A957 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				E2B513952CC5A9F100D5A957 /* ActionButton.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -276,7 +306,9 @@
 				E29F76472CBF0B9100496B37 /* core.swift in Sources */,
 				E29F76482CBF0B9100496B37 /* ContentView.swift in Sources */,
 				E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */,
+				E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */,
 				E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */,
+				E2B513962CC5A9F100D5A957 /* ActionButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

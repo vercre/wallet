@@ -8,7 +8,7 @@
 import Foundation
 import SharedTypes
 
-@MainActor
+@MainActor // ensures this code runs on the main UI thread
 class Core: ObservableObject {
     @Published var view: ViewModel
     
