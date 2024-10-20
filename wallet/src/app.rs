@@ -1,3 +1,5 @@
+//! This module contains the core application fabric for the wallet, including
+//! the model, events, and effects that drive the application.
 
 use crate::capabilities::sse::ServerSentEvents;
 use chrono::{serde::ts_milliseconds_option::deserialize as ts_milliseconds_option, DateTime, Utc};
@@ -5,6 +7,8 @@ use crux_core::render::Render;
 use crux_http::Http;
 use serde::{Deserialize, Serialize};
 use url::Url;
+
+use crate::view::ViewModel;
 
 const API_URL: &str = "https://crux-counter.fly.dev";
 
@@ -22,11 +26,6 @@ pub struct Count {
 }
 // ANCHOR_END: model
 
-#[derive(Serialize, Deserialize, Debug, Clone, Default)]
-pub struct ViewModel {
-    pub text: String,
-    pub confirmed: bool,
-}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Event {

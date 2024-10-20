@@ -28,6 +28,7 @@ serde.workspace = true
 serde_json = "1.0.128"
 uniffi = "0.28.2"
 url = "2.5.2"
+vercre-holder = { git = "https://github.com/vercre/vc" }
 wasm-bindgen = "0.2.95"
 
 [dev-dependencies]

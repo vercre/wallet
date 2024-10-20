@@ -3,6 +3,7 @@
 
 pub mod app;
 pub mod capabilities;
+pub mod view;
 
 use lazy_static::lazy_static;
 use wasm_bindgen::prelude::wasm_bindgen;

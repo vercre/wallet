@@ -20,7 +20,7 @@ pedantic = "warn"
 nursery = "warn"
 
 [workspace.dependencies]
-anyhow = "1.0.89"
+anyhow = "1.0.90"
 crux_core = "0.9.0"
 crux_http = "0.10.1"
 serde = { version = "1.0.210", features = ["derive"] }

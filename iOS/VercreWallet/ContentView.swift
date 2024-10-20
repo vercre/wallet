@@ -30,6 +30,16 @@ struct ContentView: View {
                     Label("Credentials", systemImage: "wallet.bifold")
                 }
                 .tag(Tab.credentials)
+            IssuanceOffer(core: core)
+                .tabItem {
+                    Label("Receive", systemImage: "plus.app")
+                }
+                .tag(Tab.issuance)
+            PresentationRequest(core: core)
+                .tabItem {
+                    Label("Present", systemImage: "checkmark.shield")
+                }
+                .tag(Tab.presentation)
         }
     }
 }
