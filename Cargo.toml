@@ -1,5 +1,5 @@
 [workspace]
-members = ["shared", "wallet"]
+members = ["shared", "wallet", "examples/issuer"]
 resolver = "1"
 
 [workspace.package]
@@ -21,9 +21,18 @@ nursery = "warn"
 
 [workspace.dependencies]
 anyhow = "1.0.90"
+axum = { version = "0.7.7", features = ["macros"] }
+axum-extra = { version = "0.9.4", features = ["typed-header"] }
+chrono = { version = "0.4.38", features = ["serde"] }
 crux_core = "0.9.0"
 crux_http = "0.10.1"
+dotenv = "0.15.0"
 serde = { version = "1.0.210", features = ["derive"] }
+serde_json = { version = "1.0.132", features = ["alloc"] }
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter", "fmt"] }
+test-utils = { git = "https://github.com/vercre/vc" }
+url = "2.5.2"
 
 [workspace.metadata.bin]
 cargo-xcode = { version = "=1.7.0" }

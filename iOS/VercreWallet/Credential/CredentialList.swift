@@ -11,8 +11,10 @@ struct CredentialList: View {
     @ObservedObject var core: Core
     
     var body: some View {
-        VStack {
-            Text("Crux Counter").font(.headline)
+        VStack(alignment: .leading) {
+            Text("Credentials")
+                .font(.title)
+                .fontWeight(.bold)
             Text(String(core.view.text))
                 .foregroundColor(core.view.confirmed ? .black : .gray)
                 .padding()
@@ -24,6 +26,7 @@ struct CredentialList: View {
                     core.update(.increment)
                 }
             }
+            Spacer()
         }
     }
 }

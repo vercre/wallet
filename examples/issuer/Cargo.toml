@@ -1,0 +1,29 @@
+[package]
+name = "issuer"
+description = "Example issuer service to demonstrate the Vercre wallet"
+publish = false
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+anyhow.workspace = true
+axum.workspace = true
+axum-extra.workspace = true
+chrono.workspace = true
+dotenv.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+test-utils.workspace = true
+tokio = { version = "1.40.0", features = ["macros", "rt-multi-thread"] }
+tower-http = { version = "0.6.1", features = ["cors", "set-header", "trace"] }
+tracing.workspace = true
+tracing-subscriber.workspace = true
+url.workspace = true
+vercre-issuer = { git = "https://github.com/vercre/vc" }

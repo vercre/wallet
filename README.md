@@ -53,6 +53,29 @@ cd iOS
 open VercreWallet.xcodeproj
 ```
 
+## Sample Issuance
+
+To demonstrate the wallet you can use the services and web applications provided in the
+`examples` directory.
+
+### Issuance Service
+
+1. Start the issuer service which provides a simple HTTP API for issuing some hard-coded credentials. By default, this will start on `http://localhost:8080`. You can change the host and port by setting the `VERCRE_HTTP_ADDR` environment variable if you wish.
+
+```shell
+cd examples/issuer
+cargo run
+```
+
+2. Start the React web application which provides a simple UI over the top of the issuer API. This will start on `http://localhost:3001`.
+
+```shell
+cd examples/issuer-web
+pnpm install
+pnpm dev
+```
+
+
 ## Additional
 
 [![ci](https://github.com/vercre/wallet/actions/workflows/ci.yaml/badge.svg)](https://github.com/vercre/wallet/actions/workflows/ci.yaml)
