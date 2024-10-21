@@ -11,7 +11,7 @@ import Header, { HeaderProps } from './Header';
 export const headerState = atom<HeaderProps>({
     key: 'header',
     default: {
-        title: 'Title',
+        title: 'Credential Issuer',
         action: undefined,
         secondaryAction: undefined,
     },
