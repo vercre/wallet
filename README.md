@@ -60,7 +60,7 @@ To demonstrate the wallet you can use the services and web applications provided
 
 ### Issuance Service
 
-1. Start the issuer service which provides a simple HTTP API for issuing some hard-coded credentials. By default, this will start on `http://localhost:8080`. You can change the host and port by setting the `VERCRE_HTTP_ADDR` environment variable if you wish.
+1. Start the issuer service which provides a simple HTTP API for issuing some hard-coded credentials. By default, this will start on `http://localhost:8080`. You can change the host and port by setting the `VERCRE_HTTP_ADDR` environment variable if you wish. You will need to make sure the web application is configured to use the same host and port by setting the `VITE_VERCRE_HTTP_ADDR` environment variable in the `.env.development` file.
 
 ```shell
 cd examples/issuer
