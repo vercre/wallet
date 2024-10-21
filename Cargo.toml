@@ -1,5 +1,5 @@
 [workspace]
-members = ["shared", "wallet", "examples/issuer"]
+members = ["shared", "wallet", "examples/issuer", "examples/issuer-types"]
 resolver = "1"
 
 [workspace.package]
@@ -29,10 +29,12 @@ crux_http = "0.10.1"
 dotenv = "0.15.0"
 serde = { version = "1.0.210", features = ["derive"] }
 serde_json = { version = "1.0.132", features = ["alloc"] }
+test-utils = { git = "https://github.com/vercre/vc" }
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter", "fmt"] }
-test-utils = { git = "https://github.com/vercre/vc" }
+typeshare = "1.0.3"
 url = "2.5.2"
+vercre-issuer = { git = "https://github.com/vercre/vc" }
 
 [workspace.metadata.bin]
 cargo-xcode = { version = "=1.7.0" }

@@ -26,4 +26,4 @@ tower-http = { version = "0.6.1", features = ["cors", "set-header", "trace"] }
 tracing.workspace = true
 tracing-subscriber.workspace = true
 url.workspace = true
-vercre-issuer = { git = "https://github.com/vercre/vc" }
+vercre-issuer.workspace = true

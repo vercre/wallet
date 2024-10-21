@@ -24,8 +24,8 @@ const systemFont = [
 export const typography = {
     fontFamily: systemFont,
     h1: {
-        fontSize: '3.75rem',
-        fontWeight: 500,
+        fontSize: '2rem',
+        fontWeight: 700,
         lineHeight: 1.167,
         letterSpacing: '-0.0625rem',
     },
@@ -46,13 +46,13 @@ export const typography = {
         lineHeight: 1.125,
     },
     h5: {
-        fontSize: '1.125rem',
-        fontWeight: 500,
+        fontSize: '1.25rem',
+        fontWeight: 700,
         lineHeight: 1.375,
     },
     h6: {
-        fontSize: '1.25rem',
-        fontWeight: 700,
+        fontSize: '1.125rem',
+        fontWeight: 500,
         lineHeight: 1.375,
     },
     subtitle1: {

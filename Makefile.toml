@@ -74,3 +74,12 @@ install_crate = "cargo-outdated"
 
 [tasks.check]
 dependencies = ["audit", "fmt", "lint", "outdated", "unused"]
+
+# -----------------------------------------------------------------------------
+# Type generation for user interfaces
+# -----------------------------------------------------------------------------
+
+[tasks.typegen-issuer]
+command = "typeshare"
+args = ["./examples/issuer-types", "--lang=typescript", "--output-file=./examples/issuer-web/src/types/generated.ts"]
+install_crate = "typeshare-cli"
