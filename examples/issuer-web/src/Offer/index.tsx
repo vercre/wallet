@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -12,16 +12,27 @@ import FullLogo from '../components/FullLogo';
 import { CreateOfferRequest } from '../types/generated';
 import CreateOffer from './CreateOffer';
 import QrCode from './QrCode';
-import TxCode from './TxCode';
 
 const Offer = () => {
     const [processing, setProcessing] = useState<'EmployeeID_JWT' | 'Developer_JWT' | null>(null);
     const [pin, setPin] = useState<string>('');
+    const [qrCode, setQrCode] = useState<string>('');
+
+    // Effect to scroll back to top on reset
+    useEffect(() => {
+        if (processing === null) {
+            document.getElementById('pageContent')?.scrollTo({
+                top: 0,
+                behavior: 'smooth',
+            });
+        }
+    }, [processing]);
 
     // API call to create a credential offer
     const mut = useMutation({
         mutationFn: async (createOfferRequest: CreateOfferRequest) => {
             let response = await createOffer(createOfferRequest);
+            setQrCode(response.qr_code);
             setPin(response.tx_code || '');
         }
     });
@@ -44,14 +55,16 @@ const Offer = () => {
     };
 
     return (
-        <Stack spacing={4} py={4}>
+        <Stack spacing={4} py={4} id="pageContent" sx={{ overflow: 'scroll' }}>
             <Typography variant="h1">
                 Credential Offer
             </Typography>
-            <Typography variant="body1">
-                Start the process of issuing a credential by choosing the credential type you would
-                like to issue. The user can then scan a QR code to accept the offer.
-            </Typography>
+            {processing === null &&
+                <Typography variant="body1">
+                    Start the process of issuing a credential by choosing the credential type you would
+                    like to issue. The user can then scan a QR code to accept the offer.
+                </Typography>
+            }
             <Grid container spacing={4}>
                 <Grid size={{ xs: 12, sm: 6 }}>
                     {processing !== 'EmployeeID_JWT' &&
@@ -62,10 +75,7 @@ const Offer = () => {
                         />
                     }
                     {processing === 'EmployeeID_JWT' &&
-                        <>
-                            <QrCode image="https://example.com/qr-code.png" />
-                            {pin && <TxCode pin={pin} />}
-                        </>
+                        <QrCode image={qrCode} pin={pin} />
                     }
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
@@ -77,7 +87,7 @@ const Offer = () => {
                         />
                     }
                     {processing === 'Developer_JWT' &&
-                        <QrCode image="https://example.com/qr-code.png" />
+                        <QrCode image={qrCode} pin={pin} />
                     }
                 </Grid>
             </Grid>
