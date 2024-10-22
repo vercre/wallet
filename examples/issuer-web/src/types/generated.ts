@@ -21,14 +21,8 @@ export interface CreateOfferRequest {
 
 /** Create offer response. */
 export interface CreateOfferResponse {
-	/** Issuer identifier */
-	credential_issuer: string;
-	/** Credential type */
-	credential_configuration_id: string;
-	/** Pre-authorized code */
-	pre_authorized_code?: string;
-	/** Issuer state code to use for authorization flow. */
-	issuer_state?: string;
+	/** QR code for the credential offer */
+	qr_code: string;
 	/** PIN code required to accept the credential offer. */
 	tx_code?: string;
 }

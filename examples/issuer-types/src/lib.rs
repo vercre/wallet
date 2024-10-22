@@ -34,19 +34,8 @@ pub struct CreateOfferRequest {
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[typeshare]
 pub struct CreateOfferResponse {
-    /// Issuer identifier
-    pub credential_issuer: String,
-
-    /// Credential type
-    pub credential_configuration_id: String,
-
-    /// Pre-authorized code
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub pre_authorized_code: Option<String>,
-
-    /// Issuer state code to use for authorization flow.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub issuer_state: Option<String>,
+    /// QR code for the credential offer
+    pub qr_code: String,
 
     /// PIN code required to accept the credential offer.
     #[serde(skip_serializing_if = "Option::is_none")]

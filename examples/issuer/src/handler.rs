@@ -43,24 +43,11 @@ pub async fn create_offer(
     if offer.credential_configuration_ids[0] != req.credential_configuration_id {
         return Err(anyhow!("unexpected credential configuration ID").into());
     }
-    let Some(grants) = offer.grants else {
-        return Err(anyhow!("expected grants").into());
-    };
-    let issuer_state = match grants.authorization_code {
-        Some(auth_code_grant) => auth_code_grant.issuer_state,
-        None => None,
-    };
-    let pre_authorized_code = match grants.pre_authorized_code {
-        Some(pre_auth_grant) => Some(pre_auth_grant.pre_authorized_code),
-        None => None,
-    };
+    let qr_code = offer.to_qrcode("openid-credential-offer:credential_offer=")?;
 
     let rsp = CreateOfferResponse {
-        credential_issuer: offer.credential_issuer,
-        credential_configuration_id: offer.credential_configuration_ids[0].clone(),
+        qr_code,
         tx_code: response.tx_code,
-        issuer_state,
-        pre_authorized_code,
     };
 
     Ok(AppJson(rsp))
