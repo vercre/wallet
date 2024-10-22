@@ -1,15 +1,47 @@
 import { useState } from 'react';
 
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { useMutation } from '@tanstack/react-query';
 
-import CreateOffer from './CreateOffer';
+import { createOffer } from '../api';
 import FullLogo from '../components/FullLogo';
+import { CreateOfferRequest } from '../types/generated';
+import CreateOffer from './CreateOffer';
 import QrCode from './QrCode';
+import TxCode from './TxCode';
 
 const Offer = () => {
     const [processing, setProcessing] = useState<'EmployeeID_JWT' | 'Developer_JWT' | null>(null);
+    const [pin, setPin] = useState<string>('');
+
+    // API call to create a credential offer
+    const mut = useMutation({
+        mutationFn: async (createOfferRequest: CreateOfferRequest) => {
+            let response = await createOffer(createOfferRequest);
+            setPin(response.tx_code || '');
+        }
+    });
+
+    const handleCreateOffer = async (configId: 'EmployeeID_JWT' | 'Developer_JWT') => {
+        setProcessing(configId);
+        const req: CreateOfferRequest = {
+            credential_issuer: 'http://vercre.io',
+            subject_id: 'normal_user',
+            credential_configuration_id: configId,
+            grant_type: 'urn:ietf:params:oauth:grant-type:pre-authorized_code',
+            tx_code_required: true,
+        };
+        mut.mutate(req);
+    };
+
+    const handleReset = () => {
+        setProcessing(null);
+        setPin('');
+    };
 
     return (
         <Stack spacing={4} py={4}>
@@ -26,11 +58,14 @@ const Offer = () => {
                         <CreateOffer
                             configId="EmployeeID_JWT"
                             disabled={processing !== null}
-                            onCreate={() => setProcessing('EmployeeID_JWT')}
+                            onCreate={() => handleCreateOffer('EmployeeID_JWT')}
                         />
                     }
                     {processing === 'EmployeeID_JWT' &&
-                        <QrCode image="https://example.com/qr-code.png" />
+                        <>
+                            <QrCode image="https://example.com/qr-code.png" />
+                            {pin && <TxCode pin={pin} />}
+                        </>
                     }
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
@@ -38,7 +73,7 @@ const Offer = () => {
                         <CreateOffer
                             configId="Developer_JWT"
                             disabled={processing !== null}
-                            onCreate={() => { }}
+                        onCreate={() => handleCreateOffer('Developer_JWT')}
                         />
                     }
                     {processing === 'Developer_JWT' &&
@@ -46,6 +81,17 @@ const Offer = () => {
                     }
                 </Grid>
             </Grid>
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                    disabled={processing === null}
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleReset}
+                    sx={{ maxWidth: '200px' }}
+                >
+                    Start Over
+                </Button>
+            </Box>
             <FullLogo />
         </Stack>
     );

@@ -563,9 +563,9 @@ checksum = "8f1fe948ff07f4bd06c30984e69f5b4899c516a3ef74f34df92a2df2ab535495"
 
 [[package]]
 name = "bytes"
-version = "1.7.2"
+version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "428d9aa8fbc0670b7b8d6030a7fadd0f86151cae55e4dbbece15f3780a3dfaf3"
+checksum = "9ac0150caa2ae65ca5bd83f25c7de183dea78d4d366469f148435e2acfbad0da"
 
 [[package]]
 name = "camino"
@@ -601,9 +601,9 @@ dependencies = [
 
 [[package]]
 name = "cc"
-version = "1.1.30"
+version = "1.1.31"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b16803a61b81d9eabb7eae2588776c4c1e584b738ede45fdbb4c972cec1e9945"
+checksum = "c2e7962b54006dcfcc61cb72735f4d89bb97061dd6a7ed882ec6b8ee53714c6f"
 dependencies = [
  "shlex",
 ]
@@ -814,9 +814,9 @@ checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 
 [[package]]
 name = "crux_core"
-version = "0.9.0"
+version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b4f3d9faf1f5cbce21e41950cdcc9df9f6a946420a434737741b0e6b15aebbb"
+checksum = "f7254d2fca79de45e1e595fa7d32a0d3d8bfec85ee02b250cc216af6b7f01162"
 dependencies = [
  "anyhow",
  "bincode",
@@ -834,9 +834,9 @@ dependencies = [
 
 [[package]]
 name = "crux_http"
-version = "0.10.1"
+version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e5fb65e45d44626e340b6605bb92c8d87b4342e090cfa548f913746a2ebdc999"
+checksum = "bf0c2c59aee43cfd5a02ddf3eea264e59bc8317b731fa57905bfd62c4eb84c80"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -856,9 +856,9 @@ dependencies = [
 
 [[package]]
 name = "crux_macros"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a0bd454f045322bf00e9618fdbcfe0ea8f12051ceacb67f244e7c79b4152d23e"
+checksum = "6628a214f3754bdea8f05bf9ebbe62cd6bff48f7a4bea52ecb14cbd1743484ad"
 dependencies = [
  "darling",
  "proc-macro-error",
@@ -1829,6 +1829,7 @@ dependencies = [
  "axum-extra",
  "chrono",
  "dotenv",
+ "issuer-types",
  "serde",
  "serde_json",
  "test-utils",
@@ -1896,9 +1897,9 @@ checksum = "bbd2bcb4c963f2ddae06a2efc7e9f3591312473c50c6685e1f298068316e66fe"
 
 [[package]]
 name = "libc"
-version = "0.2.159"
+version = "0.2.161"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "561d97a539a36e26a9a5fad1ea11a3039a67714694aaa379433e580854bc3dc5"
+checksum = "8e9489c2807c139ffd9c1794f4af0ebe86a828db53ecdc7fea2111d0fed085d1"
 
 [[package]]
 name = "linked-hash-map"
@@ -2854,7 +2855,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 [[package]]
 name = "test-utils"
 version = "0.0.0"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3112,12 +3113,9 @@ dependencies = [
 
 [[package]]
 name = "unicase"
-version = "2.7.0"
+version = "2.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7d2d4dafb69621809a81864c9c1b864479e1235c0dd4e199924b9742439ed89"
-dependencies = [
- "version_check",
-]
+checksum = "7e51b68083f157f853b6379db119d1c1be0e6e4dec98101079dec41f6f5cf6df"
 
 [[package]]
 name = "unicode-bidi"
@@ -3341,7 +3339,7 @@ checksum = "5a84c137d37ab0142f0f2ddfe332651fdbf252e7b7dbb4e67b6c1f1b2e925101"
 [[package]]
 name = "vercre-core"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "base64ct",
  "fastrand 2.1.1",
@@ -3374,7 +3372,7 @@ dependencies = [
 [[package]]
 name = "vercre-dif-exch"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3387,7 +3385,7 @@ dependencies = [
 [[package]]
 name = "vercre-holder"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3429,7 +3427,7 @@ dependencies = [
 [[package]]
 name = "vercre-iso-mdl"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3446,7 +3444,7 @@ dependencies = [
 [[package]]
 name = "vercre-issuer"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "base64ct",
  "chrono",
@@ -3466,7 +3464,7 @@ dependencies = [
 [[package]]
 name = "vercre-macros"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3476,7 +3474,7 @@ dependencies = [
 [[package]]
 name = "vercre-openid"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3497,7 +3495,7 @@ dependencies = [
 [[package]]
 name = "vercre-status"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3515,7 +3513,7 @@ dependencies = [
 [[package]]
 name = "vercre-w3c-vc"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#deb8a9e0f9b3ce9d23ee0602e3e6a24edd14cc1d"
+source = "git+https://github.com/vercre/vc#3842fe7f52c572ac1d27d8ea1ed869082c2580f3"
 dependencies = [
  "anyhow",
  "base64ct",

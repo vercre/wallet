@@ -8,13 +8,13 @@ mod provider;
 
 use std::env;
 
+use axum::extract::{rejection::JsonRejection, FromRequest};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
 use axum::routing::post;
-use axum::{Json, Router};
+use axum::Router;
 use provider::Provider;
-use serde::Serialize;
-use serde_json::json;
+use serde::{Deserialize, Serialize};
 use tokio::net::TcpListener;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::set_header::SetResponseHeaderLayer;
@@ -49,24 +49,65 @@ async fn main() {
     axum::serve(listener, router).await.expect("server should run");
 }
 
-/// Wrapper for `axum::Response`
-pub struct AxResult<T>(vercre_issuer::Result<T>);
+// Custom JSON extractor to enable overriding the rejection and create our own
+/// error response.
+#[derive(FromRequest)]
+#[from_request(via(axum::Json), rejection(AppError))]
+pub struct AppJson<T>(pub T);
 
-impl<T> IntoResponse for AxResult<T>
+impl<T> IntoResponse for AppJson<T>
 where
     T: Serialize,
+    axum::Json<T>: IntoResponse,
 {
-    fn into_response(self) -> Response {
-        match self.0 {
-            Ok(v) => (StatusCode::OK, Json(json!(v))),
-            Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, Json(e.to_json())),
-        }
-        .into_response()
+    fn into_response(self) -> axum::response::Response {
+        axum::Json(self.0).into_response()
     }
 }
 
-impl<T> From<vercre_issuer::Result<T>> for AxResult<T> {
-    fn from(val: vercre_issuer::Result<T>) -> Self {
-        Self(val)
+/// Custom application errors.
+pub enum AppError {
+    /// The request body contained invalid JSON.
+    InvalidJson(JsonRejection),
+
+    /// Unspecified application error.
+    Other(anyhow::Error),
+}
+
+/// Error response.
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct ErrorResponse {
+    message: String,
+}
+
+impl IntoResponse for AppError {
+    fn into_response(self) -> Response {
+        let (status, message) = match self {
+            Self::InvalidJson(rejection) => (rejection.status(), rejection.body_text()),
+            Self::Other(error) => {
+                // Log the error but don't expose it to the client.
+                tracing::error!("Internal server error: {}", error);
+                (StatusCode::INTERNAL_SERVER_ERROR, "internal server error".into())
+            }
+        };
+        (status, AppJson(ErrorResponse { message })).into_response()
+    }
+}
+
+impl From<JsonRejection> for AppError {
+    fn from(rejection: JsonRejection) -> Self {
+        Self::InvalidJson(rejection)
+    }
+}
+
+impl From<anyhow::Error> for AppError {
+    fn from(error: anyhow::Error) -> Self {
+        Self::Other(error)
+    }
+}
+
+impl From<vercre_issuer::Error> for AppError {
+    fn from(error: vercre_issuer::Error) -> Self {
+        Self::Other(error.into())
     }
 }
