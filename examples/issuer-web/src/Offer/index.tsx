@@ -55,7 +55,7 @@ const Offer = () => {
     };
 
     return (
-        <Stack spacing={4} py={4} id="pageContent" sx={{ overflow: 'scroll' }}>
+        <Stack spacing={4} py={4} id="pageContent">
             <Typography variant="h1">
                 Credential Offer
             </Typography>

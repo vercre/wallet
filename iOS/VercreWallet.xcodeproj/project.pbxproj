@@ -86,7 +86,7 @@
 		427FF9F929E8FC5DB2A1EBFD /* Wallet */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Wallet; path = "../wallet/vercre-wallet.xcodeproj"; sourceTree = "<group>"; };
 		608E5734A631C27F19673C40 /* wallet.udl */ = {isa = PBXFileReference; lastKnownFileType = text; path = wallet.udl; sourceTree = "<group>"; };
 		8D9939D8923D10F21E0FE9DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		B1593DC3198F51583D1B1654 /* VercreWallet.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = VercreWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1593DC3198F51583D1B1654 /* VercreWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VercreWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E295C7E52CBDF7F40070F7A5 /* VercreWalletApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VercreWalletApp.swift; sourceTree = "<group>"; };
 		E295C7E92CBDF84C0070F7A5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E295C7EA2CBDF8FF0070F7A5 /* core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = core.swift; sourceTree = "<group>"; };
@@ -361,6 +361,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = L8V5YK7Y9T;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = VercreWallet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -384,6 +385,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = L8V5YK7Y9T;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = VercreWallet/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
