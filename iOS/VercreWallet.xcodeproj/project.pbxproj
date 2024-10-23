@@ -19,8 +19,7 @@
 		E2B513962CC5A9F100D5A957 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513952CC5A9F100D5A957 /* ActionButton.swift */; };
 		E2B513992CC5B57500D5A957 /* IssuanceOffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513982CC5B57500D5A957 /* IssuanceOffer.swift */; };
 		E2B5139C2CC5B81B00D5A957 /* PresentationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B5139B2CC5B81B00D5A957 /* PresentationRequest.swift */; };
-		E2B513A12CC8650400D5A957 /* QRScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513A02CC8650400D5A957 /* QRScanner.swift */; };
-		E2B513A32CC87F7200D5A957 /* RoundedRectLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513A22CC87F7200D5A957 /* RoundedRectLabel.swift */; };
+		E2B513A62CC8896300D5A957 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = E2B513A52CC8896300D5A957 /* CodeScanner */; };
 		E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */ = {isa = PBXBuildFile; fileRef = 608E5734A631C27F19673C40 /* wallet.udl */; };
 /* End PBXBuildFile section */
 
@@ -97,8 +96,6 @@
 		E2B513952CC5A9F100D5A957 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		E2B513982CC5B57500D5A957 /* IssuanceOffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuanceOffer.swift; sourceTree = "<group>"; };
 		E2B5139B2CC5B81B00D5A957 /* PresentationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationRequest.swift; sourceTree = "<group>"; };
-		E2B513A02CC8650400D5A957 /* QRScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRScanner.swift; sourceTree = "<group>"; };
-		E2B513A22CC87F7200D5A957 /* RoundedRectLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedRectLabel.swift; sourceTree = "<group>"; };
 		E87317161D4E9F5AB16EA2A3 /* SharedTypes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SharedTypes; path = ../shared/generated/swift/SharedTypes; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -109,6 +106,7 @@
 			files = (
 				DD6CE117F10A9C662E40F9D7 /* libvercre_wallet_static.a in Frameworks */,
 				56AEBB3FFEDD37A80A94DC15 /* SharedTypes in Frameworks */,
+				E2B513A62CC8896300D5A957 /* CodeScanner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,8 +204,6 @@
 			isa = PBXGroup;
 			children = (
 				E2B513952CC5A9F100D5A957 /* ActionButton.swift */,
-				E2B513A02CC8650400D5A957 /* QRScanner.swift */,
-				E2B513A22CC87F7200D5A957 /* RoundedRectLabel.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -249,6 +245,7 @@
 			name = VercreWallet;
 			packageProductDependencies = (
 				D5E1CA2F63D5932A75624052 /* SharedTypes */,
+				E2B513A52CC8896300D5A957 /* CodeScanner */,
 			);
 			productName = VercreWallet;
 			productReference = B1593DC3198F51583D1B1654 /* VercreWallet.app */;
@@ -274,6 +271,7 @@
 			mainGroup = AB7A31C84460D755A6092417;
 			packageReferences = (
 				5BC19551CA9B0886D560A9A6 /* XCLocalSwiftPackageReference "../shared/generated/swift/SharedTypes" */,
+				E2B513A42CC8896300D5A957 /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
 			projectDirPath = "";
 			projectReferences = (
@@ -329,7 +327,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E2B513A12CC8650400D5A957 /* QRScanner.swift in Sources */,
 				E29F76452CBF0B9100496B37 /* sse.swift in Sources */,
 				E29F76462CBF0B9100496B37 /* http.swift in Sources */,
 				E2B513992CC5B57500D5A957 /* IssuanceOffer.swift in Sources */,
@@ -337,7 +334,6 @@
 				E29F76482CBF0B9100496B37 /* ContentView.swift in Sources */,
 				E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */,
 				E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */,
-				E2B513A32CC87F7200D5A957 /* RoundedRectLabel.swift in Sources */,
 				E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */,
 				E2B513962CC5A9F100D5A957 /* ActionButton.swift in Sources */,
 				E2B5139C2CC5B81B00D5A957 /* PresentationRequest.swift in Sources */,
@@ -553,10 +549,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		E2B513A42CC8896300D5A957 /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/CodeScanner";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.5.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		D5E1CA2F63D5932A75624052 /* SharedTypes */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SharedTypes;
+		};
+		E2B513A52CC8896300D5A957 /* CodeScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E2B513A42CC8896300D5A957 /* XCRemoteSwiftPackageReference "CodeScanner" */;
+			productName = CodeScanner;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

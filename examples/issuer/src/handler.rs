@@ -43,7 +43,7 @@ pub async fn create_offer(
     if offer.credential_configuration_ids[0] != req.credential_configuration_id {
         return Err(anyhow!("unexpected credential configuration ID").into());
     }
-    let qr_code = offer.to_qrcode("openid-credential-offer:credential_offer=")?;
+    let qr_code = offer.to_qrcode("openid-credential-offer://credential_offer=")?;
 
     let rsp = CreateOfferResponse {
         qr_code,
