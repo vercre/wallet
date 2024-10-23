@@ -25,7 +25,7 @@ crux_http.workspace = true
 futures = "0.3.31"
 lazy_static = "1.5.0"
 serde.workspace = true
-serde_json = "1.0.128"
+serde_json = "1.0.132"
 uniffi = "0.28.2"
 url.workspace = true
 vercre-holder = { git = "https://github.com/vercre/vc" }

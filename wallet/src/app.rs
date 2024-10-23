@@ -1,10 +1,13 @@
 //! This module contains the core application fabric for the wallet, including
 //! the model, events, and effects that drive the application.
 
+mod issuance;
+
 use crate::capabilities::sse::ServerSentEvents;
 use chrono::{serde::ts_milliseconds_option::deserialize as ts_milliseconds_option, DateTime, Utc};
 use crux_core::render::Render;
 use crux_http::Http;
+use issuance::IssuanceState;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
@@ -12,10 +15,15 @@ use crate::view::ViewModel;
 
 const API_URL: &str = "https://crux-counter.fly.dev";
 
-// ANCHOR: model
+/// State for the wallet application.
 #[derive(Default, Serialize)]
 pub struct Model {
+    /// Issuance state.
+    issuance: Option<IssuanceState>,
+
+    // TODO: Remove ---
     count: Count,
+    // ----------------
 }
 
 #[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq)]
@@ -24,11 +32,15 @@ pub struct Count {
     #[serde(deserialize_with = "ts_milliseconds_option")]
     updated_at: Option<DateTime<Utc>>,
 }
-// ANCHOR_END: model
 
-
+/// Events that can be sent to the wallet application.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Event {
+    /// Offer event is emitted by the shell when the user scans an offer QR
+    /// code.
+    
+
+    // TODO: Remove ---
     // events from the shell
     Get,
     Increment,
@@ -40,6 +52,7 @@ pub enum Event {
     Set(crux_http::Result<crux_http::Response<Count>>),
     #[serde(skip)]
     Update(Count),
+    // ----------------
 }
 
 #[cfg_attr(feature = "typegen", derive(crux_core::macros::Export))]
@@ -217,6 +230,7 @@ mod tests {
 
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
+            issuance: None,
             count: Count {
                 value: 1,
                 updated_at: Some(Utc.with_ymd_and_hms(2022, 12, 31, 23, 59, 0).unwrap()),
@@ -234,6 +248,7 @@ mod tests {
         // but not the timestamp
         insta::assert_yaml_snapshot!(model, @r###"
         ---
+        issuance: ~
         count:
           value: 2
           updated_at: ~
@@ -262,6 +277,7 @@ mod tests {
         // check that the model has been updated correctly
         insta::assert_yaml_snapshot!(model, @r###"
         ---
+        issuance: ~
         count:
           value: 2
           updated_at: "2023-01-01T00:00:00Z"
@@ -276,6 +292,7 @@ mod tests {
 
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
+            issuance: None,
             count: Count {
                 value: 0,
                 updated_at: Some(Utc.with_ymd_and_hms(2022, 12, 31, 23, 59, 0).unwrap()),
@@ -293,6 +310,7 @@ mod tests {
         // but not the timestamp
         insta::assert_yaml_snapshot!(model, @r###"
         ---
+        issuance: ~
         count:
           value: -1
           updated_at: ~
@@ -324,6 +342,7 @@ mod tests {
         // check that the model has been updated correctly
         insta::assert_yaml_snapshot!(model, @r###"
         ---
+        issuance: ~
         count:
           value: -1
           updated_at: "2023-01-01T00:00:00Z"
@@ -364,6 +383,7 @@ mod tests {
         // check that the model has been updated correctly
         insta::assert_yaml_snapshot!(model, @r###"
         ---
+        issuance: ~
         count:
           value: 1
           updated_at: "2023-01-01T00:00:00Z"

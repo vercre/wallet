@@ -22,7 +22,7 @@ serde.workspace = true
 serde_json.workspace = true
 issuer-types = { path = "../issuer-types" }
 test-utils.workspace = true
-tokio = { version = "1.40.0", features = ["macros", "rt-multi-thread"] }
+tokio = { version = "1.41.0", features = ["macros", "rt-multi-thread"] }
 tower-http = { version = "0.6.1", features = ["cors", "set-header", "trace"] }
 tracing.workspace = true
 tracing-subscriber.workspace = true
