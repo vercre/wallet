@@ -11,7 +11,11 @@ struct IssuanceOffer: View {
     @ObservedObject var core: Core
 
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        if #available(iOS 16.0, *) {
+            QRScanner()
+        } else {
+            // Fallback on earlier versions
+        }
     }
 }
 
