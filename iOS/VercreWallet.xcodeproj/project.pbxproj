@@ -96,6 +96,7 @@
 		E2B513952CC5A9F100D5A957 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		E2B513982CC5B57500D5A957 /* IssuanceOffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuanceOffer.swift; sourceTree = "<group>"; };
 		E2B5139B2CC5B81B00D5A957 /* PresentationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationRequest.swift; sourceTree = "<group>"; };
+		E2FA06272CCADDF200699B28 /* credentialData.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = credentialData.json; sourceTree = "<group>"; };
 		E87317161D4E9F5AB16EA2A3 /* SharedTypes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SharedTypes; path = ../shared/generated/swift/SharedTypes; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -174,6 +175,7 @@
 		AB7A31C84460D755A6092417 = {
 			isa = PBXGroup;
 			children = (
+				E2FA06252CCADD8D00699B28 /* Resources */,
 				9405D229F654574512E48F50 /* Packages */,
 				88D05DA4EFF0786DC8398A1E /* src */,
 				6D5A7EBBC5FAE24EA47023DA /* VercreWallet */,
@@ -224,6 +226,14 @@
 			path = Presentation;
 			sourceTree = "<group>";
 		};
+		E2FA06252CCADD8D00699B28 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				E2FA06272CCADDF200699B28 /* credentialData.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -258,7 +268,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1600;
 			};
 			buildConfigurationList = CCBB1BED24149742DFBCF930 /* Build configuration list for PBXProject "VercreWallet" */;
 			compatibilityVersion = "Xcode 14.0";
@@ -408,6 +418,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -463,6 +474,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
