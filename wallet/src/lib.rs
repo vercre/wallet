@@ -3,6 +3,7 @@
 
 pub mod app;
 pub mod capabilities;
+mod config;
 pub mod view;
 
 use lazy_static::lazy_static;

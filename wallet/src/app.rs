@@ -5,7 +5,7 @@ mod issuance;
 
 use crate::capabilities::sse::ServerSentEvents;
 use chrono::{serde::ts_milliseconds_option::deserialize as ts_milliseconds_option, DateTime, Utc};
-use crux_core::render::Render;
+use crux_core::{compose::Compose, render::Render};
 use crux_http::Http;
 use issuance::IssuanceState;
 use serde::{Deserialize, Serialize};
@@ -20,6 +20,9 @@ const API_URL: &str = "https://crux-counter.fly.dev";
 pub struct Model {
     /// Issuance state.
     issuance: Option<IssuanceState>,
+
+    /// Error state.
+    error: Option<String>,
 
     // TODO: Remove ---
     count: Count,
@@ -36,9 +39,12 @@ pub struct Count {
 /// Events that can be sent to the wallet application.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Event {
-    /// Offer event is emitted by the shell when the user scans an offer QR
-    /// code.
-    
+    /// Event emitted by the shell when the user scans an offer QR code.
+    CreateOffer(String),
+
+    /// Error event is emitted by the core when an error occurs.
+    #[serde(skip)]
+    Error(String),
 
     // TODO: Remove ---
     // events from the shell
@@ -61,6 +67,8 @@ pub struct Capabilities {
     pub render: Render<Event>,
     pub http: Http<Event>,
     pub sse: ServerSentEvents<Event>,
+        #[effect(skip)] // skips the compose variant when deriving an Effect enum
+    pub compose: Compose<Event>,
 }
 
 #[derive(Default)]
@@ -74,6 +82,15 @@ impl crux_core::App for App {
 
     fn update(&self, msg: Self::Event, model: &mut Self::Model, caps: &Self::Capabilities) {
         match msg {
+            Event::CreateOffer(_encoded_offer) => {
+                caps.render.render();
+            }
+            Event::Error(e) => {
+                model.error = Some(e);
+                caps.render.render();
+            }
+
+            // TODO: Remove ---
             Event::Get => {
                 caps.http.get(API_URL).expect_json().send(Event::Set);
             }
@@ -118,6 +135,7 @@ impl crux_core::App for App {
                 let url = base.join("/sse").unwrap();
                 caps.sse.get_json(url, Event::Update);
             }
+            // ----------------
         }
     }
 
@@ -231,6 +249,7 @@ mod tests {
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
             issuance: None,
+            error: None,
             count: Count {
                 value: 1,
                 updated_at: Some(Utc.with_ymd_and_hms(2022, 12, 31, 23, 59, 0).unwrap()),
@@ -249,6 +268,7 @@ mod tests {
         insta::assert_yaml_snapshot!(model, @r###"
         ---
         issuance: ~
+        error: ~
         count:
           value: 2
           updated_at: ~
@@ -278,6 +298,7 @@ mod tests {
         insta::assert_yaml_snapshot!(model, @r###"
         ---
         issuance: ~
+        error: ~
         count:
           value: 2
           updated_at: "2023-01-01T00:00:00Z"
@@ -293,6 +314,7 @@ mod tests {
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
             issuance: None,
+            error: None,
             count: Count {
                 value: 0,
                 updated_at: Some(Utc.with_ymd_and_hms(2022, 12, 31, 23, 59, 0).unwrap()),
@@ -311,6 +333,7 @@ mod tests {
         insta::assert_yaml_snapshot!(model, @r###"
         ---
         issuance: ~
+        error: ~
         count:
           value: -1
           updated_at: ~
@@ -343,6 +366,7 @@ mod tests {
         insta::assert_yaml_snapshot!(model, @r###"
         ---
         issuance: ~
+        error: ~
         count:
           value: -1
           updated_at: "2023-01-01T00:00:00Z"
@@ -384,6 +408,7 @@ mod tests {
         insta::assert_yaml_snapshot!(model, @r###"
         ---
         issuance: ~
+        error: ~
         count:
           value: 1
           updated_at: "2023-01-01T00:00:00Z"

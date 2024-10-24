@@ -13,3 +13,6 @@ gen/
 
 # local env file(s)
 .env
+
+# Rust internal compilation errors.
+rustc-ice-*.txt

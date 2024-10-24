@@ -3532,6 +3532,7 @@ dependencies = [
 name = "vercre-wallet"
 version = "0.1.0-alpha.0"
 dependencies = [
+ "anyhow",
  "assert_let_bind",
  "async-sse",
  "async-std",
@@ -3545,6 +3546,7 @@ dependencies = [
  "serde_json",
  "uniffi",
  "url",
+ "urlencoding",
  "vercre-holder",
  "wasm-bindgen",
 ]
