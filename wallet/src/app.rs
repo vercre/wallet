@@ -67,7 +67,7 @@ pub struct Capabilities {
     pub render: Render<Event>,
     pub http: Http<Event>,
     pub sse: ServerSentEvents<Event>,
-        #[effect(skip)] // skips the compose variant when deriving an Effect enum
+    #[effect(skip)] // skips the compose variant when deriving an Effect enum
     pub compose: Compose<Event>,
 }
 
