@@ -1,39 +1,29 @@
 //! This module contains the core application fabric for the wallet, including
 //! the model, events, and effects that drive the application.
 
-mod issuance;
-
 use crate::capabilities::sse::ServerSentEvents;
-use chrono::{serde::ts_milliseconds_option::deserialize as ts_milliseconds_option, DateTime, Utc};
 use crux_core::{compose::Compose, render::Render};
 use crux_http::Http;
-use issuance::IssuanceState;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
+use crate::model::{Count, Model};
 use crate::view::ViewModel;
 
 const API_URL: &str = "https://crux-counter.fly.dev";
 
-/// State for the wallet application.
-#[derive(Default, Serialize)]
-pub struct Model {
-    /// Issuance state.
-    issuance: Option<IssuanceState>,
+/// Aspect of the application.
+#[derive(Clone, Default, Debug, Deserialize, Serialize)]
+pub enum SubApp {
+    /// Display and deletion of credentials stored in the wallet.
+    #[default]
+    Credential,
 
-    /// Error state.
-    error: Option<String>,
+    /// Issuance of new credentials from an issuer.
+    Issuance,
 
-    // TODO: Remove ---
-    count: Count,
-    // ----------------
-}
-
-#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq)]
-pub struct Count {
-    value: isize,
-    #[serde(deserialize_with = "ts_milliseconds_option")]
-    updated_at: Option<DateTime<Utc>>,
+    /// Presentation of a credential to a verifier.
+    Presentation,
 }
 
 /// Events that can be sent to the wallet application.
@@ -140,14 +130,34 @@ impl crux_core::App for App {
     }
 
     fn view(&self, model: &Self::Model) -> Self::ViewModel {
+        // --- TODO Remove ---
         let suffix = match model.count.updated_at {
             None => " (pending)".to_string(),
             Some(d) => format!(" ({d})"),
         };
+        // --------------------
+
+        let credentials = model.credential.credentials.iter().map(|c| c.clone().into()).collect();
+        let credential = match &model.credential.id {
+            Some(id) => {
+                let cred = model.credential.credentials.iter().find(|c| c.id == *id).cloned();
+                match cred {
+                    Some(c) => Some(c.into()),
+                    None => None,
+                }
+            },
+            None => None,
+        };
 
         Self::ViewModel {
+            active_view: model.active_view.clone(),
+            credentials,
+            credential,
+
+            // --- TODO: Remove ---
             text: model.count.value.to_string() + &suffix,
             confirmed: model.count.updated_at.is_some(),
+            // --------------------
         }
     }
 }
@@ -156,7 +166,8 @@ impl crux_core::App for App {
 mod tests {
     use super::{App, Event, Model};
     use crate::capabilities::sse::SseRequest;
-    use crate::{Count, Effect};
+    use crate::model::{Count, CredentialState};
+    use crate::{Effect, SubApp};
     use assert_let_bind::assert_let;
     use chrono::{TimeZone, Utc};
     use crux_core::{assert_effect, testing::AppTester};
@@ -248,6 +259,8 @@ mod tests {
 
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
+            active_view: SubApp::Credential,
+            credential: CredentialState { id: None, credentials: vec![] },
             issuance: None,
             error: None,
             count: Count {
@@ -313,6 +326,8 @@ mod tests {
 
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
+            active_view: SubApp::Credential,
+            credential: CredentialState { id: None, credentials: vec![] },
             issuance: None,
             error: None,
             count: Count {
