@@ -15,6 +15,7 @@ struct CredentialList: View {
             Text("Credentials")
                 .font(.title)
                 .fontWeight(.bold)
+            Text(String(core.view.credential_view.credentials.count))
             Text(String(core.view.text))
                 .foregroundColor(core.view.confirmed ? .black : .gray)
                 .padding()

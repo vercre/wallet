@@ -8,7 +8,7 @@
 import SwiftUI
 import CodeScanner
 
-struct IssuanceOffer: View {
+struct IssuanceScan: View {
     @ObservedObject var core: Core
     @State private var scannerVisible = false
     @State var scanResult: String = "Scan a Verifiable Credential offer QR code"
@@ -58,5 +58,5 @@ struct IssuanceOffer: View {
 }
 
 #Preview {
-    IssuanceOffer(core: Core())
+    IssuanceScan(core: Core())
 }

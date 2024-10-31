@@ -1,10 +1,10 @@
 ---
 source: wallet/src/app.rs
-assertion_line: 287
+assertion_line: 304
 expression: model
 snapshot_kind: text
 ---
-active_view: Credential
+active_view: CredentialList
 credential:
   id: ~
   credentials: []

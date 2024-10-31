@@ -13,9 +13,8 @@ use crate::model::CredentialState;
 /// View model for a set of claims associated with a subject (holder).
 #[derive(Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
 pub struct SubjectClaims {
-    /// The subject's unique identifier.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub id: Option<String>,
+    /// The subject's unique identifier. Empty string if not applicable.
+    pub id: String,
 
     /// The subject's claims.
     pub claims: HashMap<String, String>,
@@ -28,7 +27,7 @@ impl From<SubjectClaimsModel> for SubjectClaims {
             claims.insert(key, value.to_string());
         }
         Self {
-            id: subject.id,
+            id: subject.id.unwrap_or_default(),
             claims,
         }
     }
@@ -68,27 +67,31 @@ pub struct Credential {
     /// The date the credential was issued as an RFC3339 string.
     pub issuance_date: String,
 
-    /// The date the credential is valid from as an RFC3339 string.
-    #[serde(skip_serializing_if = "Option::is_none")]    
-    pub valid_from: Option<String>,
+    /// The date the credential is valid from as an RFC3339 string. Empty string
+    /// if not applicable.
+    pub valid_from: String,
 
     /// The date the credential is valid until (expiry) as an RFC3339 string.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub valid_until: Option<String>,
+    /// Empty string if not applicable.
+    pub valid_until: String,
 
-    // /// Display information from the issuer's metadata for this credential.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub display: Option<Vec<CredentialDisplay>>,
+    /// Display information from the issuer's metadata for this credential.
+    /// Empty vector if not applicable.
+    pub display: Vec<CredentialDisplay>,
 
     /// A base64-encoded logo image for the credential ingested from the logo
     /// url in the display section of the metadata.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub logo: Option<ImageData>,
+    /// 
+    /// The elements of `ImageData` will be empty strings if the logo has not
+    /// been set.
+    pub logo: ImageData,
 
     /// A base64-encoded background image for the credential ingested from the
     /// url in the display section of the metadata.
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub background: Option<ImageData>,
+    /// 
+    /// The elements of `ImageData` will be empty strings if the background has
+    /// not been set.
+    pub background: ImageData,
 }
 
 impl From<CredentialModel> for Credential {
@@ -106,11 +109,11 @@ impl From<CredentialModel> for Credential {
             format: credential.format,
             subject_claims,
             issuance_date: credential.issuance_date.to_rfc3339(),
-            valid_from: credential.valid_from.map(|date| date.to_rfc3339()),
-            valid_until: credential.valid_until.map(|date| date.to_rfc3339()),
-            display: credential.display,
-            logo: credential.logo,
-            background: credential.background,
+            valid_from: credential.valid_from.map_or_else(String::new, |date| date.to_rfc3339()),
+            valid_until: credential.valid_until.map_or_else(String::new, |date| date.to_rfc3339()),
+            display: credential.display.unwrap_or_else(Vec::new),
+            logo: credential.logo.unwrap_or_default(),
+            background: credential.background.unwrap_or_default(),
         }
     }
 }

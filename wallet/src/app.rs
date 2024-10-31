@@ -8,27 +8,37 @@ use serde::{Deserialize, Serialize};
 use url::Url;
 
 use crate::model::{Count, Model};
+use crate::model::credential::CredentialState;
 use crate::view::ViewModel;
 
 const API_URL: &str = "https://crux-counter.fly.dev";
 
 /// Aspect of the application.
+/// 
+/// This allows the UI navigation to be reactive: controlled in response to the
+/// user's actions.
 #[derive(Clone, Default, Debug, Deserialize, Serialize)]
-pub enum SubApp {
+pub enum Aspect {
     /// Display and deletion of credentials stored in the wallet.
     #[default]
-    Credential,
+    CredentialList,
 
-    /// Issuance of new credentials from an issuer.
-    Issuance,
+    /// Display of a single credential.
+    CredentialDetail,
 
-    /// Presentation of a credential to a verifier.
-    Presentation,
+    /// Trigger a credential issuance using an offer QR code.
+    IssuanceScan,
+
+    /// Trigger a credential verification using a presentation request QR code.
+    PresentationScan,
 }
 
 /// Events that can be sent to the wallet application.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
 pub enum Event {
+    /// Event emitted by the shell when the app first loads.
+    Ready,
+
     /// Event emitted by the shell when the user scans an offer QR code.
     CreateOffer(String),
 
@@ -72,6 +82,13 @@ impl crux_core::App for App {
 
     fn update(&self, msg: Self::Event, model: &mut Self::Model, caps: &Self::Capabilities) {
         match msg {
+            Event::Ready => {
+                // Initialization event. Set the aspect to the credential list
+                // view.
+                model.active_view = Aspect::CredentialList;
+                model.credential = CredentialState::init();
+                caps.render.render();
+            }
             Event::CreateOffer(_encoded_offer) => {
                 caps.render.render();
             }
@@ -154,7 +171,7 @@ mod tests {
     use super::{App, Event, Model};
     use crate::capabilities::sse::SseRequest;
     use crate::model::{Count, CredentialState};
-    use crate::{Effect, SubApp};
+    use crate::{Effect, Aspect};
     use assert_let_bind::assert_let;
     use chrono::{TimeZone, Utc};
     use crux_core::{assert_effect, testing::AppTester};
@@ -242,7 +259,7 @@ mod tests {
 
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
-            active_view: SubApp::Credential,
+            active_view: Aspect::CredentialList,
             credential: CredentialState { id: None, credentials: vec![] },
             issuance: None,
             error: None,
@@ -295,7 +312,7 @@ mod tests {
 
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
-            active_view: SubApp::Credential,
+            active_view: Aspect::CredentialList,
             credential: CredentialState { id: None, credentials: vec![] },
             issuance: None,
             error: None,

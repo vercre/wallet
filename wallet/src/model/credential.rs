@@ -13,3 +13,27 @@ pub struct CredentialState {
     /// Credentials stored in the wallet.
     pub credentials: Vec<Credential>,
 }
+
+impl CredentialState {
+    /// Create a new credential state.
+    #[must_use]
+    pub fn init() -> Self {
+        let json = include_bytes!("credentials.json");
+        let credentials: Vec<Credential> = serde_json::from_slice(json).expect("should deserialize");
+        Self {
+            id: None,
+            credentials,
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_init() {
+        let state = CredentialState::init();
+        assert_eq!(state.credentials.len(), 2);
+    }
+}

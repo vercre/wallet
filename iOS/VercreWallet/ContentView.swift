@@ -20,6 +20,7 @@ struct ContentView: View {
     
     init(core: Core) {
         self.core = core
+        core.update(.ready)
         core.update(.startWatch)
     }
     
@@ -30,7 +31,7 @@ struct ContentView: View {
                     Label("Credentials", systemImage: "wallet.bifold")
                 }
                 .tag(Tab.credentials)
-            IssuanceOffer(core: core)
+            IssuanceScan(core: core)
                 .tabItem {
                     Label("Receive", systemImage: "plus.app")
                 }

@@ -24,7 +24,7 @@ anyhow = "1.0.91"
 axum = { version = "0.7.7", features = ["macros"] }
 axum-extra = { version = "0.9.4", features = ["typed-header"] }
 chrono = { version = "0.4.38", features = ["serde"] }
-crux_core = "0.10.0"
+crux_core = { version = "0.10.0", features = ["typegen"] }
 crux_http = "0.10.3"
 dotenv = "0.15.0"
 serde = { version = "1.0.213", features = ["derive"] }
