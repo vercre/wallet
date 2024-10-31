@@ -3,130 +3,133 @@
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
-use vercre_holder::credential::{self, Credential};
-use vercre_holder::Quota;
+use vercre_holder::credential::{
+    Credential as CredentialModel, ImageData, SubjectClaims as SubjectClaimsModel,
+};
+use vercre_holder::CredentialDisplay;
 
-/// Summary view for a verifiable credential
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CredentialSummary {
-    /// Credential ID
+use crate::model::CredentialState;
+
+/// View model for a set of claims associated with a subject (holder).
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+pub struct SubjectClaims {
+    /// The subject's unique identifier.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub id: Option<String>,
+
+    /// The subject's claims.
+    pub claims: HashMap<String, String>,
+}
+
+impl From<SubjectClaimsModel> for SubjectClaims {
+    fn from(subject: SubjectClaimsModel) -> Self {
+        let mut claims = HashMap::new();
+        for (key, value) in subject.claims {
+            claims.insert(key, value.to_string());
+        }
+        Self {
+            id: subject.id,
+            claims,
+        }
+    }
+}
+
+/// View model for a verifiable credential.
+/// 
+/// Matches the `Credential` model from the `vercre-holder` crate as closely as
+/// possible but caters for ease of code generation for shells.
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+pub struct Credential {
+    /// Credential `id` is the credential's unique identifier
+    /// (from Verifiable Credential `id` or generated if credential has no
+    /// `id`).
     pub id: String,
 
-    /// CSS color to use for the background of a credential display
-    pub background_color: Option<String>,
+    /// The credential issuer.
+    pub issuer: String,
 
-    /// CSS color to use for the text of a credential display
-    pub color: Option<String>,
+    /// The Verifiable Credential as issued, for use in Presentation
+    /// Submissions. This could be a base64-encoded JWT or 'stringified'
+    /// JSON.
+    pub issued: String,
 
-    /// Label to display on the credential to indicate the issuer
-    pub issuer: Option<String>,
+    /// The credential type. Used to determine whether a credential matches a
+    /// presentation request.
+    #[serde(rename = "type")]
+    pub type_: Vec<String>,
 
-    /// Logo to display on the credential
-    pub logo: Option<Image>,
+    /// Credential format. Information on how the encoded credential is
+    /// formatted.
+    pub format: String,
 
-    /// URL of the original source of the logo
-    pub logo_url: Option<String>,
-
-    /// Background image to display on the credential
-    pub background: Option<Image>,
-
-    /// URL of the original source of the background image
-    pub background_url: Option<String>,
-
-    /// Name of the credential
-    pub name: Option<String>,
-}
-
-impl From<Credential> for CredentialSummary {
-    fn from(credential: Credential) -> Self {
-        let displays = credential.display.clone().unwrap_or_default();
-        // TODO: locale
-        let display = displays[0].clone();
-        Self {
-            id: credential.id.clone(),
-            background_color: display.background_color.clone(),
-            color: display.text_color.clone(),
-            issuer: Some(credential.issuer.clone()),
-            logo: credential.logo.as_ref().map(|logo| logo.clone().into()),
-            logo_url: match display.logo {
-                Some(image) => image.uri,
-                None => None,
-            },
-            background: credential.background.as_ref().map(|bg| bg.clone().into()),
-            background_url: match display.background_image {
-                Some(image) => image.uri,
-                None => None,
-            },
-            name: Some(display.name),
-        }
-    }
-}
-
-/// Image information
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct Image {
-    /// Base64 encoded image
-    pub data: String,
-
-    /// Image media type
-    pub media_type: String,
-}
-
-impl From<credential::Image> for Image {
-    fn from(img: credential::Image) -> Self {
-        Self {
-            data: img.image,
-            media_type: img.media_type,
-        }
-    }
-}
-/// Detail view for a verifiable credential
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
-pub struct CredentialDetail {
-    /// Display information
-    display: CredentialSummary,
-
-    /// Start of validity period
-    valid_from: Option<String>,
-
-    /// End of validity period (expiry)
-    valid_until: Option<String>,
-    
-    /// Description
-    description: Option<String>,
-    
     /// Claims
-    claims: HashMap<String, Value>,
+    pub subject_claims: Vec<SubjectClaims>,
+
+    /// The date the credential was issued as an RFC3339 string.
+    pub issuance_date: String,
+
+    /// The date the credential is valid from as an RFC3339 string.
+    #[serde(skip_serializing_if = "Option::is_none")]    
+    pub valid_from: Option<String>,
+
+    /// The date the credential is valid until (expiry) as an RFC3339 string.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub valid_until: Option<String>,
+
+    // /// Display information from the issuer's metadata for this credential.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub display: Option<Vec<CredentialDisplay>>,
+
+    /// A base64-encoded logo image for the credential ingested from the logo
+    /// url in the display section of the metadata.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub logo: Option<ImageData>,
+
+    /// A base64-encoded background image for the credential ingested from the
+    /// url in the display section of the metadata.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub background: Option<ImageData>,
 }
 
-impl From<Credential> for CredentialDetail {
-    fn from(credential: Credential) -> Self {
-        let displays = credential.display.clone().unwrap_or_default();
-        // TODO: locale
-        let display = displays[0].clone();
-        let vc = credential.vc.clone();
-        let mut claims = HashMap::new();
-
-        let subjects = match &vc.credential_subject {
-            Quota::One(sub) => vec![sub.clone()],
-            Quota::Many(subs) => subs.clone(),
-        };
-
-        for subject in subjects {
-            let claims_map = subject.claims;
-            for (key, value) in claims_map {
-                let val = serde_json::to_value(&value).unwrap_or_default();
-                claims.insert(key.clone(), val);
-            }
-        }
-
+impl From<CredentialModel> for Credential {
+    fn from(credential: CredentialModel) -> Self {
+        let subject_claims = credential
+            .subject_claims
+            .into_iter()
+            .map(SubjectClaims::from)
+            .collect();
         Self {
-            display: credential.into(),
-            valid_from: vc.valid_from.map(|d| d.to_rfc2822()),
-            valid_until: vc.valid_until.map(|d| d.to_rfc2822()),
-            description: display.description,
-            claims,
+            id: credential.id,
+            issuer: credential.issuer,
+            issued: credential.issued,
+            type_: credential.type_,
+            format: credential.format,
+            subject_claims,
+            issuance_date: credential.issuance_date.to_rfc3339(),
+            valid_from: credential.valid_from.map(|date| date.to_rfc3339()),
+            valid_until: credential.valid_until.map(|date| date.to_rfc3339()),
+            display: credential.display,
+            logo: credential.logo,
+            background: credential.background,
+        }
+    }
+}
+
+/// View for the verifiable credential sub-app
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct CredentialView {
+    /// Currently active credential ID
+    pub id: Option<String>,
+
+    /// List of stored credentials
+    pub credentials: Vec<Credential>,
+}
+
+impl From<CredentialState> for CredentialView {
+    fn from(state: CredentialState) -> Self {
+        Self {
+            id: state.id,
+            credentials: state.credentials.into_iter().map(Credential::from).collect(),
         }
     }
 }

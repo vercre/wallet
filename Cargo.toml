@@ -34,6 +34,7 @@ tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter", "fmt"] }
 typeshare = "1.0.3"
 url = "2.5.2"
+vercre-holder = { git = "https://github.com/vercre/vc" }
 vercre-issuer = { git = "https://github.com/vercre/vc" }
 
 [workspace.metadata.bin]

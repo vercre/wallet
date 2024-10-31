@@ -1,8 +1,8 @@
 //! # View Model
 //! 
-mod credential;
+pub mod credential;
 
-use credential::{CredentialSummary, CredentialDetail};
+use credential::CredentialView;
 use serde::{Deserialize, Serialize};
 
 use super::SubApp;
@@ -13,11 +13,8 @@ pub struct ViewModel {
     /// Which aspect of the application is currently active.
     pub active_view: SubApp,
 
-    /// List of loaded credentials.
-    pub credentials: Vec<CredentialSummary>,
-
-    /// Currently selected credential.
-    pub credential: Option<CredentialDetail>,
+    /// Credential view model.
+    pub credential_view: CredentialView,
 
     // --- TODO: Remove ---
     pub text: String,

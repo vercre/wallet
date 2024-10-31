@@ -12,6 +12,8 @@ version.workspace = true
 
 [build-dependencies]
 anyhow.workspace = true
+chrono.workspace = true
 crux_core.workspace = true
 crux_http.workspace = true
+vercre-holder.workspace = true
 vercre-wallet = { path = "../wallet", features = ["typegen"] }

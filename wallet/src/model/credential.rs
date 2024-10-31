@@ -1,7 +1,7 @@
 //! Credential sub-app state.
 
 use serde::{Deserialize, Serialize};
-use vercre_holder::Credential;
+use vercre_holder::credential::Credential;
 
 /// Application state for the credential sub-app.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]

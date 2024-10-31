@@ -137,22 +137,9 @@ impl crux_core::App for App {
         };
         // --------------------
 
-        let credentials = model.credential.credentials.iter().map(|c| c.clone().into()).collect();
-        let credential = match &model.credential.id {
-            Some(id) => {
-                let cred = model.credential.credentials.iter().find(|c| c.id == *id).cloned();
-                match cred {
-                    Some(c) => Some(c.into()),
-                    None => None,
-                }
-            },
-            None => None,
-        };
-
         Self::ViewModel {
             active_view: model.active_view.clone(),
-            credentials,
-            credential,
+            credential_view: model.credential.clone().into(),
 
             // --- TODO: Remove ---
             text: model.count.value.to_string() + &suffix,
@@ -243,11 +230,7 @@ mod tests {
         assert_effect!(update, Effect::Render(_));
 
         // check that the view has been updated correctly
-        insta::assert_yaml_snapshot!(app.view(&model), @r###"
-        ---
-        text: "1 (2023-01-01 00:00:00 UTC)"
-        confirmed: true
-        "###);
+        insta::assert_yaml_snapshot!("set_counter", app.view(&model));
     }
     // ANCHOR_END: simple_tests
 
@@ -278,14 +261,7 @@ mod tests {
         // we are expecting our model to be updated "optimistically" before the
         // HTTP request completes, so the value should have been updated
         // but not the timestamp
-        insta::assert_yaml_snapshot!(model, @r###"
-        ---
-        issuance: ~
-        error: ~
-        count:
-          value: 2
-          updated_at: ~
-        "###);
+        insta::assert_yaml_snapshot!("increment_counter_optimistic", model);
 
         // check that the app also emitted an HTTP request,
         // capturing the request in the process
@@ -308,14 +284,7 @@ mod tests {
         let _ = app.update(update.events[0].clone(), &mut model);
 
         // check that the model has been updated correctly
-        insta::assert_yaml_snapshot!(model, @r###"
-        ---
-        issuance: ~
-        error: ~
-        count:
-          value: 2
-          updated_at: "2023-01-01T00:00:00Z"
-        "###);
+        insta::assert_yaml_snapshot!("increment_counter_final", model);
     }
 
     /// Test that a `Decrement` event causes the app to decrement the counter
@@ -345,14 +314,7 @@ mod tests {
         // we are expecting our model to be updated "optimistically" before the
         // HTTP request completes, so the value should have been updated
         // but not the timestamp
-        insta::assert_yaml_snapshot!(model, @r###"
-        ---
-        issuance: ~
-        error: ~
-        count:
-          value: -1
-          updated_at: ~
-        "###);
+        insta::assert_yaml_snapshot!("decrement_counter_optimistic", model);
 
         // check that the app also emitted an HTTP request,
         // capturing the request in the process
@@ -378,14 +340,7 @@ mod tests {
         }
 
         // check that the model has been updated correctly
-        insta::assert_yaml_snapshot!(model, @r###"
-        ---
-        issuance: ~
-        error: ~
-        count:
-          value: -1
-          updated_at: "2023-01-01T00:00:00Z"
-        "###);
+        insta::assert_yaml_snapshot!("decrement_counter_final", model);
     }
 
     #[test]
@@ -420,13 +375,6 @@ mod tests {
         assert_effect!(update, Effect::Render(_));
 
         // check that the model has been updated correctly
-        insta::assert_yaml_snapshot!(model, @r###"
-        ---
-        issuance: ~
-        error: ~
-        count:
-          value: 1
-          updated_at: "2023-01-01T00:00:00Z"
-        "###);
+        insta::assert_yaml_snapshot!("set_sse", model);
     }
 }

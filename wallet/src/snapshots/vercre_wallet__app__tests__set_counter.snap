@@ -1,0 +1,12 @@
+---
+source: wallet/src/app.rs
+assertion_line: 233
+expression: app.view(&model)
+snapshot_kind: text
+---
+active_view: Credential
+credential_view:
+  id: ~
+  credentials: []
+text: "1 (2023-01-01 00:00:00 UTC)"
+confirmed: true

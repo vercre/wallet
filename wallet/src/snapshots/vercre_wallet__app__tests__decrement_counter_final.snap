@@ -1,0 +1,15 @@
+---
+source: wallet/src/app.rs
+assertion_line: 343
+expression: model
+snapshot_kind: text
+---
+active_view: Credential
+credential:
+  id: ~
+  credentials: []
+issuance: ~
+error: ~
+count:
+  value: -1
+  updated_at: "2023-01-01T00:00:00Z"

@@ -133,6 +133,7 @@
 		6D5A7EBBC5FAE24EA47023DA /* VercreWallet */ = {
 			isa = PBXGroup;
 			children = (
+				E2DCBC8B2CD01F4B002176D1 /* Model */,
 				E2B5139A2CC5B7FF00D5A957 /* Presentation */,
 				E2B513972CC5B56000D5A957 /* Issuance */,
 				E2B513942CC5A79C00D5A957 /* Components */,
@@ -224,6 +225,13 @@
 				E2B5139B2CC5B81B00D5A957 /* PresentationRequest.swift */,
 			);
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		E2DCBC8B2CD01F4B002176D1 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		E2FA06252CCADD8D00699B28 /* Resources */ = {
