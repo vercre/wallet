@@ -3,7 +3,6 @@ use std::fmt::Debug;
 
 use crux_core::capability::{CapabilityContext, Operation};
 use crux_core::Capability;
-use crux_core::typegen::TypeGen;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
@@ -183,7 +182,7 @@ impl<Ev> Capability<Ev> for Store<Ev> {
     }
 
     #[cfg(feature = "typegen")]
-    fn register_types(generator: &mut TypeGen) -> crux_core::typegen::Result {
+    fn register_types(generator: &mut crux_core::typegen::TypeGen) -> crux_core::typegen::Result {
         generator.register_type::<StoreResponse>()?;
         generator.register_type::<StoreError>()?;
         generator.register_type::<StoreEntry>()?;

@@ -155,7 +155,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -211,7 +211,7 @@ dependencies = [
  "async-task",
  "concurrent-queue",
  "fastrand 2.1.1",
- "futures-lite 2.3.0",
+ "futures-lite 2.4.0",
  "slab",
 ]
 
@@ -226,7 +226,7 @@ dependencies = [
  "async-io",
  "async-lock",
  "blocking",
- "futures-lite 2.3.0",
+ "futures-lite 2.4.0",
  "once_cell",
 ]
 
@@ -240,7 +240,7 @@ dependencies = [
  "cfg-if",
  "concurrent-queue",
  "futures-io",
- "futures-lite 2.3.0",
+ "futures-lite 2.4.0",
  "parking",
  "polling",
  "rustix",
@@ -288,7 +288,7 @@ dependencies = [
  "futures-channel",
  "futures-core",
  "futures-io",
- "futures-lite 2.3.0",
+ "futures-lite 2.4.0",
  "gloo-timers",
  "kv-log-macro",
  "log",
@@ -314,7 +314,7 @@ checksum = "721cae7de5c34fbb2acd27e21e6d2cf7b886dce0c27388d46c4e6c47ea4318dd"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -425,7 +425,7 @@ checksum = "57d123550fa8d071b7255cb0cc04dc302baa6c8c4a79f55701552684d8399bce"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -533,7 +533,7 @@ dependencies = [
  "async-channel 2.3.1",
  "async-task",
  "futures-io",
- "futures-lite 2.3.0",
+ "futures-lite 2.4.0",
  "piper",
 ]
 
@@ -709,7 +709,7 @@ dependencies = [
  "heck 0.5.0",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -864,7 +864,7 @@ dependencies = [
  "proc-macro-error",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -954,7 +954,7 @@ checksum = "f46882e17999c6cc590af592290432be3bce0428cb0d5f8b6715e4dc7b383eb3"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -978,7 +978,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "strsim",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -989,7 +989,7 @@ checksum = "d336a2a514f6ccccaa3e09b02d41d35330c07ddf03a62165fcec10bb561c7806"
 dependencies = [
  "darling_core",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -1046,7 +1046,7 @@ dependencies = [
  "darling",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -1056,7 +1056,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ab63b0e2bf4d5928aff72e83a7dace85d7bba5fe12dcc3c5a572d78caffd3f3c"
 dependencies = [
  "derive_builder_core",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -1342,9 +1342,9 @@ dependencies = [
 
 [[package]]
 name = "futures-lite"
-version = "2.3.0"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "52527eb5074e35e9339c6b4e8d12600c7128b68fb25dcb9fa9dec18f7c25f3a5"
+checksum = "3f1fa2f9765705486b33fd2acf1577f8ec449c2ba1f318ae5447697b7c08d210"
 dependencies = [
  "fastrand 2.1.1",
  "futures-core",
@@ -1361,7 +1361,7 @@ checksum = "162ee34ebcb7c64a8abebc059ce0fee27c2262618d7b60ed8faf72fef13c3650"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -1788,9 +1788,9 @@ dependencies = [
 
 [[package]]
 name = "insta"
-version = "1.41.0"
+version = "1.41.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a1f72d3e19488cf7d8ea52d2fc0f8754fc933398b337cd3cbdb28aaeb35159ef"
+checksum = "7e9ffc4d4892617c50a928c52b2961cb5174b6fc6ebf252b2fac9d21955c48b8"
 dependencies = [
  "console",
  "lazy_static",
@@ -2485,7 +2485,7 @@ checksum = "7f81c2fde025af7e69b1d1420531c8a8811ca898919db177141a85313b1cb932"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -2562,7 +2562,7 @@ checksum = "de523f781f095e28fa605cdce0f8307e451cc0fd14e2eb4cd2e98a355b147766"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -2627,7 +2627,7 @@ checksum = "75dde5a1d2ed78dfc411fc45592f72d3694436524d3353683ecb3d22009731dc"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -2827,9 +2827,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.85"
+version = "2.0.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5023162dfcd14ef8f32034d8bcd4cc5ddc61ef7a247c024a33e24e1f24d21b56"
+checksum = "e89275301d38033efb81a6e60e3497e734dfcc62571f2854bf4b16690398824c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2857,7 +2857,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 [[package]]
 name = "test-utils"
 version = "0.0.0"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -2895,22 +2895,22 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.65"
+version = "1.0.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d11abd9594d9b38965ef50805c5e469ca9cc6f197f883f717e0269a3057b3d5"
+checksum = "5d171f59dbaa811dbbb1aee1e73db92ec2b122911a48e1390dfe327a821ddede"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.65"
+version = "1.0.66"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae71770322cbd277e69d762a16c444af02aa0575ac0d174f0b9562d3b37f8602"
+checksum = "b08be0f17bd307950653ce45db00cd31200d82b624b36e181337d9c7d92765b5"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -2961,7 +2961,7 @@ checksum = "693d596312e88961bc67d7f1f97af8a70227d9f90c31bba5806eec004978d752"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -3037,7 +3037,7 @@ checksum = "34704c8d6ebcbc939824180af020566b01a7c01f80641264eba0999f6c2b6be7"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -3110,7 +3110,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a615d6c2764852a2e88a4f16e9ce1ea49bb776b5872956309e170d63a042a34f"
 dependencies = [
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -3209,7 +3209,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2c801f0f05b06df456a2da4c41b9c2c4fdccc6b9916643c6c67275c4c9e4d07"
 dependencies = [
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -3239,7 +3239,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "serde",
- "syn 2.0.85",
+ "syn 2.0.86",
  "toml",
  "uniffi_meta",
 ]
@@ -3341,7 +3341,7 @@ checksum = "3ef4c4aa54d5d05a279399bfa921ec387b7aba77caf7a682ae8d86785b8fdad2"
 [[package]]
 name = "vercre-core"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "base64ct",
  "fastrand 2.1.1",
@@ -3374,7 +3374,7 @@ dependencies = [
 [[package]]
 name = "vercre-dif-exch"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3387,7 +3387,7 @@ dependencies = [
 [[package]]
 name = "vercre-holder"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3429,7 +3429,7 @@ dependencies = [
 [[package]]
 name = "vercre-iso-mdl"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3446,7 +3446,7 @@ dependencies = [
 [[package]]
 name = "vercre-issuer"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "base64ct",
  "chrono",
@@ -3466,17 +3466,17 @@ dependencies = [
 [[package]]
 name = "vercre-macros"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
 name = "vercre-openid"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3497,7 +3497,7 @@ dependencies = [
 [[package]]
 name = "vercre-status"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3515,7 +3515,7 @@ dependencies = [
 [[package]]
 name = "vercre-w3c-vc"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#56034e9ae001f7ddc389d3f35dff17e23e7c5a6d"
+source = "git+https://github.com/vercre/vc#fbec58ac67ccb69050baafc2eccfa36168eda16f"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3601,7 +3601,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
  "wasm-bindgen-shared",
 ]
 
@@ -3635,7 +3635,7 @@ checksum = "26c6ab57572f7a24a4985830b120de1594465e5d500f24afe89e16b4e833ef68"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
  "wasm-bindgen-backend",
  "wasm-bindgen-shared",
 ]
@@ -3817,7 +3817,7 @@ checksum = "fa4f8080344d4671fb4e831a13ad1e68092748387dfc4f55e356242fae12ce3e"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]
 
 [[package]]
@@ -3837,5 +3837,5 @@ checksum = "ce36e65b0d2999d2aafac989fb249189a141aee1f53c612c1f37d72631959f69"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 2.0.85",
+ "syn 2.0.86",
 ]

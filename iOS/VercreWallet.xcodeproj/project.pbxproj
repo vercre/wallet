@@ -3,13 +3,16 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		3094521C1A67DD7D838B40B0 /* uniffi-bindgen in Resources */ = {isa = PBXBuildFile; fileRef = E0480EEA6718D540ED7E0C84 /* uniffi-bindgen */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		56AEBB3FFEDD37A80A94DC15 /* SharedTypes in Frameworks */ = {isa = PBXBuildFile; productRef = D5E1CA2F63D5932A75624052 /* SharedTypes */; };
 		DD6CE117F10A9C662E40F9D7 /* libvercre_wallet_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B1AB811B3E464499BBF4192 /* libvercre_wallet_static.a */; };
+		E2934EEA2CD43E4700DC2BF9 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2934EE92CD43E4700DC2BF9 /* CounterView.swift */; };
+		E2934F2B2CD4424C00DC2BF9 /* CredentialRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2934F2A2CD4424C00DC2BF9 /* CredentialRow.swift */; };
+		E2934F2D2CD4508B00DC2BF9 /* CredentialCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */; };
 		E29F76452CBF0B9100496B37 /* sse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7EC2CBE05E70070F7A5 /* sse.swift */; };
 		E29F76462CBF0B9100496B37 /* http.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7EB2CBE042F0070F7A5 /* http.swift */; };
 		E29F76472CBF0B9100496B37 /* core.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7EA2CBDF8FF0070F7A5 /* core.swift */; };
@@ -87,6 +90,9 @@
 		608E5734A631C27F19673C40 /* wallet.udl */ = {isa = PBXFileReference; lastKnownFileType = text; path = wallet.udl; sourceTree = "<group>"; };
 		8D9939D8923D10F21E0FE9DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		B1593DC3198F51583D1B1654 /* VercreWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VercreWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2934EE92CD43E4700DC2BF9 /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
+		E2934F2A2CD4424C00DC2BF9 /* CredentialRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialRow.swift; sourceTree = "<group>"; };
+		E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialCard.swift; sourceTree = "<group>"; };
 		E295C7E52CBDF7F40070F7A5 /* VercreWalletApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VercreWalletApp.swift; sourceTree = "<group>"; };
 		E295C7E92CBDF84C0070F7A5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		E295C7EA2CBDF8FF0070F7A5 /* core.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = core.swift; sourceTree = "<group>"; };
@@ -132,6 +138,7 @@
 		6D5A7EBBC5FAE24EA47023DA /* VercreWallet */ = {
 			isa = PBXGroup;
 			children = (
+				E2934EE82CD43E2B00DC2BF9 /* Counter */,
 				E2DCBC8B2CD01F4B002176D1 /* Model */,
 				E2B5139A2CC5B7FF00D5A957 /* Presentation */,
 				E2B513972CC5B56000D5A957 /* Issuance */,
@@ -183,6 +190,14 @@
 			);
 			sourceTree = "<group>";
 		};
+		E2934EE82CD43E2B00DC2BF9 /* Counter */ = {
+			isa = PBXGroup;
+			children = (
+				E2934EE92CD43E4700DC2BF9 /* CounterView.swift */,
+			);
+			path = Counter;
+			sourceTree = "<group>";
+		};
 		E2B513902CC594D400D5A957 /* Crux */ = {
 			isa = PBXGroup;
 			children = (
@@ -197,6 +212,8 @@
 			isa = PBXGroup;
 			children = (
 				E2B513922CC5953800D5A957 /* CredentialList.swift */,
+				E2934F2A2CD4424C00DC2BF9 /* CredentialRow.swift */,
+				E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */,
 			);
 			path = Credential;
 			sourceTree = "<group>";
@@ -269,7 +286,6 @@
 				LastUpgradeCheck = 1600;
 			};
 			buildConfigurationList = CCBB1BED24149742DFBCF930 /* Build configuration list for PBXProject "VercreWallet" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -281,6 +297,7 @@
 				5BC19551CA9B0886D560A9A6 /* XCLocalSwiftPackageReference "../shared/generated/swift/SharedTypes" */,
 				E2B513A42CC8896300D5A957 /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
+			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
 			projectReferences = (
 				{
@@ -336,11 +353,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				E29F76452CBF0B9100496B37 /* sse.swift in Sources */,
+				E2934F2B2CD4424C00DC2BF9 /* CredentialRow.swift in Sources */,
 				E29F76462CBF0B9100496B37 /* http.swift in Sources */,
 				E2B513992CC5B57500D5A957 /* IssuanceScan.swift in Sources */,
 				E29F76472CBF0B9100496B37 /* core.swift in Sources */,
 				E29F76482CBF0B9100496B37 /* ContentView.swift in Sources */,
+				E2934F2D2CD4508B00DC2BF9 /* CredentialCard.swift in Sources */,
 				E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */,
+				E2934EEA2CD43E4700DC2BF9 /* CounterView.swift in Sources */,
 				E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */,
 				E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */,
 				E2B513962CC5A9F100D5A957 /* ActionButton.swift in Sources */,
@@ -372,7 +392,7 @@
 				DEVELOPMENT_TEAM = L8V5YK7Y9T;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = VercreWallet/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -396,7 +416,7 @@
 				DEVELOPMENT_TEAM = L8V5YK7Y9T;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = VercreWallet/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

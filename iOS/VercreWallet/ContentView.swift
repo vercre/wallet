@@ -26,6 +26,10 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $context) {
+            CounterView(core: core)
+                .tabItem {
+                    Label("Counter", systemImage: "chevron.up.chevron.down")
+                }
             CredentialList(core: core)
                 .tabItem {
                     Label("Credentials", systemImage: "wallet.bifold")

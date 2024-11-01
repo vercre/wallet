@@ -18,7 +18,7 @@ func requestSse(_ request: SseRequest) async -> AsyncStream<Result<SseResponse, 
         Task {
             let req = URLRequest(url: URL(string: request.url)!)
             do {
-                let (asyncBytes, response) = try await URLSession.shared.bytes(for: req)
+                let (_, _) = try await URLSession.shared.bytes(for: req)
             } catch {
                 
             }

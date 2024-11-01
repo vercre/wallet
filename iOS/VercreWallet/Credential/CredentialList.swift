@@ -5,6 +5,7 @@
 //  Created by Andrew Goldie on 21/10/2024.
 //
 
+import SharedTypes
 import SwiftUI
 
 struct CredentialList: View {
@@ -15,20 +16,12 @@ struct CredentialList: View {
             Text("Credentials")
                 .font(.title)
                 .fontWeight(.bold)
-            Text(String(core.view.credential_view.credentials.count))
-            Text(String(core.view.text))
-                .foregroundColor(core.view.confirmed ? .black : .gray)
-                .padding()
-            HStack {
-                ActionButton(label: "Decrease", color: .yellow) {
-                    core.update(.decrement)
-                }
-                ActionButton(label: "Increase", color: .red) {
-                    core.update(.increment)
-                }
+            List(core.view.credential_view.credentials, id: \.id) { credential in
+                    CredentialRow(credential: credential)
             }
             Spacer()
         }
+        .padding()
     }
 }
 
