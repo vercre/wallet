@@ -42,14 +42,14 @@ pub struct Credential {
     /// indented.
     pub claims: HashMap<String, String>,
 
-    /// The date the credential was issued as an RFC3339 string.
+    /// The date the credential was issued as an RFC2822 string.
     pub issuance_date: String,
 
-    /// The date the credential is valid from as an RFC3339 string. Empty string
+    /// The date the credential is valid from as an RFC2822 string. Empty string
     /// if not applicable.
     pub valid_from: String,
 
-    /// The date the credential is valid until (expiry) as an RFC3339 string.
+    /// The date the credential is valid until (expiry) as an RFC2822 string.
     /// Empty string if not applicable.
     pub valid_until: String,
 
@@ -113,9 +113,9 @@ impl From<CredentialModel> for Credential {
             type_: credential.type_,
             format: credential.format,
             claims: HashMap::new(), // TODO: Implement claims_display
-            issuance_date: credential.issuance_date.to_rfc3339(),
-            valid_from: credential.valid_from.map_or_else(String::new, |date| date.to_rfc3339()),
-            valid_until: credential.valid_until.map_or_else(String::new, |date| date.to_rfc3339()),
+            issuance_date: credential.issuance_date.to_rfc2822(),
+            valid_from: credential.valid_from.map_or_else(String::new, |date| date.to_rfc2822()),
+            valid_until: credential.valid_until.map_or_else(String::new, |date| date.to_rfc2822()),
             name,
             description,
             background_color,
