@@ -62,6 +62,9 @@ pub struct Credential {
     /// Background color from issuer's metadata. Empty string if not applicable.
     pub background_color: String,
 
+    /// Text color from issuer's metadata. Empty string if not applicable.
+    pub text_color: String,
+
     /// A base64-encoded logo image for the credential ingested from the logo
     /// url in the display section of the metadata.
     ///
@@ -90,7 +93,7 @@ impl From<CredentialModel> for Credential {
             );
             claims.insert(claim_set.id.clone().unwrap_or_default(), display);
         }
-        let (name, description, background_color) = match credential.display {
+        let (name, description, background_color, text_color) = match credential.display {
             Some(display_list) => {
                 // TODO: Locale support.
                 let display = display_list
@@ -102,9 +105,10 @@ impl From<CredentialModel> for Credential {
                     display.name,
                     display.description.unwrap_or_default(),
                     display.background_color.unwrap_or_default(),
+                    display.text_color.unwrap_or_default(),
                 )
             }
-            None => (String::new(), String::new(), String::new()),
+            None => (String::new(), String::new(), String::new(), String::new()),
         };
         Self {
             id: credential.id,
@@ -119,6 +123,7 @@ impl From<CredentialModel> for Credential {
             name,
             description,
             background_color,
+            text_color,
             logo: credential.logo.unwrap_or_default(),
             background: credential.background.unwrap_or_default(),
         }

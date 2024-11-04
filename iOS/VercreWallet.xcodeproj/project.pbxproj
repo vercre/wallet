@@ -23,6 +23,8 @@
 		E2B513992CC5B57500D5A957 /* IssuanceScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513982CC5B57500D5A957 /* IssuanceScan.swift */; };
 		E2B5139C2CC5B81B00D5A957 /* PresentationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B5139B2CC5B81B00D5A957 /* PresentationRequest.swift */; };
 		E2B513A62CC8896300D5A957 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = E2B513A52CC8896300D5A957 /* CodeScanner */; };
+		E2DACD702CD95E4700C9E9D5 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD6F2CD95E3900C9E9D5 /* Color.swift */; };
+		E2DACD722CD98FCC00C9E9D5 /* Logo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD712CD98FCC00C9E9D5 /* Logo.swift */; };
 		E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */ = {isa = PBXBuildFile; fileRef = 608E5734A631C27F19673C40 /* wallet.udl */; };
 /* End PBXBuildFile section */
 
@@ -102,6 +104,8 @@
 		E2B513952CC5A9F100D5A957 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		E2B513982CC5B57500D5A957 /* IssuanceScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuanceScan.swift; sourceTree = "<group>"; };
 		E2B5139B2CC5B81B00D5A957 /* PresentationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationRequest.swift; sourceTree = "<group>"; };
+		E2DACD6F2CD95E3900C9E9D5 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
+		E2DACD712CD98FCC00C9E9D5 /* Logo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logo.swift; sourceTree = "<group>"; };
 		E87317161D4E9F5AB16EA2A3 /* SharedTypes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SharedTypes; path = ../shared/generated/swift/SharedTypes; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -138,6 +142,7 @@
 		6D5A7EBBC5FAE24EA47023DA /* VercreWallet */ = {
 			isa = PBXGroup;
 			children = (
+				E2DACD6D2CD95E2800C9E9D5 /* Utilities */,
 				E2934EE82CD43E2B00DC2BF9 /* Counter */,
 				E2DCBC8B2CD01F4B002176D1 /* Model */,
 				E2B5139A2CC5B7FF00D5A957 /* Presentation */,
@@ -214,6 +219,7 @@
 				E2B513922CC5953800D5A957 /* CredentialList.swift */,
 				E2934F2A2CD4424C00DC2BF9 /* CredentialRow.swift */,
 				E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */,
+				E2DACD712CD98FCC00C9E9D5 /* Logo.swift */,
 			);
 			path = Credential;
 			sourceTree = "<group>";
@@ -240,6 +246,14 @@
 				E2B5139B2CC5B81B00D5A957 /* PresentationRequest.swift */,
 			);
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		E2DACD6D2CD95E2800C9E9D5 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				E2DACD6F2CD95E3900C9E9D5 /* Color.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 		E2DCBC8B2CD01F4B002176D1 /* Model */ = {
@@ -353,6 +367,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E29F76452CBF0B9100496B37 /* sse.swift in Sources */,
+				E2DACD722CD98FCC00C9E9D5 /* Logo.swift in Sources */,
 				E2934F2B2CD4424C00DC2BF9 /* CredentialRow.swift in Sources */,
 				E29F76462CBF0B9100496B37 /* http.swift in Sources */,
 				E2B513992CC5B57500D5A957 /* IssuanceScan.swift in Sources */,
@@ -361,6 +376,7 @@
 				E2934F2D2CD4508B00DC2BF9 /* CredentialCard.swift in Sources */,
 				E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */,
 				E2934EEA2CD43E4700DC2BF9 /* CounterView.swift in Sources */,
+				E2DACD702CD95E4700C9E9D5 /* Color.swift in Sources */,
 				E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */,
 				E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */,
 				E2B513962CC5A9F100D5A957 /* ActionButton.swift in Sources */,
