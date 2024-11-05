@@ -42,6 +42,12 @@ pub enum Event {
     /// Event emitted by the shell to navigate to a different aspect of the app.
     Navigate(Aspect),
 
+    /// Event emitted by the shell to select a credential for detailed display.
+    Select(String),
+
+    /// Event emitted by the shell to delete a credential from the wallet.
+    Delete(String),
+
     /// Event emitted by the shell when the user scans an offer QR code.
     CreateOffer(String),
 
@@ -87,6 +93,17 @@ impl crux_core::App for App {
         match msg {
             Event::Navigate(aspect) => {
                 model.active_view = aspect;
+                caps.render.render();
+            }
+            Event::Select(id) => {
+                model.active_view = Aspect::CredentialDetail;
+                model.credential.id = Some(id);
+                caps.render.render();
+            }
+            Event::Delete(_id) => {
+                // TODO: Actually delete the credential using the storage capability
+                model.active_view = Aspect::CredentialList;
+                model.credential.id = None;
                 caps.render.render();
             }
             Event::Ready => {

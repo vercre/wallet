@@ -11,11 +11,12 @@ import SwiftUI
 extension View {
     func stacked(at position: Int, in total: Int) -> some View {
         let offset = Double(total - position)
-        return self.offset(y: offset * 50)
+        return self.offset(y: offset * 80)
     }
 }
 
 struct CredentialList: View {
+    @Environment(\.update) var update
     var credentials: [Credential]
     
     var body: some View {
@@ -25,6 +26,9 @@ struct CredentialList: View {
                 ForEach(0..<credentials.count, id: \.self)  {index in
                     CredentialCard(credential: credentials[index])
                         .stacked(at: credentials.count - index, in: credentials.count)
+                        .onTapGesture {
+                            update(.select(credentials[index].id))
+                        }
                 }
             }
             Spacer()
@@ -40,7 +44,7 @@ struct CredentialList: View {
         type: ["VerifiableCredential", "EmployeeIDCredential"],
         format: "jwt_vc_json",
         claims: ["did:key:z6Mkj8Jr1rg3YjVWWhg7ahEYJibqhjBgZt1pDCbT4Lv7D4HX": "Address: \n  Locality: Wellington\n  Street_address: 123 Fake St\nEmail: normal.user@example.com\nFamily name: Person\nGiven name: Normal\n"],
-        issuance_date: "Tue, 29 Nov 2024 10:52:37 +0000",
+        issuance_date: "Tue, 29 Nov 2024",
         valid_from: "",
         valid_until: "",
         name: "Employee ID",
@@ -63,9 +67,9 @@ struct CredentialList: View {
         type: ["VerifiableCredential", "DeveloperCredential"],
         format: "jwt_vc_json",
         claims: ["": "Family name: Person\nGiven name: Normal\nProficiency: 3"],
-        issuance_date: "Sat, 1 Jan 2022 13:29:00 +0000",
+        issuance_date: "Sat, 1 Jan 2022",
         valid_from: "",
-        valid_until: "Fri, 1 Jan 2022 00:00:00 +0000",
+        valid_until: "Fri, 1 Jan 2022",
         name: "Developer",
         description: "Vercre certified developer credential",
         background_color: "#010100",

@@ -1,41 +1,59 @@
 //
-//  CredentialCard.swift
+//  CredentialDetailView.swift
 //  VercreWallet
 //
-//  Created by Andrew Goldie on 01/11/2024.
+//  Created by Andrew Goldie on 05/11/2024.
 //
 
 import SharedTypes
 import SwiftUI
 
-struct CredentialCard: View {
+struct CredentialDetailView: View {
+    @Environment(\.update) var update
     var credential: Credential
     
-    var body: some View {
-        let txtColor = credential.text_color.isEmpty ? "#000000" : credential.text_color
-        let bgColor = credential.background_color.isEmpty ? "#FFFFFF" : credential.background_color
-        let parts = credential.issuer.components(separatedBy: "://")
-        let issuer = parts.count > 1 ? parts[1] : parts[0]
+    @State private var alertOpen = false
 
-        ZStack(alignment: .topLeading) {
-            RoundedRectangle(cornerRadius: 10)
-                .size(width: 300, height:  190)
-                .fill(Color(UIColor(hex: bgColor)))
-                .shadow(radius: 10)
-            Background(data: credential.background.data)
-            VStack(alignment: .leading) {
-                HStack(alignment: .top){
-                    Logo(data: credential.logo.data)
-                    Spacer()
-                    Text(credential.name)
-                        .foregroundStyle(Color(UIColor(hex: txtColor)))
+    var body: some View {
+        VStack() {
+            Text(credential.name).font(.title).fontWeight(.bold)
+            CredentialCard(credential: credential)
+            ScrollView {
+                VStack(alignment: .leading) {
+                    DetailRow(title: "Description", content: credential.description)
+                    DetailRow(title: "Issued by", content: credential.issuer)
+                    DetailRow(title: "Issued on", content: credential.issuance_date)
+                    DetailRow(title: "Valid from", content: credential.valid_from.isEmpty ? "Issuance" : credential.valid_from)
+                    DetailRow(title: "Expires", content:
+                                credential.valid_until.isEmpty ? "Never" : credential.valid_until)
+                    Text("Details").font(.headline).fontWeight(.bold).padding(.top, 12).padding(.horizontal, 12)
+                    ForEach(Array(credential.claims.keys), id: \.self) {key in
+                        Text(credential.claims[key] ?? "" ).padding(.top, 4).padding(.horizontal, 12)
+                    }
+                    VStack {
+                        Text("Remove this credential from the wallet. This cannot be undone but you may be able to have the credential re-issued by the issuer.").font(.caption).opacity(0.5).padding()
+                        Button() {
+                            alertOpen = true
+                        } label: {
+                            Text("Remove Credential").foregroundColor(.red)
+                        }.frame(maxWidth: .infinity).padding()
+                    }.background(Color.gray.opacity(0.1)).cornerRadius(12)
                 }
-                Spacer()
-                Text(issuer)
-                    .foregroundStyle(Color(UIColor(hex: txtColor)))
             }
-            .padding()
-        }.frame(width: 300, height: 190)
+        }
+        .padding()
+        .alert("Remove Credential", isPresented: $alertOpen) {
+            Button("Delete") {
+                update(.delete(credential.id))
+                alertOpen = false
+            }
+            .foregroundColor(.red)
+            Button("Cancel") {
+                alertOpen = false
+            }
+        } message: {
+            Text("Are you sure you want to remove this credential? This cannot be undone.")
+        }
     }
 }
 
@@ -63,5 +81,5 @@ struct CredentialCard: View {
             mediaType: "image/png"
         )
     )
-    CredentialCard(credential: credential)
+    CredentialDetailView(credential: credential)
 }

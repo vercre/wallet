@@ -117,9 +117,9 @@ impl From<CredentialModel> for Credential {
             type_: credential.type_,
             format: credential.format,
             claims: HashMap::new(), // TODO: Implement claims_display
-            issuance_date: credential.issuance_date.to_rfc2822(),
-            valid_from: credential.valid_from.map_or_else(String::new, |date| date.to_rfc2822()),
-            valid_until: credential.valid_until.map_or_else(String::new, |date| date.to_rfc2822()),
+            issuance_date: credential.issuance_date.format("%a, %d %b %Y").to_string(),
+            valid_from: credential.valid_from.map_or_else(String::new, |date| date.format("%a, %d %b %Y").to_string()),
+            valid_until: credential.valid_until.map_or_else(String::new, |date| date.format("%a, %d %b %Y").to_string()),
             name,
             description,
             background_color,

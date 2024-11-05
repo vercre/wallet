@@ -26,6 +26,8 @@
 		E2DACD722CD98FCC00C9E9D5 /* Logo.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD712CD98FCC00C9E9D5 /* Logo.swift */; };
 		E2DACD752CD9935600C9E9D5 /* Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD742CD9935600C9E9D5 /* Background.swift */; };
 		E2DACD7A2CD9AD9400C9E9D5 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */; };
+		E2DACD7D2CD9BE8D00C9E9D5 /* CredentialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD7C2CD9BE8D00C9E9D5 /* CredentialDetailView.swift */; };
+		E2DACD802CD9C13300C9E9D5 /* DetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */; };
 		E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */ = {isa = PBXBuildFile; fileRef = 608E5734A631C27F19673C40 /* wallet.udl */; };
 /* End PBXBuildFile section */
 
@@ -108,6 +110,8 @@
 		E2DACD712CD98FCC00C9E9D5 /* Logo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logo.swift; sourceTree = "<group>"; };
 		E2DACD742CD9935600C9E9D5 /* Background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Background.swift; sourceTree = "<group>"; };
 		E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
+		E2DACD7C2CD9BE8D00C9E9D5 /* CredentialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialDetailView.swift; sourceTree = "<group>"; };
+		E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailRow.swift; sourceTree = "<group>"; };
 		E87317161D4E9F5AB16EA2A3 /* SharedTypes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SharedTypes; path = ../shared/generated/swift/SharedTypes; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -222,6 +226,7 @@
 				E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */,
 				E2DACD712CD98FCC00C9E9D5 /* Logo.swift */,
 				E2DACD742CD9935600C9E9D5 /* Background.swift */,
+				E2DACD7C2CD9BE8D00C9E9D5 /* CredentialDetailView.swift */,
 			);
 			path = Credential;
 			sourceTree = "<group>";
@@ -231,6 +236,7 @@
 			children = (
 				E2B513952CC5A9F100D5A957 /* ActionButton.swift */,
 				E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */,
+				E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -374,6 +380,7 @@
 				E2DACD752CD9935600C9E9D5 /* Background.swift in Sources */,
 				E2DACD7A2CD9AD9400C9E9D5 /* NavigationBar.swift in Sources */,
 				E29F76462CBF0B9100496B37 /* http.swift in Sources */,
+				E2DACD802CD9C13300C9E9D5 /* DetailRow.swift in Sources */,
 				E2B513992CC5B57500D5A957 /* IssuanceScan.swift in Sources */,
 				E29F76472CBF0B9100496B37 /* core.swift in Sources */,
 				E29F76482CBF0B9100496B37 /* ContentView.swift in Sources */,
@@ -381,6 +388,7 @@
 				E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */,
 				E2934EEA2CD43E4700DC2BF9 /* CounterView.swift in Sources */,
 				E2DACD702CD95E4700C9E9D5 /* Color.swift in Sources */,
+				E2DACD7D2CD9BE8D00C9E9D5 /* CredentialDetailView.swift in Sources */,
 				E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */,
 				E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */,
 				E2B513962CC5A9F100D5A957 /* ActionButton.swift in Sources */,

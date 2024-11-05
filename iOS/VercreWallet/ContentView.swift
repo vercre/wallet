@@ -22,6 +22,11 @@ struct ContentView: View {
             case .credentialList:
                 CredentialList(credentials: core.view.credential_view.credentials)
                     .navBar(context: core.view.active_view)
+            case .credentialDetail:
+                if let credential = core.view.credential_view.credentials.first(where: { $0.id == core.view.credential_view.id }) {
+                    CredentialDetailView(credential: credential)
+                        .navBar(context: core.view.active_view)
+                }
             default : EmptyView()
             }
         }
