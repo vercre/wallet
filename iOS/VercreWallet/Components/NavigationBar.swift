@@ -59,7 +59,8 @@ struct NavigationBarModifier: ViewModifier {
             .toolbar {
                 NavigationBar(context: context)
             }
-            .navigationBarBackButtonHidden(true)
+            .toolbarBackground(Color(red: 18/256, green: 109/256, blue: 248/256), for: .bottomBar)
+            .toolbarBackground(.visible, for: .bottomBar)
     }
 }
 
@@ -72,8 +73,7 @@ extension View {
 #Preview {
     VStack {
         Spacer()
-    }.toolbar {
-        NavigationBar(context: .credentialDetail)
-    }
-    .navigationBarBackButtonHidden(true)
+    }.navBar(context: .credentialDetail)
 }
+
+//Color(red: 18/256, green: 109/256, blue: 248/256)

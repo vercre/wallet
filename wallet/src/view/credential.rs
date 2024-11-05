@@ -116,7 +116,7 @@ impl From<CredentialModel> for Credential {
             issued: credential.issued,
             type_: credential.type_,
             format: credential.format,
-            claims: HashMap::new(), // TODO: Implement claims_display
+            claims,
             issuance_date: credential.issuance_date.format("%a, %d %b %Y").to_string(),
             valid_from: credential.valid_from.map_or_else(String::new, |date| date.format("%a, %d %b %Y").to_string()),
             valid_until: credential.valid_until.map_or_else(String::new, |date| date.format("%a, %d %b %Y").to_string()),
@@ -231,5 +231,20 @@ mod tests {
         let display = &mut String::new();
         claims_display(display, claims, defs, 0);
         assert_yaml_snapshot!(display);
+    }
+
+    // Test conversion of a `Credential` model to a `Credential` view.
+    #[test]
+    fn test_credential_from() {
+        let json = include_bytes!("../model/credentials.json");
+        let credentials: Vec<CredentialModel> =
+            serde_json::from_slice(json).expect("should deserialize");
+        assert_eq!(credentials.len(), 2);
+
+        let credential = Credential::from(credentials[0].clone());
+        assert_yaml_snapshot!("employee", credential);
+
+        let credential = Credential::from(credentials[1].clone());
+        assert_yaml_snapshot!("developer", credential);
     }
 }
