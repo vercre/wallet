@@ -12,17 +12,19 @@ struct CredentialCard: View {
     var credential: Credential
     
     var body: some View {
-        var txtColor = credential.text_color.isEmpty ? "#000000" : credential.text_color
-        var bgColor = credential.background_color.isEmpty ? "#FFFFFF" : credential.background_color
+        let txtColor = credential.text_color.isEmpty ? "#000000" : credential.text_color
+        let bgColor = credential.background_color.isEmpty ? "#FFFFFF" : credential.background_color
         let parts = credential.issuer.components(separatedBy: "://")
         let issuer = parts.count > 1 ? parts[1] : parts[0]
 
         ZStack(alignment: .leading) {
             RoundedRectangle(cornerRadius: 10)
-                .size(width: 300, height:  189)
+                .size(width: 300, height:  190)
                 .fill(Color(UIColor(hex: bgColor)))
+                .shadow(radius: 10)
+            Background(data: credential.background.data)
             VStack(alignment: .leading) {
-                HStack{
+                HStack(alignment: .top){
                     Logo(data: credential.logo.data)
                     Spacer()
                     Text(credential.name)
@@ -33,7 +35,7 @@ struct CredentialCard: View {
                     .foregroundStyle(Color(UIColor(hex: txtColor)))
             }
             .padding()
-        }.frame(width: 300, height: 189)
+        }.frame(width: 300, height: 190)
     }
 }
 
