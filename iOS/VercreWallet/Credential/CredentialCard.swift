@@ -17,7 +17,7 @@ struct CredentialCard: View {
         let parts = credential.issuer.components(separatedBy: "://")
         let issuer = parts.count > 1 ? parts[1] : parts[0]
 
-        ZStack(alignment: .leading) {
+        ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 10)
                 .size(width: 300, height:  190)
                 .fill(Color(UIColor(hex: bgColor)))

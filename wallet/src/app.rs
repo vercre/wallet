@@ -17,7 +17,7 @@ const API_URL: &str = "https://crux-counter.fly.dev";
 /// 
 /// This allows the UI navigation to be reactive: controlled in response to the
 /// user's actions.
-#[derive(Clone, Default, Debug, Deserialize, Serialize)]
+#[derive(Clone, Default, Debug, Deserialize, Serialize, PartialEq, Eq)]
 pub enum Aspect {
     /// Display and deletion of credentials stored in the wallet.
     #[default]
@@ -38,6 +38,9 @@ pub enum Aspect {
 pub enum Event {
     /// Event emitted by the shell when the app first loads.
     Ready,
+
+    /// Event emitted by the shell to navigate to a different aspect of the app.
+    Navigate(Aspect),
 
     /// Event emitted by the shell when the user scans an offer QR code.
     CreateOffer(String),
@@ -82,6 +85,10 @@ impl crux_core::App for App {
 
     fn update(&self, msg: Self::Event, model: &mut Self::Model, caps: &Self::Capabilities) {
         match msg {
+            Event::Navigate(aspect) => {
+                model.active_view = aspect;
+                caps.render.render();
+            }
             Event::Ready => {
                 // Initialization event. Set the aspect to the credential list
                 // view.
