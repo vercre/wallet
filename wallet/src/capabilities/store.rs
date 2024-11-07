@@ -6,6 +6,19 @@ use crux_core::Capability;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
+/// Types of store so data can be partitioned without fear of ID collisions.
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
+pub enum Catalog {
+    /// A store for credentials.
+    Credentials,
+
+    /// A store for issuance flow state.
+    Issuance,
+
+    /// A store for presentation flow state.
+    Presentation,
+}
+
 /// Errors that can be returned by the Store capability.
 #[derive(Clone, Debug, Deserialize, Error, PartialEq, Eq)]
 pub enum StoreError {
@@ -27,8 +40,8 @@ impl Serialize for StoreError {
     }
 }
 
-/// An entry in the data store; a serialized credential.
-/// 
+/// An entry in the data store; a serialized credential or flow state.
+///
 /// `StoreEntry::None` is used to represent a missing entry since we cannot use
 /// Rust's `Option` across the FFI boundary in Crux.
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq, Eq)]
@@ -36,7 +49,7 @@ pub enum StoreEntry {
     /// No entry associated with an ID.
     None,
 
-    /// A serialized credential.
+    /// A serialized credential or flow state.
     Bytes(#[serde(with = "serde_bytes")] Vec<u8>),
 }
 
@@ -67,36 +80,40 @@ impl From<Option<Vec<u8>>> for StoreEntry {
 /// Supported operations for the Store capability.
 #[derive(Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum StoreOperation {
-    /// Save a serialized credential to the store. Overwrite any existing
-    /// credential with the same ID. Create a new credential if one with the
-    /// same ID does not exist.
-    Save { id: String, data: Vec<u8> },
+    /// Save a serialized object to the store. Insert a new entry if the ID does
+    /// not exist, otherwise update the existing entry.
+    Save { catalog: Catalog, id: String, data: Vec<u8> },
 
-    /// Get all serialized credentials from the store.
-    List,
+    /// Get all serialized objects from the store.
+    List { catalog: Catalog },
 
     /// Remove the credential with the given ID from the store.
-    Delete { id: String },
+    Delete { catalog: Catalog, id: String },
 }
 
 impl Debug for StoreOperation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            StoreOperation::Save { id, data } => {
+            StoreOperation::Save { catalog, id, data } => {
                 let body = format!("<binary data - {} bytes>", data.len());
                 f.debug_struct("Save")
+                    .field("catalog", catalog)
                     .field("id", id)
                     .field("data", &body)
                     .finish()
             }
-            StoreOperation::List => f.debug_struct("List").finish(),
-            StoreOperation::Delete { id } => f.debug_struct("Delete").field("id", id).finish(),
+            StoreOperation::List { catalog } => {
+                f.debug_struct("List").field("catalog", catalog).finish()
+            }
+            StoreOperation::Delete { catalog, id } => {
+                f.debug_struct("Delete").field("catalog", catalog).field("id", id).finish()
+            }
         }
     }
 }
 
 /// The result of an operation on the store.
-/// 
+///
 /// Note: we cannot use Rust's `Result` and `Option` here because generics are
 /// not supported across the FFI boundary in Crux.
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
@@ -150,9 +167,7 @@ pub enum StoreResponse {
     Saved,
 
     /// The result of a successful list operation.
-    List {
-        entries: Vec<StoreEntry>
-    },
+    List { entries: Vec<StoreEntry> },
 
     /// The result of a successful delete operation.
     Deleted,
@@ -168,9 +183,8 @@ pub struct Store<Ev> {
 }
 
 impl<Ev> Capability<Ev> for Store<Ev> {
-    type Operation = StoreOperation;
-
     type MappedSelf<MappedEv> = Store<MappedEv>;
+    type Operation = StoreOperation;
 
     fn map_event<F, NewEv>(&self, f: F) -> Self::MappedSelf<NewEv>
     where
@@ -210,58 +224,58 @@ where
     }
 
     /// Save a serialized credential to the store.
-    pub fn save<F>(&self, id: String, data: Vec<u8>, make_event: F)
+    pub fn save<F>(&self, catalog: Catalog, id: String, data: Vec<u8>, make_event: F)
     where
         F: FnOnce(Result<(), StoreError>) -> Ev + Send + Sync + 'static,
     {
         self.context.spawn({
             let context = self.context.clone();
             async move {
-                let response = save(&context, id, data).await;
+                let response = save(&context, catalog, id, data).await;
                 context.update_app(make_event(response))
             }
         });
     }
 
     /// Save a serialized credential to the store while in an async context.
-    /// 
+    ///
     /// This can be used in a higher-order capability such as a `Provider` for
     /// `vercre-holder`.
-    pub async fn save_async(&self, id: String, data: Vec<u8>) -> Result<(), StoreError> {
-        save(&self.context, id, data).await
+    pub async fn save_async(&self, catalog: Catalog, id: String, data: Vec<u8>) -> Result<(), StoreError> {
+        save(&self.context, catalog, id, data).await
     }
 
     /// Get all serialized credentials from the store.
-    pub fn list<F>(&self, make_event: F)
+    pub fn list<F>(&self, catalog: Catalog, make_event: F)
     where
         F: FnOnce(Result<Vec<StoreEntry>, StoreError>) -> Ev + Send + Sync + 'static,
     {
         self.context.spawn({
             let context = self.context.clone();
             async move {
-                let response = list(&context).await;
+                let response = list(&context, catalog).await;
                 context.update_app(make_event(response))
             }
         });
     }
 
     /// Get all serialized credentials from the store while in an async context.
-    /// 
+    ///
     /// This can be used in a higher-order capability such as a `Provider` for
     /// `vercre-holder`.
-    pub async fn list_async(&self) -> Result<Vec<StoreEntry>, StoreError> {
-        list(&self.context).await
+    pub async fn list_async(&self, catalog: Catalog) -> Result<Vec<StoreEntry>, StoreError> {
+        list(&self.context, catalog).await
     }
 
     /// Remove the credential with the given ID from the store.
-    pub fn delete<F>(&self, id: String, make_event: F)
+    pub fn delete<F>(&self, catalog: Catalog, id: String, make_event: F)
     where
         F: FnOnce(Result<(), StoreError>) -> Ev + Send + Sync + 'static,
     {
         self.context.spawn({
             let context = self.context.clone();
             async move {
-                let response = delete(&context, id).await;
+                let response = delete(&context, catalog, id).await;
                 context.update_app(make_event(response))
             }
         });
@@ -269,31 +283,28 @@ where
 
     /// Remove the credential with the given ID from the store while in an async
     /// context.
-    /// 
+    ///
     /// This can be used in a higher-order capability such as a `Provider` for
     /// `vercre-holder`.
-    pub async fn delete_async(&self, id: String) -> Result<(), StoreError> {
-        delete(&self.context, id).await
+    pub async fn delete_async(&self, catalog: Catalog, id: String) -> Result<(), StoreError> {
+        delete(&self.context, catalog, id).await
     }
 }
 
 async fn save<Ev: 'static>(
-    context: &CapabilityContext<StoreOperation, Ev>,
-    id: String,
-    data: Vec<u8>,
+    context: &CapabilityContext<StoreOperation, Ev>, catalog: Catalog, id: String, data: Vec<u8>,
 ) -> Result<(), StoreError> {
-    context.request_from_shell(StoreOperation::Save { id, data }).await.unwrap_save()
+    context.request_from_shell(StoreOperation::Save { catalog, id, data }).await.unwrap_save()
 }
 
 async fn list<Ev: 'static>(
-    context: &CapabilityContext<StoreOperation, Ev>,
+    context: &CapabilityContext<StoreOperation, Ev>, catalog: Catalog,
 ) -> Result<Vec<StoreEntry>, StoreError> {
-    context.request_from_shell(StoreOperation::List).await.unwrap_list()
+    context.request_from_shell(StoreOperation::List{ catalog }).await.unwrap_list()
 }
 
 async fn delete<Ev: 'static>(
-    context: &CapabilityContext<StoreOperation, Ev>,
-    id: String,
+    context: &CapabilityContext<StoreOperation, Ev>, catalog: Catalog, id: String,
 ) -> Result<(), StoreError> {
-    context.request_from_shell(StoreOperation::Delete { id }).await.unwrap_delete()
+    context.request_from_shell(StoreOperation::Delete { catalog, id }).await.unwrap_delete()
 }

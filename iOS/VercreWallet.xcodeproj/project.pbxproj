@@ -28,6 +28,7 @@
 		E2DACD7A2CD9AD9400C9E9D5 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */; };
 		E2DACD7D2CD9BE8D00C9E9D5 /* CredentialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD7C2CD9BE8D00C9E9D5 /* CredentialDetailView.swift */; };
 		E2DACD802CD9C13300C9E9D5 /* DetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */; };
+		E2DACD852CDAF31F00C9E9D5 /* store.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD832CDAF31600C9E9D5 /* store.swift */; };
 		E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */ = {isa = PBXBuildFile; fileRef = 608E5734A631C27F19673C40 /* wallet.udl */; };
 /* End PBXBuildFile section */
 
@@ -112,6 +113,7 @@
 		E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		E2DACD7C2CD9BE8D00C9E9D5 /* CredentialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialDetailView.swift; sourceTree = "<group>"; };
 		E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailRow.swift; sourceTree = "<group>"; };
+		E2DACD832CDAF31600C9E9D5 /* store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = store.swift; sourceTree = "<group>"; };
 		E87317161D4E9F5AB16EA2A3 /* SharedTypes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SharedTypes; path = ../shared/generated/swift/SharedTypes; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -212,6 +214,7 @@
 		E2B513902CC594D400D5A957 /* Crux */ = {
 			isa = PBXGroup;
 			children = (
+				E2DACD832CDAF31600C9E9D5 /* store.swift */,
 				E295C7EC2CBE05E70070F7A5 /* sse.swift */,
 				E295C7EB2CBE042F0070F7A5 /* http.swift */,
 				E295C7EA2CBDF8FF0070F7A5 /* core.swift */,
@@ -385,6 +388,7 @@
 				E29F76472CBF0B9100496B37 /* core.swift in Sources */,
 				E29F76482CBF0B9100496B37 /* ContentView.swift in Sources */,
 				E2934F2D2CD4508B00DC2BF9 /* CredentialCard.swift in Sources */,
+				E2DACD852CDAF31F00C9E9D5 /* store.swift in Sources */,
 				E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */,
 				E2934EEA2CD43E4700DC2BF9 /* CounterView.swift in Sources */,
 				E2DACD702CD95E4700C9E9D5 /* Color.swift in Sources */,

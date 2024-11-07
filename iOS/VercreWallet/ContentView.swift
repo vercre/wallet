@@ -27,6 +27,8 @@ struct ContentView: View {
                     CredentialDetailView(credential: credential)
                         .navBar(context: core.view.active_view)
                 }
+            case .issuanceScan:
+                IssuanceScan(core: Core()).navBar(context: core.view.active_view)
             default : EmptyView()
             }
         }

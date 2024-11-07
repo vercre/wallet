@@ -59,8 +59,6 @@ struct NavigationBarModifier: ViewModifier {
             .toolbar {
                 NavigationBar(context: context)
             }
-            .toolbarBackground(Color(red: 18/256, green: 109/256, blue: 248/256), for: .bottomBar)
-            .toolbarBackground(.visible, for: .bottomBar)
     }
 }
 
@@ -71,8 +69,11 @@ extension View {
 }
 
 #Preview {
-    VStack {
-        Spacer()
+    NavigationStack {
+        Text(
+            "Hello, World!"
+        )
+        .toolbarBackground(Color(red: 18/256, green: 109/256, blue: 248/256), for: .bottomBar)
     }.navBar(context: .credentialDetail)
 }
 

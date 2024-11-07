@@ -2,7 +2,8 @@
 //! the model, events, and effects that drive the application.
 
 use crate::capabilities::sse::ServerSentEvents;
-use crux_core::{compose::Compose, render::Render};
+use crate::capabilities::store::Store;
+use crux_core::render::Render;
 use crux_http::Http;
 use serde::{Deserialize, Serialize};
 use url::Url;
@@ -76,8 +77,7 @@ pub struct Capabilities {
     pub render: Render<Event>,
     pub http: Http<Event>,
     pub sse: ServerSentEvents<Event>,
-    #[effect(skip)] // skips the compose variant when deriving an Effect enum
-    pub compose: Compose<Event>,
+    pub store: Store<Event>,
 }
 
 #[derive(Default)]
