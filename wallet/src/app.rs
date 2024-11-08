@@ -50,14 +50,19 @@ pub enum Event {
     #[serde(skip)]
     CredentialStored(Result<(), StoreError>),
 
+    /// Event emitted by the shell to delete a credential from the wallet.
+    Delete(String),
+
+    /// Event emitted by the core when the store capability has deleted a
+    /// credential.
+    #[serde(skip)]
+    CredentialDeleted(Result<(), StoreError>),
+
     /// Event emitted by the shell to navigate to a different aspect of the app.
     Navigate(Aspect),
 
     /// Event emitted by the shell to select a credential for detailed display.
     Select(String),
-
-    /// Event emitted by the shell to delete a credential from the wallet.
-    Delete(String),
 
     /// Event emitted by the shell when the user scans an offer QR code.
     CreateOffer(String),
@@ -132,7 +137,6 @@ impl crux_core::App for App {
             }
             Event::CredentialStored(Ok(())) => {
                 caps.store.list("credential".into(), Event::CredentialsLoaded);
-                caps.render.render();
             }
             Event::CredentialStored(Err(error)) => {
                 model.error = Some(error.to_string());
@@ -147,10 +151,16 @@ impl crux_core::App for App {
                 model.credential.id = Some(id);
                 caps.render.render();
             }
-            Event::Delete(_id) => {
-                // TODO: Actually delete the credential using the storage capability
-                model.active_view = Aspect::CredentialList;
+            Event::Delete(id) => {
+                caps.store.delete("credential".into(), id, Event::CredentialDeleted);
+            }
+            Event::CredentialDeleted(Ok(())) => {
                 model.credential.id = None;
+                caps.store.list("credential".into(), Event::CredentialsLoaded);
+                caps.render.render();
+            }
+            Event::CredentialDeleted(Err(error)) => {
+                model.error = Some(error.to_string());
                 caps.render.render();
             }
             Event::CreateOffer(_encoded_offer) => {
