@@ -20,9 +20,6 @@ impl CredentialState {
     /// Create a new credential state.
     #[must_use]
     pub fn init() -> Self {
-        // let json = include_bytes!("credentials.json");
-        // let credentials: Vec<Credential> =
-        // serde_json::from_slice(json).expect("should deserialize");
         Self {
             id: None,
             credentials: vec![],

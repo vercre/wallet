@@ -9,9 +9,10 @@ import SharedTypes
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var core = Core()
+    @ObservedObject var core: Core
     
     init(core: Core) {
+        self.core = core
         core.update(.ready)
         core.update(.startWatch)
     }

@@ -45,6 +45,11 @@ pub enum Event {
     #[serde(skip)]
     CredentialsLoaded(Result<Vec<StoreEntry>, StoreError>),
 
+    /// Event emitted by the core when the store capability has stored a
+    /// credential.
+    #[serde(skip)]
+    CredentialStored(Result<(), StoreError>),
+
     /// Event emitted by the shell to navigate to a different aspect of the app.
     Navigate(Aspect),
 
@@ -105,12 +110,32 @@ impl crux_core::App for App {
                 caps.render.render();
             }
             Event::CredentialsLoaded(Ok(entries)) => {
-                            model.active_view = Aspect::CredentialList;
-                            model.credential.set_credentials(entries);
-                            caps.render.render();
+                model.active_view = Aspect::CredentialList;
+                model.credential.set_credentials(entries.clone());
+
+                // TODO: Remove this try-out code
+                // if entries.len() < 1 {
+                //     let json = include_bytes!("model/credentials.json");
+                //     let credentials: Vec<Credential> =
+                //         serde_json::from_slice(json).expect("should deserialize");
+                //     let credential = credentials[entries.len()].clone();
+                //     let data = serde_json::to_vec(&credential).expect("should serialize");
+                //     caps.store.save("credential".into(), credential.id.clone(), data, Event::CredentialStored);
+                // }
+                // -------------------------------
+
+                caps.render.render();
             }
             Event::CredentialsLoaded(Err(error)) => {
-                        model.error = Some(error.to_string());
+                model.error = Some(error.to_string());
+                caps.render.render();
+            }
+            Event::CredentialStored(Ok(())) => {
+                caps.store.list("credential".into(), Event::CredentialsLoaded);
+                caps.render.render();
+            }
+            Event::CredentialStored(Err(error)) => {
+                model.error = Some(error.to_string());
                 caps.render.render();
             }
             Event::Navigate(aspect) => {

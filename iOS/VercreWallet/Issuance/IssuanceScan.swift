@@ -13,6 +13,10 @@ struct IssuanceScan: View {
     @State private var scannerVisible = false
     @State var scanResult: String = "Scan a Verifiable Credential offer QR code"
     
+    init(core: Core) {
+        self.core = core
+    }
+    
     var scannerSheet: some View {
         CodeScannerView(
             codeTypes: [.qr],
