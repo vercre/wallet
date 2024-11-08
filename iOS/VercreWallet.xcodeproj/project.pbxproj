@@ -215,8 +215,8 @@
 			isa = PBXGroup;
 			children = (
 				E2DACD832CDAF31600C9E9D5 /* store.swift */,
-				E295C7EC2CBE05E70070F7A5 /* sse.swift */,
 				E295C7EB2CBE042F0070F7A5 /* http.swift */,
+				E295C7EC2CBE05E70070F7A5 /* sse.swift */,
 				E295C7EA2CBDF8FF0070F7A5 /* core.swift */,
 			);
 			path = Crux;

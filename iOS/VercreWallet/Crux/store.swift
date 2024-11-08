@@ -13,11 +13,11 @@ import SwiftData
 final class StoredObject {
     
     // The index or key for the object. Unique for a catalog.
-    @Attribute(.unique) let id: String
+    @Attribute(.unique) var id: String
     
     // The data to be stored as an array of bytes. It's up to the Crux layer to know how to
     // serialize/deserialize into its model.
-    let data: Data
+    var data: Data
     
     init(id: String, data: Data) {
         self.id = id
@@ -33,7 +33,7 @@ protocol Storer<T> {
     associatedtype T
     func save(_ item: T) throws
     func list() throws -> [T]
-    func delete(_ id: String) throws
+    func delete(_ item: T) throws
 }
 
 protocol Store<T> : Storer {
@@ -50,12 +50,14 @@ extension Store {
     
     func list<T: PersistentModel>() throws -> [T] {
         let context = ModelContext(container)
-        return try context.fetch(T.all())
+        let fetchDescriptor = FetchDescriptor<T>()
+        return try context.fetch(fetchDescriptor)
     }
     
-    func delete<T: PersistentModel>(_ id: String) throws {
+    func delete<T: PersistentModel>(_ item: T) throws {
         let context = ModelContext(container)
-        try context.delete(model: T.find(id), where: #Predicate { item in item.id == id })
+        let id = item.persistentModelID
+        try context.delete(model: T.self, where: #Predicate { item in item.persistentModelID == id })
         try context.save()
     }
 }
@@ -63,53 +65,58 @@ extension Store {
 final class ObjectStore: Store {
     typealias T = StoredObject
     let container: ModelContainer
-    let catalog: Catalog
     
     // Can use in-memory store for unit testing
-    init(catalog: Catalog, useInMemStore: Bool = false) throws {
-        let storeName = switch Catalog {
-        case .credentials:
-            "credential"
-        case .issuance:
-            "issuance"
-        case .presentation:
-            "presentation"
-        }
-        let storeUrl = URL.documentsDirectory.appending(path: "\(storeName).store")
-        let config = ModelConfiguration(for: StoredObject.self, name: storeName, url: storeUrl, isStoredInMemoryOnly: useInMemStore)
+    init(catalog: String) throws {
+        let storeUrl = URL.documentsDirectory.appending(path: "\(catalog).store")
+        
+        let config = ModelConfiguration(url: storeUrl)
         self.container = try ModelContainer(for: StoredObject.self, configurations: config)
     }
 }
 
-func requestStore(_ request: StoreOperation) async -> Result<StoreReponse, StoreError> {
+enum StoreError: Error {
+    case generic(Error)
+    case message(String)
+}
+
+func requestStore(_ request: StoreOperation) async -> Result<StoreResponse, StoreError> {
     do {
         switch request {
         case .save(let catalog, let id, let data):
-            let store = try await ObjectStore(catalog: catalog)
+            let store = try ObjectStore(catalog: catalog)
             do {
-                await store.save(StoredObject(id: id, data: data))
+                try store.save(StoredObject(id: id, bytes: data))
                 return .success(.saved)
             } catch {
-                return .failure(.invalidResponse(error))
+                return .failure(.message(error.localizedDescription))
             }
         case .list(let catalog):
-            let store = try await ObjectStore(catalog: catalog)
+            let store = try ObjectStore(catalog: catalog)
             do {
-                let objects = await store.list()
-                return .success(.list(objects))
+                let objects : [StoredObject] = try store.list()
+                var entries: [StoreEntry] = []
+                for object in objects {
+                    entries.append(StoreEntry.data(Array(object.data)))
+                }
+                return .success(.list(entries: entries))
             } catch {
-                return .failure(.invalidResponse(error))
+                return .failure(.message(error.localizedDescription))
             }
         case .delete(catalog: let catalog, id: let id):
-            let store = try await ObjectStore(catalog: catalog)
+            let store = try ObjectStore(catalog: catalog)
             do {
-                await store.delete(id)
+                // Find the object with the specified ID
+                let object: StoredObject? = try store.list().first(where: { $0.id == id })
+                if object != nil {
+                    try store.delete(object!)
+                }
                 return .success(.deleted)
             } catch {
-                return .failure(.invalidResponse(error))
+                return .failure(.message(error.localizedDescription))
             }
         }
     } catch {
-        return .failure(.invalidRequest(error))
+        return .failure(.message(error.localizedDescription))
     }
 }

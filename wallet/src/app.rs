@@ -1,21 +1,21 @@
 //! This module contains the core application fabric for the wallet, including
 //! the model, events, and effects that drive the application.
 
-use crate::capabilities::sse::ServerSentEvents;
-use crate::capabilities::store::Store;
 use crux_core::render::Render;
 use crux_http::Http;
 use serde::{Deserialize, Serialize};
 use url::Url;
 
-use crate::model::{Count, Model};
+use crate::capabilities::sse::ServerSentEvents;
+use crate::capabilities::store::{Store, StoreEntry, StoreError};
 use crate::model::credential::CredentialState;
+use crate::model::{Count, Model};
 use crate::view::ViewModel;
 
 const API_URL: &str = "https://crux-counter.fly.dev";
 
 /// Aspect of the application.
-/// 
+///
 /// This allows the UI navigation to be reactive: controlled in response to the
 /// user's actions.
 #[derive(Clone, Default, Debug, Deserialize, Serialize, PartialEq, Eq)]
@@ -39,6 +39,11 @@ pub enum Aspect {
 pub enum Event {
     /// Event emitted by the shell when the app first loads.
     Ready,
+
+    /// Event emitted by the core when the store capability has loaded
+    /// credentials.
+    #[serde(skip)]
+    CredentialsLoaded(Result<Vec<StoreEntry>, StoreError>),
 
     /// Event emitted by the shell to navigate to a different aspect of the app.
     Navigate(Aspect),
@@ -84,13 +89,30 @@ pub struct Capabilities {
 pub struct App;
 
 impl crux_core::App for App {
-    type Model = Model;
-    type Event = Event;
-    type ViewModel = ViewModel;
     type Capabilities = Capabilities;
+    type Event = Event;
+    type Model = Model;
+    type ViewModel = ViewModel;
 
     fn update(&self, msg: Self::Event, model: &mut Self::Model, caps: &Self::Capabilities) {
         match msg {
+            Event::Ready => {
+                // Initialization event. Set the aspect to the credential list
+                // view.
+                model.active_view = Aspect::CredentialList;
+                model.credential = CredentialState::init();
+                caps.store.list("credential".into(), Event::CredentialsLoaded);
+                caps.render.render();
+            }
+            Event::CredentialsLoaded(Ok(entries)) => {
+                            model.active_view = Aspect::CredentialList;
+                            model.credential.set_credentials(entries);
+                            caps.render.render();
+            }
+            Event::CredentialsLoaded(Err(error)) => {
+                        model.error = Some(error.to_string());
+                caps.render.render();
+            }
             Event::Navigate(aspect) => {
                 model.active_view = aspect;
                 caps.render.render();
@@ -104,13 +126,6 @@ impl crux_core::App for App {
                 // TODO: Actually delete the credential using the storage capability
                 model.active_view = Aspect::CredentialList;
                 model.credential.id = None;
-                caps.render.render();
-            }
-            Event::Ready => {
-                // Initialization event. Set the aspect to the credential list
-                // view.
-                model.active_view = Aspect::CredentialList;
-                model.credential = CredentialState::init();
                 caps.render.render();
             }
             Event::CreateOffer(_encoded_offer) => {
@@ -165,8 +180,7 @@ impl crux_core::App for App {
                 let base = Url::parse(API_URL).unwrap();
                 let url = base.join("/sse").unwrap();
                 caps.sse.get_json(url, Event::Update);
-            }
-            // ----------------
+            } // ----------------
         }
     }
 
@@ -192,18 +206,17 @@ impl crux_core::App for App {
 
 #[cfg(test)]
 mod tests {
+    use assert_let_bind::assert_let;
+    use chrono::{TimeZone, Utc};
+    use crux_core::assert_effect;
+    use crux_core::testing::AppTester;
+    use crux_http::protocol::{HttpRequest, HttpResponse, HttpResult};
+    use crux_http::testing::ResponseBuilder;
+
     use super::{App, Event, Model};
     use crate::capabilities::sse::SseRequest;
     use crate::model::{Count, CredentialState};
-    use crate::{Effect, Aspect};
-    use assert_let_bind::assert_let;
-    use chrono::{TimeZone, Utc};
-    use crux_core::{assert_effect, testing::AppTester};
-    use crux_http::protocol::HttpResult;
-    use crux_http::{
-        protocol::{HttpRequest, HttpResponse},
-        testing::ResponseBuilder,
-    };
+    use crate::{Aspect, Effect};
 
     // ANCHOR: simple_tests
     /// Test that a `Get` event causes the app to fetch the current
@@ -229,12 +242,9 @@ mod tests {
         assert_eq!(actual, expected);
 
         // resolve the request with a simulated response from the web API
-        let response = HttpResponse::ok()
-            .body(r#"{ "value": 1, "updated_at": 1672531200000 }"#)
-            .build();
-        let update = app
-            .resolve(request, HttpResult::Ok(response))
-            .expect("an update");
+        let response =
+            HttpResponse::ok().body(r#"{ "value": 1, "updated_at": 1672531200000 }"#).build();
+        let update = app.resolve(request, HttpResult::Ok(response)).expect("an update");
 
         // check that the app emitted an (internal) event to update the model
         let actual = update.events;
@@ -284,7 +294,10 @@ mod tests {
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
             active_view: Aspect::CredentialList,
-            credential: CredentialState { id: None, credentials: vec![] },
+            credential: CredentialState {
+                id: None,
+                credentials: vec![],
+            },
             issuance: None,
             error: None,
             count: Count {
@@ -314,12 +327,9 @@ mod tests {
         assert_eq!(actual, expected);
 
         // resolve the request with a simulated response from the web API
-        let response = HttpResponse::ok()
-            .body(r#"{ "value": 2, "updated_at": 1672531200000 }"#)
-            .build();
-        let update = app
-            .resolve(request, HttpResult::Ok(response))
-            .expect("Update to succeed");
+        let response =
+            HttpResponse::ok().body(r#"{ "value": 2, "updated_at": 1672531200000 }"#).build();
+        let update = app.resolve(request, HttpResult::Ok(response)).expect("Update to succeed");
 
         // send the generated (internal) `Set` event back into the app
         let _ = app.update(update.events[0].clone(), &mut model);
@@ -337,7 +347,10 @@ mod tests {
         // set up our initial model as though we've previously fetched the counter
         let mut model = Model {
             active_view: Aspect::CredentialList,
-            credential: CredentialState { id: None, credentials: vec![] },
+            credential: CredentialState {
+                id: None,
+                credentials: vec![],
+            },
             issuance: None,
             error: None,
             count: Count {
@@ -367,12 +380,9 @@ mod tests {
         assert_eq!(actual, expected);
 
         // resolve the request with a simulated response from the web API
-        let response = HttpResponse::ok()
-            .body(r#"{ "value": -1, "updated_at": 1672531200000 }"#)
-            .build();
-        let update = app
-            .resolve(request, HttpResult::Ok(response))
-            .expect("a successful update");
+        let response =
+            HttpResponse::ok().body(r#"{ "value": -1, "updated_at": 1672531200000 }"#).build();
+        let update = app.resolve(request, HttpResult::Ok(response)).expect("a successful update");
 
         // run the event loop in order to send the (internal) `Set` event
         // back into the app

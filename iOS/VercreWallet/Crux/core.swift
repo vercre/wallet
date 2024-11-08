@@ -55,7 +55,7 @@ class Core: ObservableObject {
         case let .store(req):
             Task {
                 let response = try! await requestStore(req).get()
-                let effects = [UInt8](handleResponse(request.id, Data(try! StoreResult.ok(response).bincodeSerialize())))
+                let effects = [UInt8](handleResponse(request.id, Data(try! StoreResult.ok(response: response).bincodeSerialize())))
                 let requests: [Request] = try! .bincodeDeserialize(input: effects)
                 for request in requests {
                     processEffect(request)

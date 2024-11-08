@@ -1,10 +1,7 @@
 import SwiftUI
-import RealmSwift
-
-let realmApp = RealmSwift.App(id: "vercre-wallet-xxxxxx") // TODO: Is this needed?
 
 @main
-struct VercreWalletApp: SwiftUI.App {
+struct VercreWalletApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView(core: Core())
