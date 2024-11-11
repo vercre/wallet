@@ -6,7 +6,7 @@ use crux_http::Http;
 use serde::{Deserialize, Serialize};
 
 use crate::capabilities::sse::ServerSentEvents;
-use crate::capabilities::store::{Store, StoreEntry, StoreError};
+use crate::capabilities::store::{Catalog, Store, StoreEntry, StoreError};
 use crate::model::Model;
 use crate::view::ViewModel;
 
@@ -105,7 +105,7 @@ impl crux_core::App for App {
             }
             Event::Ready => {
                 model.ready();
-                caps.store.list("credential".into(), Event::CredentialsLoaded);
+                caps.store.list("credential", Event::CredentialsLoaded);
                 caps.render.render();
             }
             Event::SelectCredential(id) => {
@@ -113,7 +113,7 @@ impl crux_core::App for App {
                 caps.render.render();
             }
             Event::DeleteCredential(id) => {
-                caps.store.delete("credential".into(), id, Event::CredentialDeleted);
+                caps.store.delete("credential", id, Event::CredentialDeleted);
             }
             Event::CredentialsLoaded(Ok(entries)) => {
                 model.credentials_loaded(entries);
@@ -136,7 +136,7 @@ impl crux_core::App for App {
                 caps.render.render();
             }
             Event::CredentialStored(Ok(())) => {
-                caps.store.list("credential".into(), Event::CredentialsLoaded);
+                caps.store.list(Catalog::Credential.to_string(), Event::CredentialsLoaded);
             }
             Event::CredentialStored(Err(error)) => {
                 model.error(error.to_string());
@@ -144,7 +144,7 @@ impl crux_core::App for App {
             }
             Event::CredentialDeleted(Ok(())) => {
                 model.delete_credential();
-                caps.store.list("credential".into(), Event::CredentialsLoaded);
+                caps.store.list(Catalog::Credential.to_string(), Event::CredentialsLoaded);
                 caps.render.render();
             }
             Event::CredentialDeleted(Err(error)) => {

@@ -1,8 +1,7 @@
-//! Holder capability.
+//! Provider of callbacks for `vercre-holder`.
 //!
-//! This capability gives all of the callbacks specified by the `vercre-holder`
-//! `Provider` traits. It is essentially a wrapper to a set of lower-level
-//! capabilities.
+//! Implementation of the `vercre-holder` `Provider` traits. Uses capabilities
+//! where necessary to provide the underlying connectivity and storage.
 
 use chrono::{DateTime, Utc};
 use serde::de::DeserializeOwned;
@@ -20,13 +19,13 @@ use vercre_holder::{
     TokenResponse,
 };
 
-use crate::capabilities::store::{Store, StoreEntry};
+use crate::capabilities::store::{Catalog, Store, StoreEntry};
 
-pub struct Holder<Ev> {
+pub struct Provider<Ev> {
     store: Store<Ev>,
 }
 
-impl<Ev> Clone for Holder<Ev> {
+impl<Ev> Clone for Provider<Ev> {
     fn clone(&self) -> Self {
         Self {
             store: self.store.clone(),
@@ -34,15 +33,15 @@ impl<Ev> Clone for Holder<Ev> {
     }
 }
 
-impl<Ev> Holder<Ev> {
+impl<Ev> Provider<Ev> {
     pub fn new(store: Store<Ev>) -> Self {
         Self { store }
     }
 }
 
-impl<Ev> HolderProvider for Holder<Ev> where Ev: 'static {}
+impl<Ev> HolderProvider for Provider<Ev> where Ev: 'static {}
 
-impl<Ev> Issuer for Holder<Ev> {
+impl<Ev> Issuer for Provider<Ev> {
     /// Get issuer metadata from the issuer service endpoint.
     async fn metadata(&self, _req: MetadataRequest) -> anyhow::Result<MetadataResponse> {
         todo!()
@@ -91,7 +90,7 @@ impl<Ev> Issuer for Holder<Ev> {
     }
 }
 
-impl<Ev> Verifier for Holder<Ev> {
+impl<Ev> Verifier for Provider<Ev> {
     /// Get a request object. If an error is returned, the wallet will cancel
     /// the presentation flow.
     async fn request_object(&self, _req: &str) -> anyhow::Result<RequestObjectResponse> {
@@ -106,7 +105,7 @@ impl<Ev> Verifier for Holder<Ev> {
     }
 }
 
-impl<Ev> CredentialStorer for Holder<Ev>
+impl<Ev> CredentialStorer for Provider<Ev>
 where
     Ev: 'static,
 {
@@ -116,13 +115,13 @@ where
     async fn save(&self, credential: &Credential) -> anyhow::Result<()> {
         let data = serde_json::to_vec(credential)?;
         let id = credential.id.clone();
-        self.store.save_async("credential".into(), id, data).await.map_err(Into::into)
+        self.store.save_async(Catalog::Credential.to_string(), id, data).await.map_err(Into::into)
     }
 
     /// Retrieve a `Credential` from the store with the given ID. Return None if
     /// no credential with the ID exists.
     async fn load(&self, id: &str) -> anyhow::Result<Option<Credential>> {
-        let all_data = self.store.list_async("credential".into()).await?;
+        let all_data = self.store.list_async(Catalog::Credential.to_string()).await?;
         for entry in all_data {
             if let StoreEntry::Data(data) = entry {
                 let credential: Credential = serde_json::from_slice(&data)?;
@@ -137,7 +136,7 @@ where
     /// Find the credentials that match the the provided filter. If `filter` is
     /// None, return all credentials in the store.
     async fn find(&self, filter: Option<Constraints>) -> anyhow::Result<Vec<Credential>> {
-        let all_data = self.store.list_async("credential".into()).await?;
+        let all_data = self.store.list_async(Catalog::Credential.to_string()).await?;
         let mut credentials = Vec::new();
         for entry in all_data {
             if let StoreEntry::Data(data) = entry {
@@ -158,12 +157,12 @@ where
 
     /// Remove the credential with the given ID from the store. Return an error
     /// if the credential does not exist.
-    async fn remove(&self, _id: &str) -> anyhow::Result<()> {
-        todo!()
+    async fn remove(&self, id: &str) -> anyhow::Result<()> {
+        self.store.delete_async(Catalog::Credential.to_string(), id).await.map_err(Into::into)
     }
 }
 
-impl<Ev> StateStore for Holder<Ev> {
+impl<Ev> StateStore for Provider<Ev> {
     /// Store state using the provided key. The expiry parameter indicates
     /// when data can be expunged from the state store.
     async fn put(
@@ -183,7 +182,7 @@ impl<Ev> StateStore for Holder<Ev> {
     }
 }
 
-impl<Ev> Signer for Holder<Ev> {
+impl<Ev> Signer for Provider<Ev> {
     /// Sign is a convenience method for infallible Signer implementations.
     async fn sign(&self, msg: &[u8]) -> Vec<u8> {
         self.try_sign(msg).await.expect("should sign")
@@ -213,7 +212,7 @@ impl<Ev> Signer for Holder<Ev> {
     }
 }
 
-impl<Ev> DidResolver for Holder<Ev> {
+impl<Ev> DidResolver for Provider<Ev> {
     /// Resolve the DID URL to a DID Document.
     ///
     /// # Errors

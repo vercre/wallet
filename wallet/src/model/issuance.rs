@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
 use vercre_holder::{issuance::OfferRequest, CredentialConfiguration, CredentialOffer, TxCode};
 
-use crate::{capabilities::holder::Holder, config};
+use crate::{provider::Provider, config};
 use crate::capabilities::store::Store;
 
 /// Application state for the issuance sub-app.
@@ -42,7 +42,7 @@ impl IssuanceState {
             offer,
         };
 
-        let _provider = Holder::new(store);
+        let _provider = Provider::new(store);
 
         todo!()
     }

@@ -1,10 +1,24 @@
 //! # Verifiable Credential Store
-use std::fmt::Debug;
+use std::fmt::{self, Debug, Display};
 
 use crux_core::capability::{CapabilityContext, Operation};
 use crux_core::Capability;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
+
+/// Some pre-defined store catalogs.
+pub enum Catalog {
+    /// Cedentials collection.
+    Credential,
+}
+
+impl Display for Catalog {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Catalog::Credential => write!(f, "credential"),
+        }
+    }
+}
 
 /// Errors that can be returned by the Store capability.
 #[derive(Clone, Debug, Deserialize, Serialize, Error, PartialEq, Eq)]
@@ -19,7 +33,7 @@ pub enum StoreError {
 }
 
 /// An entry in the data store; a serialized credential or flow state.
-/// 
+///
 /// `StoreEntry::None` is used to represent a missing entry in the store rather
 /// than using an `Option` which is not supported across the FFI boundary in
 /// Crux.
@@ -65,7 +79,7 @@ pub enum StoreOperation {
         catalog: String,
         id: String,
         #[serde(with = "serde_bytes")]
-        data: Vec<u8>
+        data: Vec<u8>,
     },
 
     /// Get all serialized objects from the store.
@@ -208,8 +222,10 @@ where
     }
 
     /// Save a serialized credential to the store.
-    pub fn save<F>(&self, catalog: String, id: String, data: Vec<u8>, make_event: F)
-    where
+    pub fn save<F>(
+        &self, catalog: impl Into<String> + Send + 'static, id: impl Into<String> + Send + 'static,
+        data: impl Serialize + Send + 'static, make_event: F,
+    ) where
         F: FnOnce(Result<(), StoreError>) -> Ev + Send + Sync + 'static,
     {
         let context = self.context.clone();
@@ -225,12 +241,14 @@ where
     ///
     /// This can be used in a higher-order capability such as a `Provider` for
     /// `vercre-holder`.
-    pub async fn save_async(&self, catalog: String, id: String, data: Vec<u8>) -> Result<(), StoreError> {
+    pub async fn save_async(
+        &self, catalog: impl Into<String>, id: impl Into<String>, data: impl Serialize,
+    ) -> Result<(), StoreError> {
         save(&self.context, catalog, id, data).await
     }
 
     /// Get all serialized credentials from the store.
-    pub fn list<F>(&self, catalog: String, make_event: F)
+    pub fn list<F>(&self, catalog: impl Into<String> + Send + 'static, make_event: F)
     where
         F: FnOnce(Result<Vec<StoreEntry>, StoreError>) -> Ev + Send + Sync + 'static,
     {
@@ -247,13 +265,17 @@ where
     ///
     /// This can be used in a higher-order capability such as a `Provider` for
     /// `vercre-holder`.
-    pub async fn list_async(&self, catalog: String) -> Result<Vec<StoreEntry>, StoreError> {
+    pub async fn list_async(
+        &self, catalog: impl Into<String>,
+    ) -> Result<Vec<StoreEntry>, StoreError> {
         list(&self.context, catalog).await
     }
 
     /// Remove the credential with the given ID from the store.
-    pub fn delete<F>(&self, catalog: String, id: String, make_event: F)
-    where
+    pub fn delete<F>(
+        &self, catalog: impl Into<String> + Send + 'static, id: impl Into<String> + Send + 'static,
+        make_event: F,
+    ) where
         F: FnOnce(Result<(), StoreError>) -> Ev + Send + Sync + 'static,
     {
         self.context.spawn({
@@ -270,25 +292,50 @@ where
     ///
     /// This can be used in a higher-order capability such as a `Provider` for
     /// `vercre-holder`.
-    pub async fn delete_async(&self, catalog: String, id: String) -> Result<(), StoreError> {
+    pub async fn delete_async(
+        &self, catalog: impl Into<String>, id: impl Into<String>,
+    ) -> Result<(), StoreError> {
         delete(&self.context, catalog, id).await
     }
 }
 
 async fn save<Ev: 'static>(
-    context: &CapabilityContext<StoreOperation, Ev>, catalog: String, id: String, data: Vec<u8>,
+    context: &CapabilityContext<StoreOperation, Ev>, catalog: impl Into<String>,
+    id: impl Into<String>, data: impl Serialize,
 ) -> Result<(), StoreError> {
-    context.request_from_shell(StoreOperation::Save { catalog, id, data }).await.unwrap_save()
+    let bytes = serde_json::to_vec(&data).map_err(|e| StoreError::InvalidRequest {
+        message: format!("failed to serialize data: {}", e),
+    })?;
+    context
+        .request_from_shell(StoreOperation::Save {
+            catalog: catalog.into(),
+            id: id.into(),
+            data: bytes,
+        })
+        .await
+        .unwrap_save()
 }
 
 async fn list<Ev: 'static>(
-    context: &CapabilityContext<StoreOperation, Ev>, catalog: String,
+    context: &CapabilityContext<StoreOperation, Ev>, catalog: impl Into<String>,
 ) -> Result<Vec<StoreEntry>, StoreError> {
-    context.request_from_shell(StoreOperation::List{ catalog }).await.unwrap_list()
+    context
+        .request_from_shell(StoreOperation::List {
+            catalog: catalog.into(),
+        })
+        .await
+        .unwrap_list()
 }
 
 async fn delete<Ev: 'static>(
-    context: &CapabilityContext<StoreOperation, Ev>, catalog: String, id: String,
+    context: &CapabilityContext<StoreOperation, Ev>, catalog: impl Into<String>,
+    id: impl Into<String>,
 ) -> Result<(), StoreError> {
-    context.request_from_shell(StoreOperation::Delete { catalog, id }).await.unwrap_delete()
+    context
+        .request_from_shell(StoreOperation::Delete {
+            catalog: catalog.into(),
+            id: id.into(),
+        })
+        .await
+        .unwrap_delete()
 }

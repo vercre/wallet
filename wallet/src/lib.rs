@@ -4,7 +4,7 @@
 pub mod app;
 pub mod capabilities;
 mod config;
-mod holder;
+mod provider;
 mod model;
 pub mod view;
 
