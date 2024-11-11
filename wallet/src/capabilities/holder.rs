@@ -4,111 +4,43 @@
 //! `Provider` traits. It is essentially a wrapper to a set of lower-level
 //! capabilities.
 
-use std::fmt::Debug;
-
 use chrono::{DateTime, Utc};
-use crux_core::capability::{CapabilityContext, Operation};
-use crux_core::Capability;
 use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize};
-use thiserror::Error;
+use serde::Serialize;
 use vercre_holder::credential::{Credential, ImageData};
-use vercre_holder::provider::{Algorithm, CredentialStorer, DidResolver, Document, HolderProvider, Issuer, Signer, StateStore, Verifier};
+use vercre_holder::provider::{
+    Algorithm, CredentialStorer, DidResolver, Document, HolderProvider, Issuer, Signer, StateStore,
+    Verifier,
+};
 use vercre_holder::{
-    AuthorizationRequest, AuthorizationResponse, Constraints, CredentialRequest, CredentialResponse, DeferredCredentialRequest, DeferredCredentialResponse, MetadataRequest, MetadataResponse, NotificationRequest, NotificationResponse, OAuthServerRequest, OAuthServerResponse, RequestObjectResponse, ResponseRequest, ResponseResponse, TokenRequest, TokenResponse
+    AuthorizationRequest, AuthorizationResponse, Constraints, CredentialRequest,
+    CredentialResponse, DeferredCredentialRequest, DeferredCredentialResponse, MetadataRequest,
+    MetadataResponse, NotificationRequest, NotificationResponse, OAuthServerRequest,
+    OAuthServerResponse, RequestObjectResponse, ResponseRequest, ResponseResponse, TokenRequest,
+    TokenResponse,
 };
 
-/// Error response.
-#[derive(Clone, Debug, Deserialize, Serialize, Error, PartialEq, Eq)]
-pub enum HolderError {
-    /// Invalid request.
-    #[error("invalid holder provider request {message}")]
-    InvalidRequest { message: String },
+use crate::capabilities::store::{Store, StoreEntry};
 
-    /// The response from the shell capability was invalid.
-    #[error("invalid holder provider response {message}")]
-    InvalidResponse { message: String },
-}
-
-/// Supported operatons for the Holder capability.
-#[derive(Clone, Deserialize, Serialize, PartialEq, Eq)]
-pub enum HolderOperation {}
-
-impl Debug for HolderOperation {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "HolderOperation")
-    }
-}
-
-/// The result of an operation on the provider.
-///
-/// Note: we cannot use Rust's `Result` and `Option` here because generics are
-/// not supported across the FFI boundary in Crux.
-#[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub enum HolderResult {
-    Ok { response: HolderResponse },
-    Err { error: HolderError },
-}
-
-impl HolderResult {
-    // TODO: unwrap HolderResult into standard Rust Result.
-}
-
-/// Possible responses from the Holder capability.
-#[derive(Clone, Debug, Deserialize, Serialize, PartialEq, Eq)]
-pub enum HolderResponse {}
-
-impl Operation for HolderOperation {
-    type Output = HolderResult;
-}
-
-/// The type used to implement the capability and the provider.
 pub struct Holder<Ev> {
-    context: CapabilityContext<HolderOperation, Ev>,
-}
-
-impl<Ev> Capability<Ev> for Holder<Ev> {
-    type MappedSelf<MappedEv> = Holder<MappedEv>;
-    type Operation = HolderOperation;
-
-    fn map_event<F, NewEv>(&self, f: F) -> Self::MappedSelf<NewEv>
-    where
-        F: Fn(NewEv) -> Ev + Send + Sync + 'static,
-        Ev: 'static,
-        NewEv: 'static + Send,
-    {
-        Holder::new(self.context.map_event(f))
-    }
-
-    #[cfg(feature = "typegen")]
-    fn register_types(generator: &mut crux_core::typegen::TypeGen) -> crux_core::typegen::Result {
-        generator.register_type::<HolderResponse>()?;
-        generator.register_type::<HolderError>()?;
-        generator.register_type::<Self::Operation>()?;
-        generator.register_type::<<Self::Operation as Operation>::Output>()?;
-        Ok(())
-    }
+    store: Store<Ev>,
 }
 
 impl<Ev> Clone for Holder<Ev> {
     fn clone(&self) -> Self {
         Self {
-            context: self.context.clone(),
+            store: self.store.clone(),
         }
     }
 }
 
-impl<Ev> Holder<Ev>
-where
-    Ev: 'static,
-{
-    /// Create a new instance of the Holder capability.
-    pub fn new(context: CapabilityContext<HolderOperation, Ev>) -> Self {
-        Self { context }
+impl<Ev> Holder<Ev> {
+    pub fn new(store: Store<Ev>) -> Self {
+        Self { store }
     }
 }
 
-impl<Ev> HolderProvider for Holder<Ev> {}
+impl<Ev> HolderProvider for Holder<Ev> where Ev: 'static {}
 
 impl<Ev> Issuer for Holder<Ev> {
     /// Get issuer metadata from the issuer service endpoint.
@@ -162,9 +94,7 @@ impl<Ev> Issuer for Holder<Ev> {
 impl<Ev> Verifier for Holder<Ev> {
     /// Get a request object. If an error is returned, the wallet will cancel
     /// the presentation flow.
-    async fn request_object(
-        &self, _req: &str,
-    ) -> anyhow::Result<RequestObjectResponse> {
+    async fn request_object(&self, _req: &str) -> anyhow::Result<RequestObjectResponse> {
         todo!()
     }
 
@@ -176,26 +106,54 @@ impl<Ev> Verifier for Holder<Ev> {
     }
 }
 
-impl<Ev> CredentialStorer for Holder<Ev> {
+impl<Ev> CredentialStorer for Holder<Ev>
+where
+    Ev: 'static,
+{
     /// Save a `Credential` to the store. Overwrite any existing credential with
     /// the same ID. Create a new credential if one with the same ID does
     /// not exist.
-    async fn save(&self, _credential: &Credential) -> anyhow::Result<()> {
-        todo!()
+    async fn save(&self, credential: &Credential) -> anyhow::Result<()> {
+        let data = serde_json::to_vec(credential)?;
+        let id = credential.id.clone();
+        self.store.save_async("credential".into(), id, data).await.map_err(Into::into)
     }
 
     /// Retrieve a `Credential` from the store with the given ID. Return None if
     /// no credential with the ID exists.
-    async fn load(&self, _id: &str) -> anyhow::Result<Option<Credential>> {
-        todo!()
+    async fn load(&self, id: &str) -> anyhow::Result<Option<Credential>> {
+        let all_data = self.store.list_async("credential".into()).await?;
+        for entry in all_data {
+            if let StoreEntry::Data(data) = entry {
+                let credential: Credential = serde_json::from_slice(&data)?;
+                if credential.id == id {
+                    return Ok(Some(credential));
+                }
+            };
+        }
+        Ok(None)
     }
 
     /// Find the credentials that match the the provided filter. If `filter` is
     /// None, return all credentials in the store.
-    async fn find(
-        &self, _filter: Option<Constraints>,
-    ) -> anyhow::Result<Vec<Credential>> {
-        todo!()
+    async fn find(&self, filter: Option<Constraints>) -> anyhow::Result<Vec<Credential>> {
+        let all_data = self.store.list_async("credential".into()).await?;
+        let mut credentials = Vec::new();
+        for entry in all_data {
+            if let StoreEntry::Data(data) = entry {
+                let credential: Credential = serde_json::from_slice(&data)?;
+                if let Some(filter) = &filter {
+                    match filter.satisfied(&credential) {
+                        Ok(true) => credentials.push(credential),
+                        Ok(false) => {}
+                        Err(e) => return Err(e.into()),
+                    }
+                } else {
+                    credentials.push(credential);
+                }
+            }
+        }
+        Ok(credentials)
     }
 
     /// Remove the credential with the given ID from the store. Return an error
@@ -237,7 +195,8 @@ impl<Ev> Signer for Holder<Ev> {
     }
 
     /// The public key of the key pair used in signing. The possibility of key
-    /// rotation mean this key should only be referenced at the point of signing.
+    /// rotation mean this key should only be referenced at the point of
+    /// signing.
     async fn public_key(&self) -> anyhow::Result<Vec<u8>> {
         todo!()
     }

@@ -26,7 +26,8 @@ pub enum Aspect {
     /// Trigger a credential issuance using an offer QR code.
     IssuanceScan,
 
-    /// View the offer details to decide whether or not to proceed with issuance.
+    /// View the offer details to decide whether or not to proceed with
+    /// issuance.
     IssuanceOffer,
 
     /// Trigger a credential verification using a presentation request QR code.
@@ -44,7 +45,6 @@ pub enum Event {
     Error(String),
 
     //--- Credential events ----------------------------------------------------
-
     /// Event emitted by the shell when the app first loads.
     Ready,
 
@@ -71,7 +71,6 @@ pub enum Event {
     CredentialDeleted(Result<(), StoreError>),
 
     //--- Issuance events ------------------------------------------------------
-
     /// Event emitted by the shell when the user wants to scan an issuance offer
     /// QR code.
     ScanIssuanceOffer,
@@ -126,8 +125,8 @@ impl crux_core::App for App {
                 //         serde_json::from_slice(json).expect("should deserialize");
                 //     let credential = credentials[entries.len()].clone();
                 //     let data = serde_json::to_vec(&credential).expect("should serialize");
-                //     caps.store.save("credential".into(), credential.id.clone(), data, Event::CredentialStored);
-                // }
+                //     caps.store.save("credential".into(), credential.id.clone(), data,
+                // Event::CredentialStored); }
                 // -------------------------------
 
                 caps.render.render();
@@ -157,7 +156,7 @@ impl crux_core::App for App {
                 caps.render.render();
             }
             Event::IssuanceOffer(encoded_offer) => {
-                model.issuance_offer(&encoded_offer);
+                model.issuance_offer(&encoded_offer, caps.store.clone());
                 caps.render.render();
             }
         }
