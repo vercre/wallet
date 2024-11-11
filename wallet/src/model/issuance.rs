@@ -3,7 +3,9 @@
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
-use vercre_holder::{CredentialConfiguration, TxCode};
+use vercre_holder::{issuance::OfferRequest, CredentialConfiguration, CredentialOffer, TxCode};
+
+use crate::config;
 
 /// Application state for the issuance sub-app.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -28,15 +30,17 @@ pub struct IssuanceState {
 }
 
 //// State change implementation.
-// impl IssuanceState {
-//     /// Create an issuance state from a URL-encoded offer.
-//     pub fn from_offer(encoded_offer: &str) -> anyhow::Result<Self> {
-//         let offer_str = urlencoding::decode(encoded_offer)?;
-//         let offer: CredentialOffer = serde_json::from_str(&offer_str)?;
-//         let request = OfferRequest {
-//             client_id: config::client_id(),
-//         };
+impl IssuanceState {
+    /// Create an issuance state from a URL-encoded offer.
+    pub fn from_offer(encoded_offer: &str) -> anyhow::Result<Self> {
+        let offer_str = urlencoding::decode(encoded_offer)?;
+        let offer: CredentialOffer = serde_json::from_str(&offer_str)?;
+        let _request = OfferRequest {
+            client_id: config::client_id(),
+            subject_id: config::subject_id(),
+            offer,
+        };
 
-//         todo!()
-//     }
-// }
+        todo!()
+    }
+}

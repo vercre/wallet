@@ -3,10 +3,11 @@
 pub mod credential;
 mod issuance;
 
-use chrono::{serde::ts_milliseconds_option::deserialize as ts_milliseconds_option, DateTime, Utc};
 pub use credential::CredentialState;
 use issuance::IssuanceState;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
+
+use crate::capabilities::store::StoreEntry;
 
 use super::Aspect;
 
@@ -24,15 +25,52 @@ pub struct Model {
 
     /// Error state.
     pub error: Option<String>,
-
-    // TODO: Remove ---
-    pub count: Count,
-    // ----------------
 }
 
-#[derive(Serialize, Deserialize, Clone, Default, Debug, PartialEq, Eq)]
-pub struct Count {
-    pub value: isize,
-    #[serde(deserialize_with = "ts_milliseconds_option")]
-    pub updated_at: Option<DateTime<Utc>>,
+/// Methods to set the application state based on events.
+impl Model {
+    /// An error has occurred. Set the error state.
+    pub fn error(&mut self, error: String) {
+        self.active_view = Aspect::Error;
+        self.error = Some(error);
+    }
+
+    /// Set up the model with an initial state.
+    pub fn ready(&mut self) {
+        self.active_view = Aspect::CredentialList;
+        self.credential = CredentialState::init();
+    }
+
+    /// The user has selected a credential in their wallet to view.
+    pub fn select_credential(&mut self, id: String) {
+        self.active_view = Aspect::CredentialDetail;
+        self.credential.id = Some(id);
+    }
+
+    /// The credentials have been retrieved from the wallet's store.
+    pub fn credentials_loaded(&mut self, entries: Vec<StoreEntry>) {
+        self.active_view = Aspect::CredentialList;
+        self.credential.set_credentials(entries);
+    }
+
+    /// The user has deleted a credential from their wallet.
+    pub fn delete_credential(&mut self) {
+        self.credential.id = None;
+    }
+
+    /// The user wants to scan an issuance offer QR code.
+    pub fn scan_issuance_offer(&mut self) {
+        self.active_view = Aspect::IssuanceScan;
+        self.issuance = None;
+    }
+
+    /// The user has scanned an issuance offer QR code so we can initiate a
+    /// pre-authorized issuance flow.
+    pub fn issuance_offer(&mut self, encoded_offer: &str) {
+        self.active_view = Aspect::IssuanceOffer;
+        match IssuanceState::from_offer(encoded_offer) {
+            Ok(issuance_state) => self.issuance = Some(issuance_state),
+            Err(e) => self.error(e.to_string()),
+        }
+    }
 }

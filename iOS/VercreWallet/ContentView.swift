@@ -14,7 +14,6 @@ struct ContentView: View {
     init(core: Core) {
         self.core = core
         core.update(.ready)
-        core.update(.startWatch)
     }
     
     var body: some View {

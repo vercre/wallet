@@ -15,9 +15,4 @@ pub struct ViewModel {
 
     /// Credential view model.
     pub credential_view: CredentialView,
-
-    // --- TODO: Remove ---
-    pub text: String,
-    pub confirmed: bool,
-    // --------------------
 }

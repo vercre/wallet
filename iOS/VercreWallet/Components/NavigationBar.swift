@@ -16,7 +16,7 @@ struct NavigationBar: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItemGroup(placement: .bottomBar){
             Button(action: {
-                update(.navigate(.credentialList))
+                update(.ready)
             }) {
                 VStack {
                     Image(systemName: "wallet.bifold")
@@ -27,7 +27,7 @@ struct NavigationBar: ToolbarContent {
             )
             Spacer()
             Button(action: {
-                update(.navigate(.issuanceScan))
+                update(.scanIssuanceOffer)
             }) {
                 VStack {
                     Image(systemName: "plus.app")
@@ -38,7 +38,7 @@ struct NavigationBar: ToolbarContent {
             )
             Spacer()
             Button(action: {
-                update(.navigate(.presentationScan))
+                update(.ready)
             }) {
                 VStack {
                     Image(systemName: "checkmark.shield")
