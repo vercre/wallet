@@ -32,7 +32,7 @@ pub struct IssuanceState {
     pub pin: Option<String>,
 }
 
-//// State change implementation.
+/// State change implementation.
 impl IssuanceState {
     /// Create an issuance state from a URL-encoded offer.
     pub fn from_offer<Ev>(

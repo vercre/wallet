@@ -3,6 +3,7 @@
 //! Implementation of the `vercre-holder` `Provider` traits. Uses capabilities
 //! where necessary to provide the underlying connectivity and storage.
 
+use anyhow::anyhow;
 use chrono::{DateTime, Utc};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -129,18 +130,30 @@ where
     }
 }
 
-impl<Ev> Verifier for Provider<Ev> {
+impl<Ev> Verifier for Provider<Ev>
+where Ev: 'static
+{
     /// Get a request object. If an error is returned, the wallet will cancel
     /// the presentation flow.
-    async fn request_object(&self, _req: &str) -> anyhow::Result<RequestObjectResponse> {
-        todo!()
+    async fn request_object(&self, req: &str) -> anyhow::Result<RequestObjectResponse> {
+        let mut response = self.http.get(req).send_async().await?;
+        let res_bytes = response.body_bytes().await?;
+        let request: RequestObjectResponse = serde_json::from_slice(&res_bytes)?;
+        Ok(request)
     }
 
     /// Send the presentation to the verifier.
     async fn present(
-        &self, _uri: Option<&str>, _presentation: &ResponseRequest,
+        &self, uri: Option<&str>, presentation: &ResponseRequest,
     ) -> anyhow::Result<ResponseResponse> {
-        todo!()
+        let Some(url) = uri else {
+            return Err(anyhow!("no presentation URI"));
+        };
+        let req_bytes = serde_json::to_vec(presentation)?;
+        let mut response = self.http.post(url).body_bytes(req_bytes).send_async().await?;
+        let res_bytes = response.body_bytes().await?;
+        let response: ResponseResponse = serde_json::from_slice(&res_bytes)?;
+        Ok(response)
     }
 }
 
@@ -184,7 +197,7 @@ where
                     match filter.satisfied(&credential) {
                         Ok(true) => credentials.push(credential),
                         Ok(false) => {}
-                        Err(e) => return Err(e.into()),
+                        Err(e) => return Err(e),
                     }
                 } else {
                     credentials.push(credential);

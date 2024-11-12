@@ -62,13 +62,13 @@ pub async fn create_offer(
 pub async fn metadata(
     headers: HeaderMap, State(provider): State<Provider>, TypedHeader(host): TypedHeader<Host>,
 ) -> Result<AppJson<MetadataResponse>, AppError> {
-    let req = vercre_issuer::MetadataRequest {
+    let request = vercre_issuer::MetadataRequest {
         credential_issuer: format!("http://{host}"),
         languages: headers
             .get("accept-language")
             .and_then(|v| v.to_str().ok())
             .map(ToString::to_string),
     };
-    let res = vercre_issuer::metadata(provider.clone(), req).await?;
-    Ok(AppJson(res))
+    let response = vercre_issuer::metadata(provider.clone(), request).await?;
+    Ok(AppJson(response))
 }
