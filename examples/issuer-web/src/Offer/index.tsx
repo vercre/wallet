@@ -40,7 +40,7 @@ const Offer = () => {
     const handleCreateOffer = async (configId: 'EmployeeID_JWT' | 'Developer_JWT') => {
         setProcessing(configId);
         const req: CreateOfferRequest = {
-            credential_issuer: 'http://vercre.io',
+            credential_issuer: 'http://vercre.io', // Gets ignored by the sample API.
             subject_id: 'normal_user',
             credential_configuration_id: configId,
             grant_type: 'urn:ietf:params:oauth:grant-type:pre-authorized_code',

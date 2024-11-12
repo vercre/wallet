@@ -22,71 +22,110 @@ use vercre_holder::{
 use crate::capabilities::store::{Catalog, Store, StoreEntry};
 
 pub struct Provider<Ev> {
+    http: crux_http::Http<Ev>,
     store: Store<Ev>,
 }
 
 impl<Ev> Clone for Provider<Ev> {
     fn clone(&self) -> Self {
         Self {
+            http: self.http.clone(),
             store: self.store.clone(),
         }
     }
 }
 
 impl<Ev> Provider<Ev> {
-    pub fn new(store: Store<Ev>) -> Self {
-        Self { store }
+    pub fn new(http: crux_http::Http<Ev>, store: Store<Ev>) -> Self {
+        Self { http, store }
     }
 }
 
 impl<Ev> HolderProvider for Provider<Ev> where Ev: 'static {}
 
-impl<Ev> Issuer for Provider<Ev> {
+impl<Ev> Issuer for Provider<Ev>
+where
+    Ev: 'static,
+{
     /// Get issuer metadata from the issuer service endpoint.
-    async fn metadata(&self, _req: MetadataRequest) -> anyhow::Result<MetadataResponse> {
-        todo!()
+    async fn metadata(&self, req: MetadataRequest) -> anyhow::Result<MetadataResponse> {
+        let url = format!("{}/.well-known/openid-credential-issuer", req.credential_issuer);
+        let req_bytes = serde_json::to_vec(&req)?;
+        let mut response = self.http.post(url).body_bytes(req_bytes).send_async().await?;
+        let res_bytes = response.body_bytes().await?;
+        let metadata: MetadataResponse = serde_json::from_slice(&res_bytes)?;
+        Ok(metadata)
     }
 
     /// Get OAuth authorization configuration from the issuer's service
     /// endpoint.
     async fn oauth_server(&self, _req: OAuthServerRequest) -> anyhow::Result<OAuthServerResponse> {
-        todo!()
+        unimplemented!()
     }
 
     /// Get an authorization code.
     async fn authorization(
-        &self, _req: AuthorizationRequest,
+        &self, req: AuthorizationRequest,
     ) -> anyhow::Result<AuthorizationResponse> {
-        todo!()
+        match req {
+            AuthorizationRequest::Uri(_) => {
+                unimplemented!();
+            }
+            AuthorizationRequest::Object(request) => {
+                let url = format!("{}/authorize", request.credential_issuer);
+                let mut response = self.http.get(url).query(&request)?.send_async().await?;
+                let res_bytes = response.body_bytes().await?;
+                let authorization: AuthorizationResponse = serde_json::from_slice(&res_bytes)?;
+                Ok(authorization)
+            }
+        }
     }
 
     /// Get an access token.
-    async fn token(&self, _req: TokenRequest) -> anyhow::Result<TokenResponse> {
-        todo!()
+    async fn token(&self, req: TokenRequest) -> anyhow::Result<TokenResponse> {
+        let url = format!("{}/token", req.credential_issuer);
+        let req_bytes = serde_json::to_vec(&req)?;
+        let mut response = self.http.post(url).body_bytes(req_bytes).send_async().await?;
+        let res_bytes = response.body_bytes().await?;
+        let token: TokenResponse = serde_json::from_slice(&res_bytes)?;
+        Ok(token)
     }
 
     /// Get a credential.
-    async fn credential(&self, _req: CredentialRequest) -> anyhow::Result<CredentialResponse> {
-        todo!()
+    async fn credential(&self, req: CredentialRequest) -> anyhow::Result<CredentialResponse> {
+        let url = format!("{}/credential", req.credential_issuer);
+        let req_bytes = serde_json::to_vec(&req)?;
+        let mut response = self.http.post(url).body_bytes(req_bytes).send_async().await?;
+        let res_bytes = response.body_bytes().await?;
+        let credential: CredentialResponse = serde_json::from_slice(&res_bytes)?;
+        Ok(credential)
     }
 
     /// Get a deferred credential.
     async fn deferred(
-        &self, _req: DeferredCredentialRequest,
+        &self, req: DeferredCredentialRequest,
     ) -> anyhow::Result<DeferredCredentialResponse> {
-        todo!()
+        let url = format!("{}/deferred_credential", req.credential_issuer);
+        let req_bytes = serde_json::to_vec(&req)?;
+        let mut response = self.http.post(url).body_bytes(req_bytes).send_async().await?;
+        let res_bytes = response.body_bytes().await?;
+        let deferred: DeferredCredentialResponse = serde_json::from_slice(&res_bytes)?;
+        Ok(deferred)
     }
 
     /// Get a base64 encoded form of the credential logo.
-    async fn image(&self, _image_url: &str) -> anyhow::Result<ImageData> {
-        todo!()
+    async fn image(&self, image_url: &str) -> anyhow::Result<ImageData> {
+        let mut response = self.http.get(image_url).send_async().await?;
+        let data = response.body_string().await?;
+        let media_type = response.content_type().map_or("".into(), |ct| ct.to_string());
+        Ok(ImageData { data, media_type })
     }
 
     /// Notify the issuer of issuance progress.
     async fn notification(
         &self, _req: NotificationRequest,
     ) -> anyhow::Result<NotificationResponse> {
-        todo!()
+        unimplemented!()
     }
 }
 

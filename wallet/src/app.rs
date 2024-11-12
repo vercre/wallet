@@ -156,7 +156,7 @@ impl crux_core::App for App {
                 caps.render.render();
             }
             Event::IssuanceOffer(encoded_offer) => {
-                model.issuance_offer(&encoded_offer, caps.store.clone());
+                model.issuance_offer(&encoded_offer, caps.http.clone(), caps.store.clone());
                 caps.render.render();
             }
         }

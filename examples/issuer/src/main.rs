@@ -11,7 +11,7 @@ use std::env;
 use axum::extract::{rejection::JsonRejection, FromRequest};
 use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
-use axum::routing::post;
+use axum::routing::{get, post};
 use axum::Router;
 use provider::Provider;
 use serde::{Deserialize, Serialize};
@@ -33,6 +33,7 @@ async fn main() {
     let cors = CorsLayer::new().allow_methods(Any).allow_origin(Any).allow_headers(Any);
     let router = Router::new()
         .route("/create_offer", post(handler::create_offer))
+        .route("/.well-known/openid-credential-issuer", get(handler::metadata))
         .layer(TraceLayer::new_for_http())
         .layer(cors)
         .layer(SetResponseHeaderLayer::if_not_present(

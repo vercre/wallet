@@ -4,10 +4,13 @@ use std::vec;
 
 use anyhow::anyhow;
 use axum::extract::State;
+use axum::http::HeaderMap;
 use axum::response::Result;
 use axum::Json;
+use axum_extra::headers::Host;
+use axum_extra::TypedHeader;
 use issuer_types::{CreateOfferRequest, CreateOfferResponse};
-use vercre_issuer::{OfferType, SendType};
+use vercre_issuer::{MetadataResponse, OfferType, SendType};
 
 use super::{AppError, AppJson};
 use crate::provider::Provider;
@@ -15,7 +18,8 @@ use crate::provider::Provider;
 // Create a credential offer
 #[axum::debug_handler]
 pub async fn create_offer(
-    State(provider): State<Provider>, Json(req): Json<CreateOfferRequest>,
+    State(provider): State<Provider>, TypedHeader(host): TypedHeader<Host>,
+    Json(req): Json<CreateOfferRequest>,
 ) -> Result<AppJson<CreateOfferResponse>, AppError> {
     let gt = format!("\"{}\"", req.grant_type);
     let Ok(grant_type) = serde_json::from_str(&gt) else {
@@ -23,7 +27,7 @@ pub async fn create_offer(
     };
 
     let request = vercre_issuer::CreateOfferRequest {
-        credential_issuer: req.credential_issuer,
+        credential_issuer: format!("http://{host}"),
         subject_id: Some(req.subject_id),
         credential_configuration_ids: vec![req.credential_configuration_id.clone()],
         grant_types: Some(vec![grant_type]),
@@ -51,4 +55,20 @@ pub async fn create_offer(
     };
 
     Ok(AppJson(rsp))
+}
+
+// Metadata endpoint
+#[axum::debug_handler]
+pub async fn metadata(
+    headers: HeaderMap, State(provider): State<Provider>, TypedHeader(host): TypedHeader<Host>,
+) -> Result<AppJson<MetadataResponse>, AppError> {
+    let req = vercre_issuer::MetadataRequest {
+        credential_issuer: format!("http://{host}"),
+        languages: headers
+            .get("accept-language")
+            .and_then(|v| v.to_str().ok())
+            .map(ToString::to_string),
+    };
+    let res = vercre_issuer::metadata(provider.clone(), req).await?;
+    Ok(AppJson(res))
 }
