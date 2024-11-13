@@ -15,5 +15,6 @@ anyhow.workspace = true
 chrono.workspace = true
 crux_core.workspace = true
 crux_http.workspace = true
+crux_kv.workspace = true
 vercre-holder.workspace = true
 vercre-wallet = { path = "../wallet", features = ["typegen"] }

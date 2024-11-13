@@ -6,7 +6,6 @@ use serde::{Deserialize, Serialize};
 use vercre_holder::issuance::OfferRequest;
 use vercre_holder::{CredentialConfiguration, CredentialOffer, TxCode};
 
-use crate::capabilities::store::Store;
 use crate::config;
 use crate::provider::Provider;
 
@@ -36,7 +35,7 @@ pub struct IssuanceState {
 impl IssuanceState {
     /// Create an issuance state from a URL-encoded offer.
     pub fn from_offer<Ev>(
-        encoded_offer: &str, http: crux_http::Http<Ev>, store: Store<Ev>,
+        _provider: &Provider<Ev>, encoded_offer: &str
     ) -> anyhow::Result<Self> {
         let offer_str = urlencoding::decode(encoded_offer)?;
         let offer: CredentialOffer = serde_json::from_str(&offer_str)?;
@@ -45,8 +44,6 @@ impl IssuanceState {
             subject_id: config::subject_id(),
             offer,
         };
-
-        let _provider = Provider::new(http, store);
 
         todo!()
     }

@@ -855,6 +855,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "crux_kv"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fcef461b69be0ea0dca8684d0f3084765f76aa5bdf6e90462b2b3488e4db12fd"
+dependencies = [
+ "anyhow",
+ "crux_core",
+ "serde",
+ "serde_bytes",
+ "thiserror",
+]
+
+[[package]]
 name = "crux_macros"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2702,6 +2715,7 @@ dependencies = [
  "chrono",
  "crux_core",
  "crux_http",
+ "crux_kv",
  "vercre-holder",
  "vercre-wallet",
 ]
@@ -3541,6 +3555,7 @@ dependencies = [
  "chrono",
  "crux_core",
  "crux_http",
+ "crux_kv",
  "futures",
  "insta",
  "lazy_static",

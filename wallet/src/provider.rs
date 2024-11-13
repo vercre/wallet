@@ -24,6 +24,7 @@ use crate::capabilities::store::{Catalog, Store, StoreEntry};
 
 pub struct Provider<Ev> {
     http: crux_http::Http<Ev>,
+    kv: crux_kv::KeyValue<Ev>,
     store: Store<Ev>,
 }
 
@@ -31,14 +32,15 @@ impl<Ev> Clone for Provider<Ev> {
     fn clone(&self) -> Self {
         Self {
             http: self.http.clone(),
+            kv: self.kv.clone(),
             store: self.store.clone(),
         }
     }
 }
 
 impl<Ev> Provider<Ev> {
-    pub fn new(http: crux_http::Http<Ev>, store: Store<Ev>) -> Self {
-        Self { http, store }
+    pub fn new(http: crux_http::Http<Ev>, kv: crux_kv::KeyValue<Ev>, store: Store<Ev>) -> Self {
+        Self { http, kv, store }
     }
 }
 
@@ -214,23 +216,35 @@ where
     }
 }
 
-impl<Ev> StateStore for Provider<Ev> {
+impl<Ev> StateStore for Provider<Ev>
+where Ev: 'static,
+{
     /// Store state using the provided key. The expiry parameter indicates
     /// when data can be expunged from the state store.
     async fn put(
-        &self, _key: &str, _state: impl Serialize + Send, _expiry: DateTime<Utc>,
+        &self, key: &str, state: impl Serialize + Send, _expiry: DateTime<Utc>,
     ) -> anyhow::Result<()> {
-        todo!()
+        let data = serde_json::to_vec(&state)?;
+        self.kv.set_async(key.into(), data).await?;
+        Ok(())
     }
 
     /// Retrieve data using the provided key.
-    async fn get<T: DeserializeOwned>(&self, _key: &str) -> anyhow::Result<T> {
-        todo!()
+    async fn get<T: DeserializeOwned>(&self, key: &str) -> anyhow::Result<T> {
+        let data = self.kv.get_async(key.into()).await?;
+        match data {
+            Some(data) => {
+                let state: T = serde_json::from_slice(&data)?;
+                Ok(state)
+            }
+            None => Err(anyhow!("no data found")),
+        }
     }
 
     /// Remove data using the key provided.
-    async fn purge(&self, _key: &str) -> anyhow::Result<()> {
-        todo!()
+    async fn purge(&self, key: &str) -> anyhow::Result<()> {
+        self.kv.delete_async(key.into()).await?;
+        Ok(())
     }
 }
 

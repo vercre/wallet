@@ -25,7 +25,8 @@ axum = { version = "0.7.7", features = ["macros"] }
 axum-extra = { version = "0.9.4", features = ["typed-header"] }
 chrono = { version = "0.4.38", features = ["serde"] }
 crux_core = { version = "0.10.0", features = ["typegen"] }
-crux_http = "0.10.3"
+crux_http = { version = "0.10.3", features = ["typegen"] }
+crux_kv = { version = "0.5.2", features = ["typegen"] }
 dotenv = "0.15.0"
 serde = { version = "1.0.213", features = ["derive"] }
 serde_json = { version = "1.0.132", features = ["alloc"] }

@@ -10,8 +10,11 @@ fn main() -> anyhow::Result<()> {
     let mut gen = TypeGen::new();
     let out_dir = PathBuf::from("./generated");
     gen.register_app::<App>()?;
-    // Shouldn't need to do this, but...
+    
+    // Register types from crux capability crates that the code generator is
+    // having trouble with.
     gen.register_type::<HttpError>()?;
+
 
     // Register other types the code generator is having trouble inferring
     gen.register_type::<Aspect>()?;

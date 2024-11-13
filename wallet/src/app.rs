@@ -3,11 +3,13 @@
 
 use crux_core::render::Render;
 use crux_http::Http;
+use crux_kv::KeyValue;
 use serde::{Deserialize, Serialize};
 
 use crate::capabilities::sse::ServerSentEvents;
 use crate::capabilities::store::{Catalog, Store, StoreEntry, StoreError};
 use crate::model::Model;
+use crate::provider::Provider;
 use crate::view::ViewModel;
 
 /// Aspect of the application.
@@ -84,6 +86,7 @@ pub enum Event {
 pub struct Capabilities {
     pub render: Render<Event>,
     pub http: Http<Event>,
+    pub kv: KeyValue<Event>,
     pub sse: ServerSentEvents<Event>,
     pub store: Store<Event>,
 }
@@ -156,7 +159,8 @@ impl crux_core::App for App {
                 caps.render.render();
             }
             Event::IssuanceOffer(encoded_offer) => {
-                model.issuance_offer(&encoded_offer, caps.http.clone(), caps.store.clone());
+                let provider = Provider::new(caps.http.clone(), caps.kv.clone(), caps.store.clone());
+                model.issuance_offer(&provider, &encoded_offer);
                 caps.render.render();
             }
         }

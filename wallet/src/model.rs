@@ -8,7 +8,8 @@ use issuance::IssuanceState;
 use serde::Serialize;
 
 use super::Aspect;
-use crate::capabilities::store::{Store, StoreEntry};
+use crate::capabilities::store::StoreEntry;
+use crate::provider::Provider;
 
 /// State for the wallet application.
 #[derive(Default, Serialize)]
@@ -66,10 +67,10 @@ impl Model {
     /// The user has scanned an issuance offer QR code so we can initiate a
     /// pre-authorized issuance flow.
     pub fn issuance_offer<Ev>(
-        &mut self, encoded_offer: &str, http: crux_http::Http<Ev>, store: Store<Ev>,
+        &mut self, provider: &Provider<Ev>, encoded_offer: &str
     ) {
         self.active_view = Aspect::IssuanceOffer;
-        match IssuanceState::from_offer(encoded_offer, http, store) {
+        match IssuanceState::from_offer(provider, encoded_offer) {
             Ok(issuance_state) => self.issuance = Some(issuance_state),
             Err(e) => self.error(e.to_string()),
         }
