@@ -161,7 +161,12 @@ impl crux_core::App for App {
                 caps.render.render();
             }
             Event::IssuanceOffer(encoded_offer) => {
-                let provider = Provider::new(caps.http.clone(), caps.kv.clone(), caps.store.clone());
+                let provider = Provider::new(
+                    caps.http.clone(),
+                    caps.key_store.clone(),
+                    caps.kv.clone(),
+                    caps.store.clone(),
+                );
                 model.issuance_offer(&provider, &encoded_offer);
                 caps.render.render();
             }

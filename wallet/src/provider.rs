@@ -5,6 +5,7 @@
 
 use anyhow::anyhow;
 use chrono::{DateTime, Utc};
+use ed25519_dalek::SigningKey;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use vercre_holder::credential::{Credential, ImageData};
@@ -20,10 +21,12 @@ use vercre_holder::{
     TokenResponse,
 };
 
+use crate::capabilities::key::{KeyStore, KeyStoreEntry};
 use crate::capabilities::store::{Catalog, Store, StoreEntry};
 
 pub struct Provider<Ev> {
     http: crux_http::Http<Ev>,
+    key_store: KeyStore<Ev>,
     kv: crux_kv::KeyValue<Ev>,
     store: Store<Ev>,
 }
@@ -32,6 +35,7 @@ impl<Ev> Clone for Provider<Ev> {
     fn clone(&self) -> Self {
         Self {
             http: self.http.clone(),
+            key_store: self.key_store.clone(),
             kv: self.kv.clone(),
             store: self.store.clone(),
         }
@@ -39,8 +43,11 @@ impl<Ev> Clone for Provider<Ev> {
 }
 
 impl<Ev> Provider<Ev> {
-    pub fn new(http: crux_http::Http<Ev>, kv: crux_kv::KeyValue<Ev>, store: Store<Ev>) -> Self {
-        Self { http, kv, store }
+    pub fn new(
+        http: crux_http::Http<Ev>, key_store: KeyStore<Ev>, kv: crux_kv::KeyValue<Ev>,
+        store: Store<Ev>,
+    ) -> Self {
+        Self { http, key_store, kv, store }
     }
 }
 
@@ -133,7 +140,8 @@ where
 }
 
 impl<Ev> Verifier for Provider<Ev>
-where Ev: 'static
+where
+    Ev: 'static,
 {
     /// Get a request object. If an error is returned, the wallet will cancel
     /// the presentation flow.
@@ -217,7 +225,8 @@ where
 }
 
 impl<Ev> StateStore for Provider<Ev>
-where Ev: 'static,
+where
+    Ev: 'static,
 {
     /// Store state using the provided key. The expiry parameter indicates
     /// when data can be expunged from the state store.
@@ -256,6 +265,7 @@ impl<Ev> Signer for Provider<Ev> {
 
     /// `TrySign` is the fallible version of Sign.
     async fn try_sign(&self, _msg: &[u8]) -> anyhow::Result<Vec<u8>> {
+        let key = self.get_or_create_signing_key().await?;
         todo!()
     }
 
@@ -268,7 +278,7 @@ impl<Ev> Signer for Provider<Ev> {
 
     /// Signature algorithm used by the signer.
     fn algorithm(&self) -> Algorithm {
-        todo!()
+        Algorithm::EdDSA
     }
 
     /// The verification method the verifier should use to verify the signer's
@@ -286,5 +296,23 @@ impl<Ev> DidResolver for Provider<Ev> {
     /// Returns an error if the DID URL cannot be resolved.
     async fn resolve(&self, _url: &str) -> anyhow::Result<Document> {
         todo!()
+    }
+}
+
+impl<Ev> Provider<Ev> {
+    async fn get_or_create_signing_key(&self) -> anyhow::Result<SigningKey> {
+        let key = self.key_store.get_async("credential", "signing").await?;
+        match key {
+            KeyStoreEntry::Data(bytes) => {
+                let key_bytes: [u8; 32] = bytes.try_into().map_err(Into::into)?;
+                let key = SigningKey::from_bytes(&key_bytes);
+                Ok(key)
+            },
+            KeyStoreEntry::None => {
+                let key = vec![0; 32];
+                self.key_store.set("signing", "signing", key).await?;
+                Ok(key)
+            }
+        }
     }
 }

@@ -24,8 +24,10 @@ chrono = { version = "0.4.38", features = ["alloc", "serde"] }
 crux_core.workspace = true
 crux_http.workspace = true
 crux_kv.workspace = true
+ed25519-dalek = { version = "2.1.1", features = ["serde"] }
 futures = "0.3.31"
 lazy_static = "1.5.0"
+rand = "0.8.5"
 serde.workspace = true
 serde_bytes = "0.11.15"
 serde_json = "1.0.132"

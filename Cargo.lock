@@ -1111,6 +1111,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "115531babc129696a58c64a4fef0a8bf9e9698629fb97e9e40767d235cfbcd53"
 dependencies = [
  "pkcs8",
+ "serde",
  "signature",
 ]
 
@@ -3556,9 +3557,11 @@ dependencies = [
  "crux_core",
  "crux_http",
  "crux_kv",
+ "ed25519-dalek",
  "futures",
  "insta",
  "lazy_static",
+ "rand 0.8.5",
  "serde",
  "serde_bytes",
  "serde_json",
