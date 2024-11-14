@@ -1,4 +1,4 @@
-//! # Verifiable Credential Store
+//! # Verifiable Credential Store Capability
 use std::fmt::{self, Debug, Display};
 
 use crux_core::capability::{CapabilityContext, Operation};
@@ -116,7 +116,10 @@ impl Debug for StoreOperation {
 /// not supported across the FFI boundary in Crux.
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub enum StoreResult {
+    /// The operation was successful.
     Ok { response: StoreResponse },
+
+    /// The operation failed.
     Err { error: StoreError },
 }
 
@@ -161,13 +164,13 @@ impl StoreResult {
 /// The possible responses from the Store capability.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum StoreResponse {
-    /// The result of a successful save operation.
+    /// The result of a save operation.
     Saved,
 
-    /// The result of a successful list operation.
+    /// The result of a list operation.
     List { entries: Vec<StoreEntry> },
 
-    /// The result of a successful delete operation.
+    /// The result of a delete operation.
     Deleted,
 }
 

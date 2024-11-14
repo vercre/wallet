@@ -6,6 +6,7 @@ use crux_http::Http;
 use crux_kv::KeyValue;
 use serde::{Deserialize, Serialize};
 
+use crate::capabilities::key::KeyStore;
 use crate::capabilities::sse::ServerSentEvents;
 use crate::capabilities::store::{Catalog, Store, StoreEntry, StoreError};
 use crate::model::Model;
@@ -86,6 +87,7 @@ pub enum Event {
 pub struct Capabilities {
     pub render: Render<Event>,
     pub http: Http<Event>,
+    pub key_store: KeyStore<Event>,
     pub kv: KeyValue<Event>,
     pub sse: ServerSentEvents<Event>,
     pub store: Store<Event>,
