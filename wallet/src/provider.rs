@@ -5,7 +5,6 @@
 
 use anyhow::anyhow;
 use chrono::{DateTime, Utc};
-use ed25519_dalek::SigningKey;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use vercre_holder::credential::{Credential, ImageData};
@@ -21,7 +20,7 @@ use vercre_holder::{
     TokenResponse,
 };
 
-use crate::capabilities::key::{KeyStore, KeyStoreEntry};
+use crate::capabilities::key::KeyStore;
 use crate::capabilities::store::{Catalog, Store, StoreEntry};
 
 pub struct Provider<Ev> {
@@ -237,7 +236,6 @@ where
         self.kv.set_async(key.into(), data).await?;
         Ok(())
     }
-
     /// Retrieve data using the provided key.
     async fn get<T: DeserializeOwned>(&self, key: &str) -> anyhow::Result<T> {
         let data = self.kv.get_async(key.into()).await?;
@@ -265,7 +263,7 @@ impl<Ev> Signer for Provider<Ev> {
 
     /// `TrySign` is the fallible version of Sign.
     async fn try_sign(&self, _msg: &[u8]) -> anyhow::Result<Vec<u8>> {
-        let key = self.get_or_create_signing_key().await?;
+        // let key = self.get_or_create_signing_key().await?;
         todo!()
     }
 
@@ -299,20 +297,21 @@ impl<Ev> DidResolver for Provider<Ev> {
     }
 }
 
-impl<Ev> Provider<Ev> {
-    async fn get_or_create_signing_key(&self) -> anyhow::Result<SigningKey> {
-        let key = self.key_store.get_async("credential", "signing").await?;
-        match key {
-            KeyStoreEntry::Data(bytes) => {
-                let key_bytes: [u8; 32] = bytes.try_into().map_err(Into::into)?;
-                let key = SigningKey::from_bytes(&key_bytes);
-                Ok(key)
-            },
-            KeyStoreEntry::None => {
-                let key = vec![0; 32];
-                self.key_store.set("signing", "signing", key).await?;
-                Ok(key)
-            }
-        }
-    }
-}
+// impl<Ev> Provider<Ev> {
+//     async fn get_or_create_signing_key(&self) -> anyhow::Result<SigningKey> {
+//         let key = self.key_store.get_async("credential", "signing").await?;
+//         match key {
+//             KeyStoreEntry::Data(bytes) => {
+//                 let key_bytes: [u8; 32] = bytes.try_into().map_err(Into::into)?;
+//                 let key = SigningKey::from_bytes(&key_bytes);
+//                 Ok(key)
+//             },
+//             KeyStoreEntry::None => {
+//                 let key = vec![0; 32];
+                
+//                 self.key_store.set("signing", "signing", key).await?;
+//                 Ok(key)
+//             }
+//         }
+//     }
+// }

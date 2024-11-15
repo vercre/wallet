@@ -68,5 +68,16 @@ func requestKeyStore(_ request: KeyStoreOperation) async -> Result<KeyStoreRespo
             return .failure(.message("failed to delete key: \(status)"))
         }
         return .success(.deleted)
+    case .generateSecret(let length):
+        if length > Int.max {
+            return .failure(.message("secret length too large: \(length)"))
+        }
+        let count = Int(length)
+        var bytes = [UInt8](repeating: 0, count: count)
+        let status = SecRandomCopyBytes(kSecRandomDefault, count, &bytes)
+        if status != errSecSuccess {
+            return .failure(.message("failed to generate secret: \(status)"))
+        }
+        return .success(.generatedSecret(secret: Array(bytes)))
     }
 }

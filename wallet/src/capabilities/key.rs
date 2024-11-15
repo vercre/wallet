@@ -68,6 +68,9 @@ pub enum KeyStoreOperation {
 
     /// Remove a serialized private key from the key store.
     Delete { id: String, purpose: String },
+
+    /// Generate a random secret suitable for key derivation.
+    GenerateSecret { length: usize },
 }
 
 impl Debug for KeyStoreOperation {
@@ -87,6 +90,9 @@ impl Debug for KeyStoreOperation {
             KeyStoreOperation::Delete { id, purpose } => {
                 f.debug_struct("Delete").field("id", id).field("purpose", purpose).finish()
             }
+            KeyStoreOperation::GenerateSecret { length } => {
+                f.debug_struct("GenerateSecret").field("length", length).finish()
+            }
         }
     }
 }
@@ -102,6 +108,9 @@ pub enum KeyStoreResponse {
 
     /// result of a delete operation.
     Deleted,
+
+    /// A random secret suitable for key derivation.
+    GeneratedSecret { secret: Vec<u8> },
 }
 
 /// The result of an operation on the key store.
@@ -147,6 +156,18 @@ impl KeyStoreResult {
             KeyStoreResult::Err { error } => Err(error),
             _ => Err(KeyStoreError::InvalidResponse {
                 message: "unexpected response for Delete operation".to_string(),
+            }),
+        }
+    }
+
+    fn unwrap_generate_secret(self) -> Result<Vec<u8>, KeyStoreError> {
+        match self {
+            KeyStoreResult::Ok {
+                response: KeyStoreResponse::GeneratedSecret { secret },
+            } => Ok(secret),
+            KeyStoreResult::Err { error } => Err(error),
+            _ => Err(KeyStoreError::InvalidResponse {
+                message: "unexpected response for GenerateSecret operation".to_string(),
             }),
         }
     }
@@ -259,7 +280,7 @@ where
         F: FnOnce(Result<(), KeyStoreError>) -> Ev + Send + Sync + 'static,
     {
         self.context.spawn({
-            let context = self.context.clone();
+            let context: CapabilityContext<KeyStoreOperation, Ev> = self.context.clone();
             async move {
                 let response = delete(&context, id, purpose).await;
                 context.update_app(make_event(response))
@@ -272,6 +293,26 @@ where
         &self, id: impl Into<String>, purpose: impl Into<String>,
     ) -> Result<(), KeyStoreError> {
         delete(&self.context, id, purpose).await
+    }
+
+    /// Generate a random secret suitable for key derivation and send an update
+    /// event to the application.
+    pub fn generate_secret<F>(&self, length: usize, make_event: F)
+    where
+        F: FnOnce(Result<Vec<u8>, KeyStoreError>) -> Ev + Send + Sync + 'static,
+    {
+        self.context.spawn({
+            let context: CapabilityContext<KeyStoreOperation, Ev> = self.context.clone();
+            async move {
+                let response = generate_secret(&context, length).await;
+                context.update_app(make_event(response))
+            }
+        });
+    }
+
+    /// Generate a random secret suitable for key derivation.
+    pub async fn generate_secret_async(&self, length: usize) -> Result<Vec<u8>, KeyStoreError> {
+        generate_secret(&self.context, length).await
     }
 }
 
@@ -316,4 +357,13 @@ async fn delete<Ev: 'static>(
         })
         .await
         .unwrap_delete()
+}
+
+async fn generate_secret<Ev: 'static>(
+    context: &CapabilityContext<KeyStoreOperation, Ev>, length: usize,
+) -> Result<Vec<u8>, KeyStoreError> {
+    context
+        .request_from_shell(KeyStoreOperation::GenerateSecret { length })
+        .await
+        .unwrap_generate_secret()
 }
