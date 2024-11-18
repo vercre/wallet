@@ -2608,9 +2608,9 @@ dependencies = [
 
 [[package]]
 name = "rustix"
-version = "0.38.40"
+version = "0.38.41"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99e4ea3e1cdc4b559b8e5650f9c8e5998e3e5c1343b4eaf034565f32318d63c0"
+checksum = "d7f649912bc1495e167a6edee79151c84b1bad49748cb4f1f1167f459f6224f6"
 dependencies = [
  "bitflags 2.6.0",
  "errno",
@@ -3044,7 +3044,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 [[package]]
 name = "test-utils"
 version = "0.0.0"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3173,9 +3173,9 @@ dependencies = [
 
 [[package]]
 name = "tower-http"
-version = "0.6.1"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8437150ab6bbc8c5f0f519e3d5ed4aa883a83dd4cdd3d1b21f9482936046cb97"
+checksum = "403fa3b783d4b626a8ad51d766ab03cb6d2dbfc46b1c5d4448395e6628dc9697"
 dependencies = [
  "bitflags 2.6.0",
  "bytes",
@@ -3520,7 +3520,7 @@ checksum = "3ef4c4aa54d5d05a279399bfa921ec387b7aba77caf7a682ae8d86785b8fdad2"
 [[package]]
 name = "vercre-core"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "base64ct",
  "fastrand 2.2.0",
@@ -3533,7 +3533,7 @@ dependencies = [
 [[package]]
 name = "vercre-did"
 version = "0.1.0"
-source = "git+https://github.com/vercre/did.git#5f9b7101ae194710713167d784f514ff9332a01f"
+source = "git+https://github.com/vercre/did#07195b6302825a2ffb60f1bf64aba032a5c1639a"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3553,7 +3553,7 @@ dependencies = [
 [[package]]
 name = "vercre-dif-exch"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3566,7 +3566,7 @@ dependencies = [
 [[package]]
 name = "vercre-holder"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3588,7 +3588,7 @@ dependencies = [
 [[package]]
 name = "vercre-infosec"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/infosec.git#11e73f1e82227db1f823e0eb82062ccfc2c1a14c"
+source = "git+https://github.com/vercre/infosec.git#3d8136e16a41122d18d49bd6be3fc913b6f5f91a"
 dependencies = [
  "aes-gcm",
  "anyhow",
@@ -3608,7 +3608,7 @@ dependencies = [
 [[package]]
 name = "vercre-iso-mdl"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3625,7 +3625,7 @@ dependencies = [
 [[package]]
 name = "vercre-issuer"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "base64ct",
  "chrono",
@@ -3645,7 +3645,7 @@ dependencies = [
 [[package]]
 name = "vercre-macros"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3655,7 +3655,7 @@ dependencies = [
 [[package]]
 name = "vercre-openid"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3676,7 +3676,7 @@ dependencies = [
 [[package]]
 name = "vercre-status"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3694,7 +3694,7 @@ dependencies = [
 [[package]]
 name = "vercre-w3c-vc"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#482ba9ad0f4ad9f468b652f5c6a306ae592b3917"
+source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3734,6 +3734,7 @@ dependencies = [
  "uniffi",
  "url",
  "urlencoding",
+ "vercre-did",
  "vercre-holder",
  "wasm-bindgen",
 ]

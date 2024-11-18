@@ -36,6 +36,7 @@ thiserror = "1.0.65"
 uniffi = "0.28.2"
 url.workspace = true
 urlencoding = "2.1.3"
+vercre-did.workspace = true
 vercre-holder.workspace = true
 wasm-bindgen = "0.2.95"
 

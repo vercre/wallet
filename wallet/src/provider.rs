@@ -130,7 +130,7 @@ where
     }
 
     /// Get a base64 encoded form of the credential logo.
-    async fn image(&self, image_url: &str) -> anyhow::Result<ImageData> {
+    async fn image(self, image_url: &str) -> anyhow::Result<ImageData> {
         let mut response = self.http.get(image_url).send_async().await?;
         let data = response.body_string().await?;
         let media_type = response.content_type().map_or("".into(), |ct| ct.to_string());
@@ -309,14 +309,19 @@ where
     }
 }
 
-impl<Ev> DidResolver for Provider<Ev> {
+impl<Ev> DidResolver for Provider<Ev>
+where Ev: 'static,
+{
     /// Resolve the DID URL to a DID Document.
     ///
     /// # Errors
     ///
     /// Returns an error if the DID URL cannot be resolved.
-    async fn resolve(&self, _url: &str) -> anyhow::Result<Document> {
-        todo!()
+    async fn resolve(&self, url:  &str) -> anyhow::Result<Document> {
+        let mut response = self.http.get(url).send_async().await?;
+        let res_bytes = response.body_bytes().await?;
+        let doc: Document = serde_json::from_slice(&res_bytes)?;
+        Ok(doc)
     }
 }
 
