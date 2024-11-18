@@ -20,6 +20,7 @@ typegen = ["crux_core/typegen"]
 anyhow.workspace = true
 async-sse = "5.1.0"
 async-std = "1.13.0"
+base64ct.workspace = true
 chrono = { version = "0.4.38", features = ["alloc", "serde"] }
 crux_core.workspace = true
 crux_http.workspace = true

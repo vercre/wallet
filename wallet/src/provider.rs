@@ -4,7 +4,9 @@
 //! where necessary to provide the underlying connectivity and storage.
 
 use anyhow::anyhow;
+use base64ct::{Base64UrlUnpadded, Encoding};
 use chrono::{DateTime, Utc};
+use ed25519_dalek::{Signature, Signer as _, SigningKey};
 use serde::de::DeserializeOwned;
 use serde::Serialize;
 use vercre_holder::credential::{Credential, ImageData};
@@ -20,7 +22,7 @@ use vercre_holder::{
     TokenResponse,
 };
 
-use crate::capabilities::key::KeyStore;
+use crate::capabilities::key::{KeyStore, KeyStoreEntry};
 use crate::capabilities::store::{Catalog, Store, StoreEntry};
 
 pub struct Provider<Ev> {
@@ -46,7 +48,12 @@ impl<Ev> Provider<Ev> {
         http: crux_http::Http<Ev>, key_store: KeyStore<Ev>, kv: crux_kv::KeyValue<Ev>,
         store: Store<Ev>,
     ) -> Self {
-        Self { http, key_store, kv, store }
+        Self {
+            http,
+            key_store,
+            kv,
+            store,
+        }
     }
 }
 
@@ -236,6 +243,7 @@ where
         self.kv.set_async(key.into(), data).await?;
         Ok(())
     }
+
     /// Retrieve data using the provided key.
     async fn get<T: DeserializeOwned>(&self, key: &str) -> anyhow::Result<T> {
         let data = self.kv.get_async(key.into()).await?;
@@ -255,23 +263,29 @@ where
     }
 }
 
-impl<Ev> Signer for Provider<Ev> {
+impl<Ev> Signer for Provider<Ev>
+where
+    Ev: 'static,
+{
     /// Sign is a convenience method for infallible Signer implementations.
     async fn sign(&self, msg: &[u8]) -> Vec<u8> {
         self.try_sign(msg).await.expect("should sign")
     }
 
     /// `TrySign` is the fallible version of Sign.
-    async fn try_sign(&self, _msg: &[u8]) -> anyhow::Result<Vec<u8>> {
-        // let key = self.get_or_create_signing_key().await?;
-        todo!()
+    async fn try_sign(&self, msg: &[u8]) -> anyhow::Result<Vec<u8>> {
+        let key = self.get_or_create_signing_key().await?;
+        let signature: Signature = key.sign(msg);
+        Ok(signature.to_vec())
     }
 
     /// The public key of the key pair used in signing. The possibility of key
     /// rotation mean this key should only be referenced at the point of
     /// signing.
     async fn public_key(&self) -> anyhow::Result<Vec<u8>> {
-        todo!()
+        let key = self.get_or_create_signing_key().await?;
+        let verifying_key = key.verifying_key();
+        Ok(verifying_key.as_bytes().to_vec())
     }
 
     /// Signature algorithm used by the signer.
@@ -281,8 +295,17 @@ impl<Ev> Signer for Provider<Ev> {
 
     /// The verification method the verifier should use to verify the signer's
     /// signature. This is typically a DID URL + # + verification key ID.
-    fn verification_method(&self) -> String {
-        todo!()
+    ///
+    /// # Panics
+    ///
+    /// The `vercre` crates expect this to be infallible, but we can fail at a
+    /// number of steps in generating or retrieving a secret and generating the
+    /// key pair from it.
+    async fn verification_method(&self) -> anyhow::Result<String> {
+        let vk = self.public_key().await?;
+        let encoded = Base64UrlUnpadded::encode_string(&vk);
+        let did_key = format!("did:key:{}#{}", encoded, encoded);
+        Ok(did_key)
     }
 }
 
@@ -297,21 +320,32 @@ impl<Ev> DidResolver for Provider<Ev> {
     }
 }
 
-// impl<Ev> Provider<Ev> {
-//     async fn get_or_create_signing_key(&self) -> anyhow::Result<SigningKey> {
-//         let key = self.key_store.get_async("credential", "signing").await?;
-//         match key {
-//             KeyStoreEntry::Data(bytes) => {
-//                 let key_bytes: [u8; 32] = bytes.try_into().map_err(Into::into)?;
-//                 let key = SigningKey::from_bytes(&key_bytes);
-//                 Ok(key)
-//             },
-//             KeyStoreEntry::None => {
-//                 let key = vec![0; 32];
-                
-//                 self.key_store.set("signing", "signing", key).await?;
-//                 Ok(key)
-//             }
-//         }
-//     }
-// }
+impl<Ev> Provider<Ev>
+where
+    Ev: 'static,
+{
+    async fn get_or_create_signing_key(&self) -> anyhow::Result<SigningKey> {
+        let secret = self.key_store.get_async("credential", "signing").await?;
+        let _secret_bytes: [u8; 32] = match secret {
+            KeyStoreEntry::Data(bytes) => match bytes.try_into() {
+                Ok(secret) => secret,
+                Err(_) => {
+                    return Err(anyhow!("Unable to convert shell secret to fixed size byte array"));
+                }
+            },
+            KeyStoreEntry::None => {
+                let new_secret = self.key_store.generate_secret_async(32).await?;
+                self.key_store.set_async("credential", "signing", new_secret.clone()).await?;
+                match new_secret.try_into() {
+                    Ok(secret) => secret,
+                    Err(_) => {
+                        return Err(anyhow!(
+                            "Unable to convert shell secret to fixed size byte array"
+                        ));
+                    }
+                }
+            }
+        };
+        Ok(SigningKey::from_bytes(&_secret_bytes))
+    }
+}
