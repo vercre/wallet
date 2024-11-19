@@ -7,7 +7,6 @@ use crux_kv::KeyValue;
 use serde::{Deserialize, Serialize};
 
 use crate::capabilities::key::KeyStore;
-use crate::capabilities::holder::Holder;
 use crate::capabilities::sse::ServerSentEvents;
 use crate::capabilities::store::{Catalog, Store, StoreEntry, StoreError};
 use crate::model::Model;
@@ -83,11 +82,11 @@ pub enum Event {
     IssuanceOffer(String),
 }
 
+/// Set of capabilities available to the application.
 #[cfg_attr(feature = "typegen", derive(crux_core::macros::Export))]
 #[derive(crux_core::macros::Effect)]
 pub struct Capabilities {
     pub render: Render<Event>,
-    pub holder: Holder<Event>,
     pub http: Http<Event>,
     pub key_store: KeyStore<Event>,
     pub kv: KeyValue<Event>,

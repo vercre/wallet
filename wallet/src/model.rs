@@ -66,11 +66,12 @@ impl Model {
 
     /// The user has scanned an issuance offer QR code so we can initiate a
     /// pre-authorized issuance flow.
-    pub fn issuance_offer<Ev>(
-        &mut self, provider: &Provider<Ev>, encoded_offer: &str
-    ) {
+    pub fn issuance_offer<Ev>(&mut self, provider: &Provider<Ev>, encoded_offer: &str)
+    where
+        Ev: 'static,
+    {
         self.active_view = Aspect::IssuanceOffer;
-        
+
         match IssuanceState::from_offer(provider, encoded_offer) {
             Ok(issuance_state) => self.issuance = Some(issuance_state),
             Err(e) => self.error(e.to_string()),

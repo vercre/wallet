@@ -26,7 +26,7 @@ crux_core.workspace = true
 crux_http.workspace = true
 crux_kv.workspace = true
 ed25519-dalek = { version = "2.1.1", features = ["serde"] }
-futures = "0.3.31"
+futures = { version = "0.3.31", features = ["executor"] }
 lazy_static = "1.5.0"
 rand = "0.8.5"
 serde.workspace = true

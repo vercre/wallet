@@ -2,6 +2,7 @@
 
 use std::collections::HashMap;
 
+use futures::executor::block_on;
 use serde::{Deserialize, Serialize};
 use vercre_holder::issuance::OfferRequest;
 use vercre_holder::{CredentialConfiguration, CredentialOffer, TxCode};
@@ -41,15 +42,28 @@ impl IssuanceState {
     {
         let offer_str = urlencoding::decode(encoded_offer)?;
         let offer: CredentialOffer = serde_json::from_str(&offer_str)?;
+        let tx_code = {
+            if let Some(grants) = offer.grants.clone() {
+                if let Some(pre_auth) = grants.pre_authorized_code {
+                    pre_auth.tx_code    
+                } else {
+                    None
+                }
+            }
+            else { None }
+        };
         let offer_req = OfferRequest {
             client_id: config::client_id(),
             subject_id: config::subject_id(),
             offer,
         };
-        let offer_response = async move {
-            vercre_holder::issuance::offer(provider.clone(), &offer_req).await;
-        };
-        match offer_response {}
-        todo!()
+        let offer_response = block_on(vercre_holder::issuance::offer(provider.clone(), &offer_req))?;
+        Ok(Self {
+            id: offer_response.issuance_id,
+            issuer: offer_response.issuer,
+            offered: offer_response.offered,
+            tx_code,
+            pin: None,
+        })
     }
 }
