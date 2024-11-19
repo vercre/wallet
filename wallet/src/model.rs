@@ -70,6 +70,7 @@ impl Model {
         &mut self, provider: &Provider<Ev>, encoded_offer: &str
     ) {
         self.active_view = Aspect::IssuanceOffer;
+        
         match IssuanceState::from_offer(provider, encoded_offer) {
             Ok(issuance_state) => self.issuance = Some(issuance_state),
             Err(e) => self.error(e.to_string()),

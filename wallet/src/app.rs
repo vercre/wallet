@@ -7,6 +7,7 @@ use crux_kv::KeyValue;
 use serde::{Deserialize, Serialize};
 
 use crate::capabilities::key::KeyStore;
+use crate::capabilities::holder::Holder;
 use crate::capabilities::sse::ServerSentEvents;
 use crate::capabilities::store::{Catalog, Store, StoreEntry, StoreError};
 use crate::model::Model;
@@ -86,6 +87,7 @@ pub enum Event {
 #[derive(crux_core::macros::Effect)]
 pub struct Capabilities {
     pub render: Render<Event>,
+    pub holder: Holder<Event>,
     pub http: Http<Event>,
     pub key_store: KeyStore<Event>,
     pub kv: KeyValue<Event>,
@@ -136,24 +138,12 @@ impl crux_core::App for App {
 
                 caps.render.render();
             }
-            Event::CredentialsLoaded(Err(error)) => {
-                model.error(error.to_string());
-                caps.render.render();
-            }
             Event::CredentialStored(Ok(())) => {
                 caps.store.list(Catalog::Credential.to_string(), Event::CredentialsLoaded);
-            }
-            Event::CredentialStored(Err(error)) => {
-                model.error(error.to_string());
-                caps.render.render();
             }
             Event::CredentialDeleted(Ok(())) => {
                 model.delete_credential();
                 caps.store.list(Catalog::Credential.to_string(), Event::CredentialsLoaded);
-                caps.render.render();
-            }
-            Event::CredentialDeleted(Err(error)) => {
-                model.error = Some(error.to_string());
                 caps.render.render();
             }
             Event::ScanIssuanceOffer => {
@@ -168,6 +158,12 @@ impl crux_core::App for App {
                     caps.store.clone(),
                 );
                 model.issuance_offer(&provider, &encoded_offer);
+                caps.render.render();
+            }
+            Event::CredentialsLoaded(Err(error))
+            | Event::CredentialStored(Err(error))
+            | Event::CredentialDeleted(Err(error)) => {
+                model.error(error.to_string());
                 caps.render.render();
             }
         }

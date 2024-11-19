@@ -241,9 +241,6 @@ where
     }
 
     /// Save a serialized credential to the store while in an async context.
-    ///
-    /// This can be used in a higher-order capability such as a `Provider` for
-    /// `vercre-holder`.
     pub async fn save_async(
         &self, catalog: impl Into<String>, id: impl Into<String>, data: impl Serialize,
     ) -> Result<(), StoreError> {
@@ -265,9 +262,6 @@ where
     }
 
     /// Get all serialized credentials from the store while in an async context.
-    ///
-    /// This can be used in a higher-order capability such as a `Provider` for
-    /// `vercre-holder`.
     pub async fn list_async(
         &self, catalog: impl Into<String>,
     ) -> Result<Vec<StoreEntry>, StoreError> {
@@ -292,9 +286,6 @@ where
 
     /// Remove the credential with the given ID from the store while in an async
     /// context.
-    ///
-    /// This can be used in a higher-order capability such as a `Provider` for
-    /// `vercre-holder`.
     pub async fn delete_async(
         &self, catalog: impl Into<String>, id: impl Into<String>,
     ) -> Result<(), StoreError> {

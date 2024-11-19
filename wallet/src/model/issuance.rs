@@ -35,16 +35,21 @@ pub struct IssuanceState {
 impl IssuanceState {
     /// Create an issuance state from a URL-encoded offer.
     pub fn from_offer<Ev>(
-        _provider: &Provider<Ev>, encoded_offer: &str
-    ) -> anyhow::Result<Self> {
+        provider: &Provider<Ev>, encoded_offer: &str
+    ) -> anyhow::Result<Self>
+    where Ev: 'static
+    {
         let offer_str = urlencoding::decode(encoded_offer)?;
         let offer: CredentialOffer = serde_json::from_str(&offer_str)?;
-        let _request = OfferRequest {
+        let offer_req = OfferRequest {
             client_id: config::client_id(),
             subject_id: config::subject_id(),
             offer,
         };
-
+        let offer_response = async move {
+            vercre_holder::issuance::offer(provider.clone(), &offer_req).await;
+        };
+        match offer_response {}
         todo!()
     }
 }
