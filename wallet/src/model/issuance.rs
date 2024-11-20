@@ -18,8 +18,11 @@ pub struct IssuanceState {
     /// management.
     pub id: String,
 
-    /// Issuer of the credential(s)
+    /// Identifier of the issuer of the credential(s)
     pub issuer: String,
+
+    /// Issuer's name.
+    pub issuer_name: String,
 
     /// Description of the credential(s) offered, keyed by credential
     /// configuration ID.
@@ -61,6 +64,7 @@ impl IssuanceState {
         Ok(Self {
             id: offer_response.issuance_id,
             issuer: offer_response.issuer,
+            issuer_name: offer_response.issuer_name,
             offered: offer_response.offered,
             tx_code,
             pin: None,

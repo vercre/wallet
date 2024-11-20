@@ -4,7 +4,7 @@ pub mod credential;
 mod issuance;
 
 pub use credential::CredentialState;
-use issuance::IssuanceState;
+pub use issuance::IssuanceState;
 use serde::Serialize;
 
 use super::Aspect;

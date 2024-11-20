@@ -1,8 +1,10 @@
 //! # View Model
 //! 
 pub mod credential;
+pub mod issuance;
 
 use credential::CredentialView;
+use issuance::IssuanceView;
 use serde::{Deserialize, Serialize};
 
 use super::Aspect;
@@ -15,4 +17,17 @@ pub struct ViewModel {
 
     /// Credential view model.
     pub credential_view: CredentialView,
+
+    /// Issuance view model.
+    pub issuance_view: IssuanceView,
+}
+
+
+// Capitalize the first letter of a string.
+pub(crate) fn capitalize(s: &str) -> String {
+    let mut chars = s.chars();
+    match chars.next() {
+        None => String::new(),
+        Some(c) => c.to_uppercase().collect::<String>() + chars.as_str(),
+    }
 }

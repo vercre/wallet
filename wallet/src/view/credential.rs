@@ -8,6 +8,7 @@ use vercre_holder::credential::{Credential as CredentialModel, ImageData};
 use vercre_holder::Claim;
 
 use crate::model::CredentialState;
+use super::capitalize;
 
 /// View model for a verifiable credential.
 ///
@@ -20,8 +21,14 @@ pub struct Credential {
     /// `id`).
     pub id: String,
 
-    /// The credential issuer.
+    /// The credential issuer ID.
     pub issuer: String,
+
+    /// The issuer's name.
+    /// 
+    /// Empty string if not provided in metadata or if the name is the same as
+    /// the issuer ID.
+    pub issuer_name: String,
 
     /// The Verifiable Credential as issued, for use in Presentation
     /// Submissions. This could be a base64-encoded JWT or 'stringified'
@@ -113,6 +120,7 @@ impl From<CredentialModel> for Credential {
         Self {
             id: credential.id,
             issuer: credential.issuer,
+            issuer_name: credential.issuer_name,
             issued: credential.issued,
             type_: credential.type_,
             format: credential.format,
@@ -152,7 +160,6 @@ impl From<CredentialState> for CredentialView {
 // Convert the `SubjectClaims` model to a string representation, including
 // using the claim definitions to find the claim labels.
 // TODO: Use locales.
-#[allow(dead_code)]
 fn claims_display(
     display: &mut String, claims: Map<String, Value>, definitions: HashMap<String, Claim>,
     indent_level: usize,
@@ -163,7 +170,7 @@ fn claims_display(
         if let Some(definition) = definitions.get(&key) {
             match definition {
                 Claim::Entry(def) => {
-                    if let Some(def_display) = def.display.clone() {
+                    if let Some(def_display) = &def.display {
                         let locale_display = def_display
                             .clone()
                             .into_iter()
@@ -196,15 +203,6 @@ fn claims_display(
         }
     }
     *display = display.replace("\"", "");
-}
-
-// Capitalize the first letter of a string.
-pub fn capitalize(s: &str) -> String {
-    let mut chars = s.chars();
-    match chars.next() {
-        None => String::new(),
-        Some(c) => c.to_uppercase().collect::<String>() + chars.as_str(),
-    }
 }
 
 #[cfg(test)]

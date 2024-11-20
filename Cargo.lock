@@ -546,9 +546,9 @@ checksum = "79296716171880943b8470b5f8d03aa55eb2e645a4874bdbb28adb49162e012c"
 
 [[package]]
 name = "bytemuck"
-version = "1.19.0"
+version = "1.20.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8334215b81e418a0a7bdb8ef0849474f40bb10c8b71f1c4ed315cff49f32494d"
+checksum = "8b37c88a63ffd85d15b406896cc343916d7cf57838a847b3a6f2ca5d39a5695a"
 
 [[package]]
 name = "byteorder"
@@ -1689,9 +1689,9 @@ checksum = "df3b46402a9d5adb4c86a0cf463f42e19994e3ee891101b1841f30a545cb49a9"
 
 [[package]]
 name = "hyper"
-version = "1.5.0"
+version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bbbff0a806a4728c99295b254c8838933b5b082d75e3cb70c8dab21fdfbcfa9a"
+checksum = "97818827ef4f364230e16705d4706e2897df2bb60617d6ca15d598025a3c481f"
 dependencies = [
  "bytes",
  "futures-channel",
@@ -3044,7 +3044,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 [[package]]
 name = "test-utils"
 version = "0.0.0"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3520,7 +3520,7 @@ checksum = "3ef4c4aa54d5d05a279399bfa921ec387b7aba77caf7a682ae8d86785b8fdad2"
 [[package]]
 name = "vercre-core"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "base64ct",
  "fastrand 2.2.0",
@@ -3553,7 +3553,7 @@ dependencies = [
 [[package]]
 name = "vercre-dif-exch"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3566,7 +3566,7 @@ dependencies = [
 [[package]]
 name = "vercre-holder"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3608,7 +3608,7 @@ dependencies = [
 [[package]]
 name = "vercre-iso-mdl"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3625,7 +3625,7 @@ dependencies = [
 [[package]]
 name = "vercre-issuer"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "base64ct",
  "chrono",
@@ -3645,7 +3645,7 @@ dependencies = [
 [[package]]
 name = "vercre-macros"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3655,7 +3655,7 @@ dependencies = [
 [[package]]
 name = "vercre-openid"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3676,7 +3676,7 @@ dependencies = [
 [[package]]
 name = "vercre-status"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3694,7 +3694,7 @@ dependencies = [
 [[package]]
 name = "vercre-w3c-vc"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#96d762733d2749c7dfdccf7d22c2b6a35a142083"
+source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
 dependencies = [
  "anyhow",
  "base64ct",
