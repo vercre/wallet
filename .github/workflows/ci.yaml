@@ -30,6 +30,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
+      - name: Remove rust-toolchain.toml
+        shell: bash
+        run: |
+          # so we don't add tooling for all targets
+          rm rust-toolchain.toml
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@nightly
       - uses: taiki-e/install-action@nextest
@@ -46,6 +51,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
+      - name: Remove rust-toolchain.toml
+        shell: bash
+        run: |
+          # so we don't add tooling for all targets
+          rm rust-toolchain.toml
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@nightly
       - uses: pnpm/action-setup@v4
@@ -76,6 +86,11 @@ jobs:
     if: github.event_name != 'pull_request'
     timeout-minutes: 45
     steps:
+      - name: Remove rust-toolchain.toml
+        shell: bash
+        run: |
+          # so we don't add tooling for all targets
+          rm rust-toolchain.toml
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@nightly
       - uses: pnpm/action-setup@v4
