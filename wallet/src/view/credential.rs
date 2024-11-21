@@ -164,7 +164,7 @@ impl From<CredentialState> for CredentialView {
 // Convert the `SubjectClaims` model to a string representation, including
 // using the claim definitions to find the claim labels.
 // TODO: Use locales.
-// TODO: Consider moving this into 'vercre-holder' as a convenience method on
+// TODO: Move this into 'vercre-holder' as a convenience method on
 // `SubjectClaims`.
 fn claims_display(
     display: &mut String, claims: Map<String, Value>, definitions: HashMap<String, Claim>,
