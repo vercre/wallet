@@ -49,3 +49,6 @@ uniffi = { version = "0.28.2", features = ["cli"] }
 
 [build-dependencies]
 uniffi = { version = "0.28.2", features = ["build"] }
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(wasm_bindgen_unstable_test_coverage)'] }
