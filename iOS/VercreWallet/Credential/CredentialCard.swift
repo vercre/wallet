@@ -27,6 +27,7 @@ struct CredentialCard: View {
                     Logo(data: credential.logo.data)
                     Spacer()
                     Text(credential.name)
+                        .font(.headline)
                         .foregroundStyle(Color(UIColor(hex: txtColor)))
                 }
                 Spacer()
