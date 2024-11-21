@@ -365,7 +365,7 @@ dependencies = [
  "serde_json",
  "serde_path_to_error",
  "serde_urlencoded",
- "sync_wrapper 1.0.1",
+ "sync_wrapper 1.0.2",
  "tokio",
  "tower",
  "tower-layer",
@@ -388,7 +388,7 @@ dependencies = [
  "mime",
  "pin-project-lite",
  "rustversion",
- "sync_wrapper 1.0.1",
+ "sync_wrapper 1.0.2",
  "tower-layer",
  "tower-service",
  "tracing",
@@ -1950,6 +1950,8 @@ dependencies = [
  "console",
  "lazy_static",
  "linked-hash-map",
+ "pest",
+ "pest_derive",
  "serde",
  "similar",
 ]
@@ -2008,9 +2010,9 @@ dependencies = [
 
 [[package]]
 name = "itoa"
-version = "1.0.11"
+version = "1.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "49f1f14873335454500d59611f1cf4a4b0f786f9ac11f4312a78e4cf2566695b"
+checksum = "540654e97a3f4470a492cd30ff187bc95d89557a903a2bbf112e2fae98104ef2"
 
 [[package]]
 name = "js-sys"
@@ -2259,6 +2261,51 @@ name = "percent-encoding"
 version = "2.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
+
+[[package]]
+name = "pest"
+version = "2.7.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "879952a81a83930934cbf1786752d6dedc3b1f29e8f8fb2ad1d0a36f377cf442"
+dependencies = [
+ "memchr",
+ "thiserror",
+ "ucd-trie",
+]
+
+[[package]]
+name = "pest_derive"
+version = "2.7.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d214365f632b123a47fd913301e14c946c61d1c183ee245fa76eb752e59a02dd"
+dependencies = [
+ "pest",
+ "pest_generator",
+]
+
+[[package]]
+name = "pest_generator"
+version = "2.7.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eb55586734301717aea2ac313f50b2eb8f60d2fc3dc01d190eefa2e625f60c4e"
+dependencies = [
+ "pest",
+ "pest_meta",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.87",
+]
+
+[[package]]
+name = "pest_meta"
+version = "2.7.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b75da2a70cf4d9cb76833c990ac9cd3923c9a8905a8929789ce347c84564d03d"
+dependencies = [
+ "once_cell",
+ "pest",
+ "sha2",
+]
 
 [[package]]
 name = "phf"
@@ -3020,9 +3067,9 @@ checksum = "2047c6ded9c721764247e62cd3b03c09ffc529b2ba5b10ec482ae507a4a70160"
 
 [[package]]
 name = "sync_wrapper"
-version = "1.0.1"
+version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a7065abeca94b6a8a577f9bd45aa0867a2238b74e8eb67cf10d492bc39351394"
+checksum = "0bf256ce5efdfa370213c1dabab5935a12e49f2c58d15e9eac2870d3b4f27263"
 
 [[package]]
 name = "synstructure"
@@ -3044,7 +3091,7 @@ checksum = "55937e1799185b12863d447f42597ed69d9928686b8d88a1df17376a097d8369"
 [[package]]
 name = "test-utils"
 version = "0.0.0"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3296,6 +3343,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ucd-trie"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2896d95c02a80c6d6a5d6e953d479f5ddf2dfdb6a244441010e373ac0fb88971"
+
+[[package]]
 name = "unicase"
 version = "2.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3303,9 +3356,9 @@ checksum = "7e51b68083f157f853b6379db119d1c1be0e6e4dec98101079dec41f6f5cf6df"
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.13"
+version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e91b56cd4cadaeb79bbf1a5645f6b4f8dc5bde8834ad5894a8db35fda9efa1fe"
+checksum = "adb9e6ca4f869e1180728b7950e35922a7fc6397f7b641499e8f3ef06e50dc83"
 
 [[package]]
 name = "unicode-segmentation"
@@ -3520,7 +3573,7 @@ checksum = "3ef4c4aa54d5d05a279399bfa921ec387b7aba77caf7a682ae8d86785b8fdad2"
 [[package]]
 name = "vercre-core"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "base64ct",
  "fastrand 2.2.0",
@@ -3553,7 +3606,7 @@ dependencies = [
 [[package]]
 name = "vercre-dif-exch"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3566,7 +3619,7 @@ dependencies = [
 [[package]]
 name = "vercre-holder"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "anyhow",
  "chrono",
@@ -3588,7 +3641,7 @@ dependencies = [
 [[package]]
 name = "vercre-infosec"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/infosec.git#3d8136e16a41122d18d49bd6be3fc913b6f5f91a"
+source = "git+https://github.com/vercre/infosec.git#25df165bc2cfe374438102234d36c4675ca9a806"
 dependencies = [
  "aes-gcm",
  "anyhow",
@@ -3608,7 +3661,7 @@ dependencies = [
 [[package]]
 name = "vercre-iso-mdl"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3625,7 +3678,7 @@ dependencies = [
 [[package]]
 name = "vercre-issuer"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "base64ct",
  "chrono",
@@ -3645,7 +3698,7 @@ dependencies = [
 [[package]]
 name = "vercre-macros"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3655,7 +3708,7 @@ dependencies = [
 [[package]]
 name = "vercre-openid"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3676,7 +3729,7 @@ dependencies = [
 [[package]]
 name = "vercre-status"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "anyhow",
  "base64ct",
@@ -3694,7 +3747,7 @@ dependencies = [
 [[package]]
 name = "vercre-w3c-vc"
 version = "0.1.0-alpha.6"
-source = "git+https://github.com/vercre/vc#160d829fdc0730dac7e8e53137300a728a4b3783"
+source = "git+https://github.com/vercre/vc#910c190c58896be69405e4da5d030b32f3ace2c9"
 dependencies = [
  "anyhow",
  "base64ct",

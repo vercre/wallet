@@ -1,9 +1,8 @@
 //! Issuance flow view models.
 
 use serde::{Deserialize, Serialize};
-use vercre_holder::{Claim, CredentialConfiguration, Format};
+use vercre_holder::CredentialConfiguration;
 
-use super::capitalize;
 use crate::model::IssuanceState;
 
 /// View-friendly representation of a credential configuration.
@@ -83,7 +82,7 @@ impl CredentialSummary {
             config_id: config_id.into(),
             name,
             description,
-            claims: claim_labels(&config.format),
+            claims: config.claims_display(None), // TODO: Locale from shell.
             background_color,
             text_color,
             logo_url,
@@ -169,54 +168,133 @@ impl From<Option<IssuanceState>> for IssuanceView {
     }
 }
 
-// Extract display labels for claims from a credential format.
-fn claim_labels(format: &Format) -> Vec<String> {
-    let mut labels = Vec::<String>::new();
-    match format {
-        Format::JwtVcJson(profile) | Format::LdpVc(profile) | Format::JwtVcJsonLd(profile) => {
-            if let Some(cs) = &profile.credential_definition.credential_subject {
-                for (name, claim) in cs.into_iter() {
-                    let mut label = "".to_string();
-                    label_from_def(&mut label, &name, &claim);
-                    labels.push(label);
-                }
-            } else {
-                return labels;
-            }
-        }
-        Format::IsoMdl(_) => {
-            // TODO: Implement this.
-        }
-        Format::VcSdJwt(_) => {
-            // TODO: Implement this.
-        }
-    }
-    labels
-}
+#[cfg(test)]
+mod tests {
+    use insta::assert_yaml_snapshot;
 
-// Recursively build claim labels from nested claim definitions.
-// TODO: Use locales.
-fn label_from_def(label: &mut String, key: &str, claim: &Claim) {
-    match claim {
-        Claim::Entry(def) => {
-            if let Some(def_display) = &def.display {
-                let locale_display = def_display
-                    .clone()
-                    .into_iter()
-                    .find(|d| d.locale.is_none())
-                    .unwrap_or_else(|| def_display[0].clone());
-                label.push_str(&locale_display.name);
-            } else {
-                label.push_str(&capitalize(&key));
+    use super::*;
+
+    #[test]
+    fn credential_config() {
+        let json = serde_json::json!({
+            "format": "jwt_vc_json",
+            "scope": "EmployeeIDCredential",
+            "cryptographic_binding_methods_supported": [
+                "did:key",
+                "did:web"
+            ],
+            "credential_signing_alg_values_supported": [
+                "ES256K",
+                "EdDSA"
+            ],
+            "proof_types_supported": {
+                "jwt": {
+                    "proof_signing_alg_values_supported": [
+                        "ES256K",
+                        "EdDSA"
+                    ]
+                }
+            },
+            "display": [
+                {
+                    "name": "Employee ID",
+                    "description": "Vercre employee ID credential",
+                    "locale": "en-NZ",
+                    "logo": {
+                        "uri": "https://vercre.github.io/assets/employee.png",
+                        "alt_text": "Vercre Logo"
+                    },
+                    "text_color": "#ffffff",
+                    "background_color": "#323ed2",
+                    "background_image": {
+                        "uri": "https://vercre.github.io/assets/employee-background.png",
+                        "alt_text": "Vercre Background"
+                    }
+                }
+            ],
+            "credential_definition": {
+                "type": [
+                    "VerifiableCredential",
+                    "EmployeeIDCredential"
+                ],
+                "credentialSubject": {
+                    "email": {
+                        "mandatory": true,
+                        "value_type": "string",
+                        "display": [
+                            {
+                                "name": "Email",
+                                "locale": "en-NZ"
+                            }
+                        ]
+                    },
+                    "family_name": {
+                        "mandatory": true,
+                        "value_type": "string",
+                        "display": [
+                            {
+                                "name": "Family name",
+                                "locale": "en-NZ"
+                            }
+                        ]
+                    },
+                    "given_name": {
+                        "mandatory": true,
+                        "value_type": "string",
+                        "display": [
+                            {
+                                "name": "Given name",
+                                "locale": "en-NZ"
+                            }
+                        ]
+                    },
+                    "address": {
+                        "street_address": {
+                            "value_type": "string",
+                            "display": [
+                                {
+                                    "name": "Street Address",
+                                    "locale": "en-NZ"
+                                }
+                            ]
+                        },
+                        "locality": {
+                            "value_type": "string",
+                            "display": [
+                                {
+                                    "name": "Locality",
+                                    "locale": "en-NZ"
+                                }
+                            ]
+                        },
+                        "region": {
+                            "value_type": "string",
+                            "display": [
+                                {
+                                    "name": "Region",
+                                    "locale": "en-NZ"
+                                }
+                            ]
+                        },
+                        "country": {
+                            "value_type": "string",
+                            "display": [
+                                {
+                                    "name": "Country",
+                                    "locale": "en-NZ"
+                                }
+                            ]
+                        }
+                    }
+                }
             }
-        }
-        Claim::Set(set) => {
-            if !label.is_empty() {
-                label.push_str(".");
-            }
-            for (name, claim) in set.into_iter() {
-                label_from_def(label, name, claim);
-            }
-        }
+        });
+
+        let config: CredentialConfiguration =
+            serde_json::from_value(json.clone()).expect("should deserialize from json");
+        let summary = CredentialSummary::from_configuration("test", &config);
+        assert_yaml_snapshot!("config_summary", summary, {
+            ".claims" => insta::sorted_redaction(),
+        });
     }
 }

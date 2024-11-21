@@ -7,8 +7,8 @@ use serde_json::{Map, Value};
 use vercre_holder::credential::{Credential as CredentialModel, ImageData};
 use vercre_holder::Claim;
 
-use crate::model::CredentialState;
 use super::capitalize;
+use crate::model::CredentialState;
 
 /// View model for a verifiable credential.
 ///
@@ -25,7 +25,7 @@ pub struct Credential {
     pub issuer: String,
 
     /// The issuer's name.
-    /// 
+    ///
     /// Empty string if not provided in metadata or if the name is the same as
     /// the issuer ID.
     pub issuer_name: String,
@@ -126,8 +126,12 @@ impl From<CredentialModel> for Credential {
             format: credential.format,
             claims,
             issuance_date: credential.issuance_date.format("%a, %d %b %Y").to_string(),
-            valid_from: credential.valid_from.map_or_else(String::new, |date| date.format("%a, %d %b %Y").to_string()),
-            valid_until: credential.valid_until.map_or_else(String::new, |date| date.format("%a, %d %b %Y").to_string()),
+            valid_from: credential
+                .valid_from
+                .map_or_else(String::new, |date| date.format("%a, %d %b %Y").to_string()),
+            valid_until: credential
+                .valid_until
+                .map_or_else(String::new, |date| date.format("%a, %d %b %Y").to_string()),
             name,
             description,
             background_color,
@@ -160,6 +164,8 @@ impl From<CredentialState> for CredentialView {
 // Convert the `SubjectClaims` model to a string representation, including
 // using the claim definitions to find the claim labels.
 // TODO: Use locales.
+// TODO: Consider moving this into 'vercre-holder' as a convenience method on
+// `SubjectClaims`.
 fn claims_display(
     display: &mut String, claims: Map<String, Value>, definitions: HashMap<String, Claim>,
     indent_level: usize,

@@ -1,0 +1,21 @@
+---
+source: wallet/src/view/issuance.rs
+assertion_line: 296
+expression: summary
+snapshot_kind: text
+---
+config_id: test
+name: Employee ID
+description: Vercre employee ID credential
+claims:
+  - Address.Country
+  - Address.Locality
+  - Address.Region
+  - Address.Street Address
+  - Email
+  - Family name
+  - Given name
+background_color: "#323ed2"
+text_color: "#ffffff"
+logo_url: "https://vercre.github.io/assets/employee.png"
+background_url: "https://vercre.github.io/assets/employee-background.png"

@@ -39,14 +39,3 @@ impl CredentialState {
         self.credentials = credentials;
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_init() {
-        let state = CredentialState::init();
-        assert_eq!(state.credentials.len(), 2);
-    }
-}
