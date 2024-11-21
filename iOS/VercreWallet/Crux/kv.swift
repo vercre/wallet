@@ -42,7 +42,7 @@ func requestKeyValue(_ request: KeyValueOperation) async -> Result<KeyValueRespo
         } else {
             return .success(.exists(is_present: false))
         }
-    case .listKeys(prefix: let prefix, cursor: let cursor):
+    case .listKeys(prefix: _, cursor: _):
         var keys: [String] = []
         for k in UserDefaults.standard.dictionaryRepresentation().keys {
             keys.append(k)

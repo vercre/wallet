@@ -173,6 +173,7 @@ impl crux_core::App for App {
             active_view: model.active_view.clone(),
             credential_view: model.credential.clone().into(),
             issuance_view: model.issuance.clone().into(),
+            error: model.error.clone().unwrap_or_default(),
         }
     }
 }

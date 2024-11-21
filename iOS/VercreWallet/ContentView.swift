@@ -29,6 +29,8 @@ struct ContentView: View {
                 }
             case .issuanceScan:
                 IssuanceScan(core: Core()).navBar(context: core.view.active_view)
+            case .error:
+                ErrorDetail(message: core.view.error)
             default : EmptyView()
             }
         }

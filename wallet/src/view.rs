@@ -20,8 +20,10 @@ pub struct ViewModel {
 
     /// Issuance view model.
     pub issuance_view: IssuanceView,
-}
 
+    /// Error message.
+    pub error: String,
+}
 
 // Capitalize the first letter of a string.
 pub(crate) fn capitalize(s: &str) -> String {

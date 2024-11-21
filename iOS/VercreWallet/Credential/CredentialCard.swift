@@ -14,8 +14,7 @@ struct CredentialCard: View {
     var body: some View {
         let txtColor = credential.text_color.isEmpty ? "#000000" : credential.text_color
         let bgColor = credential.background_color.isEmpty ? "#FFFFFF" : credential.background_color
-        let parts = credential.issuer.components(separatedBy: "://")
-        let issuer = parts.count > 1 ? parts[1] : parts[0]
+        let issuer = credential.issuer_name
 
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 10)
@@ -43,6 +42,7 @@ struct CredentialCard: View {
     let credential = Credential(
         id: "http://vercre.io/credentials/EmployeeIDCredential",
         issuer: "http://vercre.io",
+        issuer_name: "Vercre",
         issued: "encoded",
         type: ["VerifiableCredential", "EmployeeIDCredential"],
         format: "jwt_vc_json",

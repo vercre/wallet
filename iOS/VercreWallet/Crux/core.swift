@@ -70,6 +70,15 @@ class Core: ObservableObject {
                     processEffect(request)
                 }
             }
+        case let .keyStore(req):
+            Task {
+                let response = try! await requestKeyStore(req).get()
+                let effects = [UInt8](handleResponse(request.id, Data(try! KeyStoreResult.ok(response: response).bincodeSerialize())))
+                let requests: [Request] = try! .bincodeDeserialize(input: effects)
+                for request in requests {
+                    processEffect(request)
+                }
+            }
         }
     }
 }

@@ -61,6 +61,7 @@ struct CredentialDetailView: View {
     let credential = Credential(
         id: "http://vercre.io/credentials/EmployeeIDCredential",
         issuer: "http://vercre.io",
+        issuer_name: "Vercre",
         issued: "encoded",
         type: ["VerifiableCredential", "EmployeeIDCredential"],
         format: "jwt_vc_json",

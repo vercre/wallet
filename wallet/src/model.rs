@@ -70,6 +70,8 @@ impl Model {
     where
         Ev: 'static,
     {
+        // Indicate to the shell that it should display the offer details for
+        // the user to decide whether or not to proceed with issuance.
         self.active_view = Aspect::IssuanceOffer;
 
         match IssuanceState::from_offer(provider, encoded_offer) {

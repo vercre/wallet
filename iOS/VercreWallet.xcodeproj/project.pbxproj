@@ -12,7 +12,7 @@
 		DD6CE117F10A9C662E40F9D7 /* libvercre_wallet_static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B1AB811B3E464499BBF4192 /* libvercre_wallet_static.a */; };
 		E226A32C2CE4259D00254154 /* kv.swift in Sources */ = {isa = PBXBuildFile; fileRef = E226A32A2CE4259800254154 /* kv.swift */; };
 		E226A3302CE44BE200254154 /* key.swift in Sources */ = {isa = PBXBuildFile; fileRef = E226A32E2CE44BDD00254154 /* key.swift */; };
-		E2934EEA2CD43E4700DC2BF9 /* CounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2934EE92CD43E4700DC2BF9 /* CounterView.swift */; };
+		E231BEEC2CEEC6B600E73109 /* ErrorDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E231BEEB2CEEC6B600E73109 /* ErrorDetail.swift */; };
 		E2934F2D2CD4508B00DC2BF9 /* CredentialCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */; };
 		E29F76452CBF0B9100496B37 /* sse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7EC2CBE05E70070F7A5 /* sse.swift */; };
 		E29F76462CBF0B9100496B37 /* http.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7EB2CBE042F0070F7A5 /* http.swift */; };
@@ -20,7 +20,6 @@
 		E29F76482CBF0B9100496B37 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7E92CBDF84C0070F7A5 /* ContentView.swift */; };
 		E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7E52CBDF7F40070F7A5 /* VercreWalletApp.swift */; };
 		E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513922CC5953800D5A957 /* CredentialList.swift */; };
-		E2B513962CC5A9F100D5A957 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513952CC5A9F100D5A957 /* ActionButton.swift */; };
 		E2B513992CC5B57500D5A957 /* IssuanceScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B513982CC5B57500D5A957 /* IssuanceScan.swift */; };
 		E2B5139C2CC5B81B00D5A957 /* PresentationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B5139B2CC5B81B00D5A957 /* PresentationRequest.swift */; };
 		E2B513A62CC8896300D5A957 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = E2B513A52CC8896300D5A957 /* CodeScanner */; };
@@ -100,7 +99,7 @@
 		B1593DC3198F51583D1B1654 /* VercreWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VercreWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E226A32A2CE4259800254154 /* kv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kv.swift; sourceTree = "<group>"; };
 		E226A32E2CE44BDD00254154 /* key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = key.swift; sourceTree = "<group>"; };
-		E2934EE92CD43E4700DC2BF9 /* CounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterView.swift; sourceTree = "<group>"; };
+		E231BEEB2CEEC6B600E73109 /* ErrorDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDetail.swift; sourceTree = "<group>"; };
 		E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialCard.swift; sourceTree = "<group>"; };
 		E295C7E52CBDF7F40070F7A5 /* VercreWalletApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VercreWalletApp.swift; sourceTree = "<group>"; };
 		E295C7E92CBDF84C0070F7A5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -108,7 +107,6 @@
 		E295C7EB2CBE042F0070F7A5 /* http.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = http.swift; sourceTree = "<group>"; };
 		E295C7EC2CBE05E70070F7A5 /* sse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sse.swift; sourceTree = "<group>"; };
 		E2B513922CC5953800D5A957 /* CredentialList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialList.swift; sourceTree = "<group>"; };
-		E2B513952CC5A9F100D5A957 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		E2B513982CC5B57500D5A957 /* IssuanceScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuanceScan.swift; sourceTree = "<group>"; };
 		E2B5139B2CC5B81B00D5A957 /* PresentationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationRequest.swift; sourceTree = "<group>"; };
 		E2DACD6F2CD95E3900C9E9D5 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -154,8 +152,8 @@
 		6D5A7EBBC5FAE24EA47023DA /* VercreWallet */ = {
 			isa = PBXGroup;
 			children = (
+				E231BEE92CEEC6A000E73109 /* Error */,
 				E2DACD6D2CD95E2800C9E9D5 /* Utilities */,
-				E2934EE82CD43E2B00DC2BF9 /* Counter */,
 				E2DCBC8B2CD01F4B002176D1 /* Model */,
 				E2B5139A2CC5B7FF00D5A957 /* Presentation */,
 				E2B513972CC5B56000D5A957 /* Issuance */,
@@ -207,12 +205,12 @@
 			);
 			sourceTree = "<group>";
 		};
-		E2934EE82CD43E2B00DC2BF9 /* Counter */ = {
+		E231BEE92CEEC6A000E73109 /* Error */ = {
 			isa = PBXGroup;
 			children = (
-				E2934EE92CD43E4700DC2BF9 /* CounterView.swift */,
+				E231BEEB2CEEC6B600E73109 /* ErrorDetail.swift */,
 			);
-			path = Counter;
+			path = Error;
 			sourceTree = "<group>";
 		};
 		E2B513902CC594D400D5A957 /* Crux */ = {
@@ -243,7 +241,6 @@
 		E2B513942CC5A79C00D5A957 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				E2B513952CC5A9F100D5A957 /* ActionButton.swift */,
 				E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */,
 				E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */,
 			);
@@ -397,13 +394,12 @@
 				E2934F2D2CD4508B00DC2BF9 /* CredentialCard.swift in Sources */,
 				E2DACD852CDAF31F00C9E9D5 /* store.swift in Sources */,
 				E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */,
+				E231BEEC2CEEC6B600E73109 /* ErrorDetail.swift in Sources */,
 				E226A32C2CE4259D00254154 /* kv.swift in Sources */,
-				E2934EEA2CD43E4700DC2BF9 /* CounterView.swift in Sources */,
 				E2DACD702CD95E4700C9E9D5 /* Color.swift in Sources */,
 				E2DACD7D2CD9BE8D00C9E9D5 /* CredentialDetailView.swift in Sources */,
 				E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */,
 				E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */,
-				E2B513962CC5A9F100D5A957 /* ActionButton.swift in Sources */,
 				E2B5139C2CC5B81B00D5A957 /* PresentationRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
