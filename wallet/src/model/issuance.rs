@@ -4,11 +4,25 @@ use std::collections::HashMap;
 
 use futures::executor::block_on;
 use serde::{Deserialize, Serialize};
+use vercre_holder::credential::ImageData;
 use vercre_holder::issuance::OfferRequest;
 use vercre_holder::{CredentialConfiguration, CredentialOffer, TxCode};
 
 use crate::config;
 use crate::provider::Provider;
+
+/// Configuration and image information for an offered credential.
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+pub struct OfferedCredential {
+    /// Credential configuration.
+    pub config: CredentialConfiguration,
+
+    /// Logo image data.
+    pub logo: Option<ImageData>,
+
+    /// Background image data.
+    pub background: Option<ImageData>,
+}
 
 /// Application state for the issuance sub-app.
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
@@ -26,7 +40,7 @@ pub struct IssuanceState {
 
     /// Description of the credential(s) offered, keyed by credential
     /// configuration ID.
-    pub offered: HashMap<String, CredentialConfiguration>,
+    pub offered: HashMap<String, OfferedCredential>,
 
     /// Description of the type of PIN needed to accept the offer.
     pub tx_code: Option<TxCode>,
@@ -61,11 +75,41 @@ impl IssuanceState {
             offer,
         };
         let offer_response = block_on(vercre_holder::issuance::offer(provider.clone(), &offer_req))?;
+
+        let mut offered = HashMap::new();
+        for (config_id, config) in offer_response.offered {
+            let (logo, background) = match &config.display {
+                Some(display) => {
+                    let logo = if let Some(logo_info) = &display[0].logo {
+                        if let Some(uri) = &logo_info.uri {
+                            Some(block_on(vercre_holder::provider::Issuer::image(provider.clone(), uri))?)
+                        } else {
+                            None
+                        }
+                    } else {
+                        None
+                    };
+                    let background = if let Some(background_info) = &display[0].background_image {
+                        if let Some(uri) = &background_info.uri {
+                            Some(block_on(vercre_holder::provider::Issuer::image(provider.clone(), uri))?)
+                        } else {
+                            None
+                        }
+                    } else {
+                        None
+                    };
+                    (logo, background)
+                }
+                None => (None, None),
+            };
+            offered.insert(config_id.clone(), OfferedCredential { config, logo, background });
+        }        
+
         Ok(Self {
             id: offer_response.issuance_id,
             issuer: offer_response.issuer,
             issuer_name: offer_response.issuer_name,
-            offered: offer_response.offered,
+            offered,
             tx_code,
             pin: None,
         })

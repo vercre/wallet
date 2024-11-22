@@ -3,12 +3,25 @@
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
-use serde_json::{Map, Value};
 use vercre_holder::credential::{Credential as CredentialModel, ImageData};
-use vercre_holder::Claim;
 
-use super::capitalize;
-use crate::model::CredentialState;
+use crate::model::{CredentialState, OfferedCredential};
+
+/// View model for nested claims
+#[derive(Clone, Debug, Default, Deserialize, Serialize, PartialEq, Eq)]
+pub struct ClaimView {
+    /// The claim name.
+    pub name: String,
+
+    /// The claim value.
+    pub value: String,
+}
+
+impl From<(String, String)> for ClaimView {
+    fn from((name, value): (String, String)) -> Self {
+        Self { name, value }
+    }
+}
 
 /// View model for a verifiable credential.
 ///
@@ -45,9 +58,8 @@ pub struct Credential {
     pub format: String,
 
     /// Claims display. The key is the subject ID and the value is the claims
-    /// displayed as a string with a claim on each line and nested claims
-    /// indented.
-    pub claims: HashMap<String, String>,
+    /// displayed as labelled strings
+    pub claims: HashMap<String, Vec<ClaimView>>,
 
     /// The date the credential was issued as an RFC2822 string.
     pub issuance_date: String,
@@ -90,15 +102,13 @@ pub struct Credential {
 impl From<CredentialModel> for Credential {
     fn from(credential: CredentialModel) -> Self {
         let mut claims = HashMap::new();
-        for claim_set in &credential.subject_claims {
-            let mut display = String::new();
-            claims_display(
-                &mut display,
-                claim_set.claims.clone(),
-                credential.claim_definitions.clone().unwrap_or_default(),
-                0,
-            );
-            claims.insert(claim_set.id.clone().unwrap_or_default(), display);
+        for sub_claims in &credential.subject_claims {
+            let claims_display = credential.claims_display(sub_claims.id.as_deref(), None);
+            let mut claims_view = Vec::new();
+            for (name, value) in claims_display {
+                claims_view.push((name, value).into());
+            }
+            claims.insert(sub_claims.id.clone().unwrap_or_default(), claims_view);
         }
         let (name, description, background_color, text_color) = match credential.display {
             Some(display_list) => {
@@ -142,6 +152,50 @@ impl From<CredentialModel> for Credential {
     }
 }
 
+impl Credential {
+    /// Convert an offer into a credential view.
+    ///
+    /// Some data is empty. We just use the credential data shape as a template.
+    pub fn from_offer(issuer: &str, issuer_name: &str, offered: OfferedCredential) -> Self {
+        let mut claims = HashMap::new();
+        let claims_display = offered.config.claims_display(None);
+        let mut claims_view = Vec::new();
+        for name in claims_display {
+            claims_view.push((name, String::new()).into());
+        }
+        claims.insert(String::new(), claims_view);
+        let (name, description, background_color, text_color) = match offered.config.display {
+            Some(display_list) => {
+                // TODO: Locale support.
+                let display = display_list
+                    .clone()
+                    .into_iter()
+                    .find(|display| display.locale.is_none())
+                    .unwrap_or_else(|| display_list[0].clone());
+                (
+                    display.name,
+                    display.description.unwrap_or_default(),
+                    display.background_color.unwrap_or_default(),
+                    display.text_color.unwrap_or_default(),
+                )
+            }
+            None => (String::new(), String::new(), String::new(), String::new()),
+        };
+        Self {
+            issuer: issuer.into(),
+            issuer_name: issuer_name.into(),
+            claims,
+            name,
+            description,
+            background_color,
+            text_color,
+            logo: offered.logo.unwrap_or_default(),
+            background: offered.background.unwrap_or_default(),
+            ..Default::default()
+        }
+    }
+}
+
 /// View for the verifiable credential sub-app
 #[derive(Clone, Debug, Default, Deserialize, Serialize)]
 pub struct CredentialView {
@@ -161,94 +215,158 @@ impl From<CredentialState> for CredentialView {
     }
 }
 
-// Convert the `SubjectClaims` model to a string representation, including
-// using the claim definitions to find the claim labels.
-// TODO: Use locales.
-// TODO: Move this into 'vercre-holder' as a convenience method on
-// `SubjectClaims`.
-fn claims_display(
-    display: &mut String, claims: Map<String, Value>, definitions: HashMap<String, Claim>,
-    indent_level: usize,
-) {
-    let indent = "  ".repeat(indent_level);
-    for (key, value) in claims {
-        // Find a label if possible, otherwise use the key.
-        if let Some(definition) = definitions.get(&key) {
-            match definition {
-                Claim::Entry(def) => {
-                    if let Some(def_display) = &def.display {
-                        let locale_display = def_display
-                            .clone()
-                            .into_iter()
-                            .find(|d| d.locale.is_none())
-                            .unwrap_or_else(|| def_display[0].clone());
-                        display.push_str(&format!("{}{}: ", indent, locale_display.name));
-                    } else {
-                        let label = capitalize(&key);
-                        display.push_str(&format!("{}{}: ", indent, label));
-                    };
-                }
-                Claim::Set(_) => {
-                    let label = capitalize(&key);
-                    display.push_str(&format!("{}{}: ", indent, label));
-                }
-            }
-        } else {
-            let label = capitalize(&key);
-            display.push_str(&format!("{}{}: ", indent, label));
-        }
-        // And now the value. Might need to recurse if it's a nested claim.
-        match value {
-            Value::Object(map) => {
-                display.push('\n');
-                claims_display(display, map, definitions.clone(), indent_level + 1);
-            }
-            _ => {
-                display.push_str(&format!("{}\n", value));
-            }
-        }
-    }
-    *display = display.replace("\"", "");
-}
-
 #[cfg(test)]
 mod tests {
     use insta::assert_yaml_snapshot;
+    use vercre_holder::CredentialConfiguration;
 
     use super::*;
 
-    #[test]
-    fn test_claims_display() {
-        let json = include_bytes!("../model/credentials.json");
-        let credentials: Vec<CredentialModel> =
-            serde_json::from_slice(json).expect("should deserialize");
-        assert_eq!(credentials.len(), 2);
-
-        let claim_sets = credentials[0].subject_claims.clone();
-        assert_eq!(claim_sets.len(), 1);
-        let claims = claim_sets[0].claims.clone();
-
-        let Some(defs) = credentials[0].claim_definitions.clone() else {
-            panic!("No claim definitions found");
-        };
-
-        let display = &mut String::new();
-        claims_display(display, claims, defs, 0);
-        assert_yaml_snapshot!(display);
-    }
-
     // Test conversion of a `Credential` model to a `Credential` view.
     #[test]
-    fn test_credential_from() {
+    fn test_credential_from_model() {
         let json = include_bytes!("../model/credentials.json");
         let credentials: Vec<CredentialModel> =
             serde_json::from_slice(json).expect("should deserialize");
         assert_eq!(credentials.len(), 2);
 
         let credential = Credential::from(credentials[0].clone());
-        assert_yaml_snapshot!("employee", credential);
+        assert_yaml_snapshot!("employee", credential, {
+            ".claims.**" => insta::sorted_redaction()
+        });
 
         let credential = Credential::from(credentials[1].clone());
-        assert_yaml_snapshot!("developer", credential);
+        assert_yaml_snapshot!("developer", credential,{
+            ".claims.**" => insta::sorted_redaction()
+        });
+    }
+
+    // Test conversion of an offer to a `Credential` view.
+    #[test]
+    fn test_credential_from_offer() {
+        let json = serde_json::json!({
+            "format": "jwt_vc_json",
+            "scope": "EmployeeIDCredential",
+            "cryptographic_binding_methods_supported": [
+                "did:key",
+                "did:web"
+            ],
+            "credential_signing_alg_values_supported": [
+                "ES256K",
+                "EdDSA"
+            ],
+            "proof_types_supported": {
+                "jwt": {
+                    "proof_signing_alg_values_supported": [
+                        "ES256K",
+                        "EdDSA"
+                    ]
+                }
+            },
+            "display": [
+                {
+                    "name": "Employee ID",
+                    "description": "Vercre employee ID credential",
+                    "locale": "en-NZ",
+                    "logo": {
+                        "uri": "https://vercre.github.io/assets/employee.png",
+                        "alt_text": "Vercre Logo"
+                    },
+                    "text_color": "#ffffff",
+                    "background_color": "#323ed2",
+                    "background_image": {
+                        "uri": "https://vercre.github.io/assets/employee-background.png",
+                        "alt_text": "Vercre Background"
+                    }
+                }
+            ],
+            "credential_definition": {
+                "type": [
+                    "VerifiableCredential",
+                    "EmployeeIDCredential"
+                ],
+                "credentialSubject": {
+                    "email": {
+                        "mandatory": true,
+                        "value_type": "string",
+                        "display": [
+                            {
+                                "name": "Email",
+                                "locale": "en-NZ"
+                            }
+                        ]
+                    },
+                    "family_name": {
+                        "mandatory": true,
+                        "value_type": "string",
+                        "display": [
+                            {
+                                "name": "Family name",
+                                "locale": "en-NZ"
+                            }
+                        ]
+                    },
+                    "given_name": {
+                        "mandatory": true,
+                        "value_type": "string",
+                        "display": [
+                            {
+                                "name": "Given name",
+                                "locale": "en-NZ"
+                            }
+                        ]
+                    },
+                    "address": {
+                        "street_address": {
+                            "value_type": "string",
+                            "display": [
+                                {
+                                    "name": "Street Address",
+                                    "locale": "en-NZ"
+                                }
+                            ]
+                        },
+                        "locality": {
+                            "value_type": "string",
+                            "display": [
+                                {
+                                    "name": "Locality",
+                                    "locale": "en-NZ"
+                                }
+                            ]
+                        },
+                        "region": {
+                            "value_type": "string",
+                            "display": [
+                                {
+                                    "name": "Region",
+                                    "locale": "en-NZ"
+                                }
+                            ]
+                        },
+                        "country": {
+                            "value_type": "string",
+                            "display": [
+                                {
+                                    "name": "Country",
+                                    "locale": "en-NZ"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        });
+        let config: CredentialConfiguration =
+            serde_json::from_value(json.clone()).expect("should deserialize from json");
+        let offer = OfferedCredential {
+            config,
+            logo: None,
+            background: None,
+        };
+        let credential = Credential::from_offer("issuer", "Issuer", offer);
+        assert_yaml_snapshot!("offer", credential, {
+            ".claims.**" => insta::sorted_redaction()
+        });
     }
 }
