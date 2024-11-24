@@ -37,6 +37,13 @@ struct CredentialList: View {
 }
 
 #Preview {
+    let employeeClaims: [String: [ClaimView]] = ["did:key:z6Mkj8Jr1rg3YjVWWhg7ahEYJibqhjBgZt1pDCbT4Lv7D4HX": [
+        .init(name: "Address.Locality", value: "Wellington"),
+        .init(name: "Address.Street Address", value: "123 Fake Street"),
+        .init(name: "Email", value: "normal.user@example.com"),
+        .init(name: "Family name", value: "Person"),
+        .init(name: "Given name", value: "Normal")
+    ]]
     let employee = Credential(
         id: "http://vercre.io/credentials/EmployeeIDCredential",
         issuer: "http://vercre.io",
@@ -44,7 +51,7 @@ struct CredentialList: View {
         issued: "encoded",
         type: ["VerifiableCredential", "EmployeeIDCredential"],
         format: "jwt_vc_json",
-        claims: ["did:key:z6Mkj8Jr1rg3YjVWWhg7ahEYJibqhjBgZt1pDCbT4Lv7D4HX": "Address: \n  Locality: Wellington\n  Street_address: 123 Fake St\nEmail: normal.user@example.com\nFamily name: Person\nGiven name: Normal\n"],
+        claims: employeeClaims,
         issuance_date: "Tue, 29 Nov 2024",
         valid_from: "",
         valid_until: "",
@@ -61,6 +68,11 @@ struct CredentialList: View {
             mediaType: "image/png"
         )
     )
+    let developerClaims: [String: [ClaimView]] = ["": [
+        .init(name: "Family name", value: "Person"),
+        .init(name: "Given name", value: "Normal"),
+        .init(name: "Proficiency", value: "3")
+    ]]
     let developer = Credential(
         id: "http://vercre.io/credentials/DeveloperCredential",
         issuer: "http://vercre.io",
@@ -68,7 +80,7 @@ struct CredentialList: View {
         issued: "encoded",
         type: ["VerifiableCredential", "DeveloperCredential"],
         format: "jwt_vc_json",
-        claims: ["": "Family name: Person\nGiven name: Normal\nProficiency: 3"],
+        claims: developerClaims,
         issuance_date: "Sat, 1 Jan 2022",
         valid_from: "",
         valid_until: "Fri, 1 Jan 2022",

@@ -27,8 +27,11 @@ struct CredentialDetailView: View {
                     DetailRow(title: "Expires", content:
                                 credential.valid_until.isEmpty ? "Never" : credential.valid_until)
                     Text("Details").font(.headline).fontWeight(.bold).padding(.top, 12).padding(.horizontal, 12)
-                    ForEach(Array(credential.claims.keys), id: \.self) {key in
-                        Text(credential.claims[key] ?? "" ).padding(.top, 4).padding(.horizontal, 12)
+                    ForEach(credential.claims.keys.sorted(), id: \.self) {key in
+                        Text(key).font(.caption).opacity(0.5).padding([.leading, .trailing], 12).padding(.bottom, 4)
+                        if let value = credential.claims[key] {
+                            ClaimList(claims: value)
+                        }
                     }
                     VStack {
                         Text("Remove this credential from the wallet. This cannot be undone but you may be able to have the credential re-issued by the issuer.").font(.caption).opacity(0.5).padding()
@@ -58,6 +61,13 @@ struct CredentialDetailView: View {
 }
 
 #Preview {
+    let claims: [ClaimView] = [
+        .init(name: "Address.Locality", value: "Wellington"),
+        .init(name: "Address.Street address", value: "123 Fake St"),
+        .init(name: "Email", value: "normal.user@example.com"),
+        .init(name: "Family name", value: "Person"),
+        .init(name: "Given name", value: "Normal"),
+    ]
     let credential = Credential(
         id: "http://vercre.io/credentials/EmployeeIDCredential",
         issuer: "http://vercre.io",
@@ -65,7 +75,7 @@ struct CredentialDetailView: View {
         issued: "encoded",
         type: ["VerifiableCredential", "EmployeeIDCredential"],
         format: "jwt_vc_json",
-        claims: ["did:key:z6Mkj8Jr1rg3YjVWWhg7ahEYJibqhjBgZt1pDCbT4Lv7D4HX": "Address: \n  Locality: Wellington\n  Street_address: 123 Fake St\nEmail: normal.user@example.com\nFamily name: Person\nGiven name: Normal\n"],
+        claims: ["did:key:z6Mkj8Jr1rg3YjVWWhg7ahEYJibqhjBgZt1pDCbT4Lv7D4HX": claims],
         issuance_date: "Tue, 29 Nov 2024",
         valid_from: "",
         valid_until: "",

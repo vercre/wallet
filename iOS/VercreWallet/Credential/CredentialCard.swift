@@ -40,6 +40,13 @@ struct CredentialCard: View {
 }
 
 #Preview {
+    let claims: [ClaimView] = [
+        .init(name: "Address.Locality", value: "Wellington"),
+        .init(name: "Address.Street address", value: "123 Fake St"),
+        .init(name: "Email", value: "normal.user@example.com"),
+        .init(name: "Family name", value: "Person"),
+        .init(name: "Given name", value: "Normal"),
+    ]
     let credential = Credential(
         id: "http://vercre.io/credentials/EmployeeIDCredential",
         issuer: "http://vercre.io",
@@ -47,7 +54,7 @@ struct CredentialCard: View {
         issued: "encoded",
         type: ["VerifiableCredential", "EmployeeIDCredential"],
         format: "jwt_vc_json",
-        claims: ["did:key:z6Mkj8Jr1rg3YjVWWhg7ahEYJibqhjBgZt1pDCbT4Lv7D4HX": "Address: \n  Locality: Wellington\n  Street_address: 123 Fake St\nEmail: normal.user@example.com\nFamily name: Person\nGiven name: Normal\n"],
+        claims: ["did:key:z6Mkj8Jr1rg3YjVWWhg7ahEYJibqhjBgZt1pDCbT4Lv7D4HX": claims],
         issuance_date: "Tue, 29 Nov 2024",
         valid_from: "",
         valid_until: "",

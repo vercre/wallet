@@ -14,7 +14,7 @@
 		E226A3302CE44BE200254154 /* key.swift in Sources */ = {isa = PBXBuildFile; fileRef = E226A32E2CE44BDD00254154 /* key.swift */; };
 		E231BEEC2CEEC6B600E73109 /* ErrorDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E231BEEB2CEEC6B600E73109 /* ErrorDetail.swift */; };
 		E24EFF942CEEE04A0059203D /* IssuanceOffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24EFF932CEEE04A0059203D /* IssuanceOffer.swift */; };
-		E24EFF972CEEE0890059203D /* OfferCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24EFF962CEEE0890059203D /* OfferCard.swift */; };
+		E26CC4ED2CF036D30067B8ED /* ClaimList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26CC4EC2CF036D30067B8ED /* ClaimList.swift */; };
 		E2934F2D2CD4508B00DC2BF9 /* CredentialCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */; };
 		E29F76452CBF0B9100496B37 /* sse.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7EC2CBE05E70070F7A5 /* sse.swift */; };
 		E29F76462CBF0B9100496B37 /* http.swift in Sources */ = {isa = PBXBuildFile; fileRef = E295C7EB2CBE042F0070F7A5 /* http.swift */; };
@@ -103,7 +103,7 @@
 		E226A32E2CE44BDD00254154 /* key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = key.swift; sourceTree = "<group>"; };
 		E231BEEB2CEEC6B600E73109 /* ErrorDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDetail.swift; sourceTree = "<group>"; };
 		E24EFF932CEEE04A0059203D /* IssuanceOffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuanceOffer.swift; sourceTree = "<group>"; };
-		E24EFF962CEEE0890059203D /* OfferCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferCard.swift; sourceTree = "<group>"; };
+		E26CC4EC2CF036D30067B8ED /* ClaimList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimList.swift; sourceTree = "<group>"; };
 		E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialCard.swift; sourceTree = "<group>"; };
 		E295C7E52CBDF7F40070F7A5 /* VercreWalletApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VercreWalletApp.swift; sourceTree = "<group>"; };
 		E295C7E92CBDF84C0070F7A5 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -233,11 +233,13 @@
 		E2B513912CC594F600D5A957 /* Credential */ = {
 			isa = PBXGroup;
 			children = (
+				E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */,
 				E2B513922CC5953800D5A957 /* CredentialList.swift */,
 				E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */,
 				E2DACD712CD98FCC00C9E9D5 /* Logo.swift */,
 				E2DACD742CD9935600C9E9D5 /* Background.swift */,
 				E2DACD7C2CD9BE8D00C9E9D5 /* CredentialDetailView.swift */,
+				E26CC4EC2CF036D30067B8ED /* ClaimList.swift */,
 			);
 			path = Credential;
 			sourceTree = "<group>";
@@ -246,7 +248,6 @@
 			isa = PBXGroup;
 			children = (
 				E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */,
-				E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -256,7 +257,6 @@
 			children = (
 				E2B513982CC5B57500D5A957 /* IssuanceScan.swift */,
 				E24EFF932CEEE04A0059203D /* IssuanceOffer.swift */,
-				E24EFF962CEEE0890059203D /* OfferCard.swift */,
 			);
 			path = Issuance;
 			sourceTree = "<group>";
@@ -395,6 +395,7 @@
 				E24EFF942CEEE04A0059203D /* IssuanceOffer.swift in Sources */,
 				E29F76462CBF0B9100496B37 /* http.swift in Sources */,
 				E2DACD802CD9C13300C9E9D5 /* DetailRow.swift in Sources */,
+				E26CC4ED2CF036D30067B8ED /* ClaimList.swift in Sources */,
 				E2B513992CC5B57500D5A957 /* IssuanceScan.swift in Sources */,
 				E29F76472CBF0B9100496B37 /* core.swift in Sources */,
 				E29F76482CBF0B9100496B37 /* ContentView.swift in Sources */,
@@ -406,7 +407,6 @@
 				E2DACD702CD95E4700C9E9D5 /* Color.swift in Sources */,
 				E2DACD7D2CD9BE8D00C9E9D5 /* CredentialDetailView.swift in Sources */,
 				E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */,
-				E24EFF972CEEE0890059203D /* OfferCard.swift in Sources */,
 				E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */,
 				E2B5139C2CC5B81B00D5A957 /* PresentationRequest.swift in Sources */,
 			);
