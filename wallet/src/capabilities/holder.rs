@@ -43,6 +43,7 @@ impl Debug for HolderOperation {
 
 /// The result of an operation on the Holder capability.
 #[derive(Clone, Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[allow(clippy::large_enum_variant)]
 pub enum HolderResult {
     /// The operation was successful.
     Ok { response: HolderResponse },
