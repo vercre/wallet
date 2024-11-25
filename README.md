@@ -67,7 +67,7 @@ cd examples/issuer
 cargo run
 ```
 
-2. Start the React web application which provides a simple UI over the top of the issuer API. This will start on `http://localhost:3001`.
+2. Start the React web application which provides a simple UI over the top of the issuer API. This will start on `http://localhost:3000`.
 
 ```shell
 cd examples/issuer-web

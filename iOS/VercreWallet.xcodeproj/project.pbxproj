@@ -13,6 +13,8 @@
 		E226A32C2CE4259D00254154 /* kv.swift in Sources */ = {isa = PBXBuildFile; fileRef = E226A32A2CE4259800254154 /* kv.swift */; };
 		E226A3302CE44BE200254154 /* key.swift in Sources */ = {isa = PBXBuildFile; fileRef = E226A32E2CE44BDD00254154 /* key.swift */; };
 		E231BEEC2CEEC6B600E73109 /* ErrorDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = E231BEEB2CEEC6B600E73109 /* ErrorDetail.swift */; };
+		E238CCE02CF3DFC4008B3158 /* ClaimTitleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E238CCDF2CF3DFC4008B3158 /* ClaimTitleItem.swift */; };
+		E238CCE22CF3E10E008B3158 /* ClaimTitleList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E238CCE12CF3E10E008B3158 /* ClaimTitleList.swift */; };
 		E24EFF942CEEE04A0059203D /* IssuanceOffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E24EFF932CEEE04A0059203D /* IssuanceOffer.swift */; };
 		E26CC4ED2CF036D30067B8ED /* ClaimList.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26CC4EC2CF036D30067B8ED /* ClaimList.swift */; };
 		E2934F2D2CD4508B00DC2BF9 /* CredentialCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */; };
@@ -30,7 +32,7 @@
 		E2DACD752CD9935600C9E9D5 /* Background.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD742CD9935600C9E9D5 /* Background.swift */; };
 		E2DACD7A2CD9AD9400C9E9D5 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */; };
 		E2DACD7D2CD9BE8D00C9E9D5 /* CredentialDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD7C2CD9BE8D00C9E9D5 /* CredentialDetailView.swift */; };
-		E2DACD802CD9C13300C9E9D5 /* DetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */; };
+		E2DACD802CD9C13300C9E9D5 /* DetailItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD7F2CD9C13300C9E9D5 /* DetailItem.swift */; };
 		E2DACD852CDAF31F00C9E9D5 /* store.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DACD832CDAF31600C9E9D5 /* store.swift */; };
 		E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */ = {isa = PBXBuildFile; fileRef = 608E5734A631C27F19673C40 /* wallet.udl */; };
 /* End PBXBuildFile section */
@@ -102,6 +104,8 @@
 		E226A32A2CE4259800254154 /* kv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kv.swift; sourceTree = "<group>"; };
 		E226A32E2CE44BDD00254154 /* key.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = key.swift; sourceTree = "<group>"; };
 		E231BEEB2CEEC6B600E73109 /* ErrorDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDetail.swift; sourceTree = "<group>"; };
+		E238CCDF2CF3DFC4008B3158 /* ClaimTitleItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimTitleItem.swift; sourceTree = "<group>"; };
+		E238CCE12CF3E10E008B3158 /* ClaimTitleList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimTitleList.swift; sourceTree = "<group>"; };
 		E24EFF932CEEE04A0059203D /* IssuanceOffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IssuanceOffer.swift; sourceTree = "<group>"; };
 		E26CC4EC2CF036D30067B8ED /* ClaimList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimList.swift; sourceTree = "<group>"; };
 		E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialCard.swift; sourceTree = "<group>"; };
@@ -118,7 +122,7 @@
 		E2DACD742CD9935600C9E9D5 /* Background.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Background.swift; sourceTree = "<group>"; };
 		E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		E2DACD7C2CD9BE8D00C9E9D5 /* CredentialDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialDetailView.swift; sourceTree = "<group>"; };
-		E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailRow.swift; sourceTree = "<group>"; };
+		E2DACD7F2CD9C13300C9E9D5 /* DetailItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailItem.swift; sourceTree = "<group>"; };
 		E2DACD832CDAF31600C9E9D5 /* store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = store.swift; sourceTree = "<group>"; };
 		E87317161D4E9F5AB16EA2A3 /* SharedTypes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = SharedTypes; path = ../shared/generated/swift/SharedTypes; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -233,7 +237,6 @@
 		E2B513912CC594F600D5A957 /* Credential */ = {
 			isa = PBXGroup;
 			children = (
-				E2DACD7F2CD9C13300C9E9D5 /* DetailRow.swift */,
 				E2B513922CC5953800D5A957 /* CredentialList.swift */,
 				E2934F2C2CD4508B00DC2BF9 /* CredentialCard.swift */,
 				E2DACD712CD98FCC00C9E9D5 /* Logo.swift */,
@@ -248,6 +251,7 @@
 			isa = PBXGroup;
 			children = (
 				E2DACD792CD9AD9400C9E9D5 /* NavigationBar.swift */,
+				E2DACD7F2CD9C13300C9E9D5 /* DetailItem.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -257,6 +261,8 @@
 			children = (
 				E2B513982CC5B57500D5A957 /* IssuanceScan.swift */,
 				E24EFF932CEEE04A0059203D /* IssuanceOffer.swift */,
+				E238CCDF2CF3DFC4008B3158 /* ClaimTitleItem.swift */,
+				E238CCE12CF3E10E008B3158 /* ClaimTitleList.swift */,
 			);
 			path = Issuance;
 			sourceTree = "<group>";
@@ -394,17 +400,19 @@
 				E226A3302CE44BE200254154 /* key.swift in Sources */,
 				E24EFF942CEEE04A0059203D /* IssuanceOffer.swift in Sources */,
 				E29F76462CBF0B9100496B37 /* http.swift in Sources */,
-				E2DACD802CD9C13300C9E9D5 /* DetailRow.swift in Sources */,
+				E2DACD802CD9C13300C9E9D5 /* DetailItem.swift in Sources */,
 				E26CC4ED2CF036D30067B8ED /* ClaimList.swift in Sources */,
 				E2B513992CC5B57500D5A957 /* IssuanceScan.swift in Sources */,
 				E29F76472CBF0B9100496B37 /* core.swift in Sources */,
 				E29F76482CBF0B9100496B37 /* ContentView.swift in Sources */,
+				E238CCE02CF3DFC4008B3158 /* ClaimTitleItem.swift in Sources */,
 				E2934F2D2CD4508B00DC2BF9 /* CredentialCard.swift in Sources */,
 				E2DACD852CDAF31F00C9E9D5 /* store.swift in Sources */,
 				E29F76492CBF0B9100496B37 /* VercreWalletApp.swift in Sources */,
 				E231BEEC2CEEC6B600E73109 /* ErrorDetail.swift in Sources */,
 				E226A32C2CE4259D00254154 /* kv.swift in Sources */,
 				E2DACD702CD95E4700C9E9D5 /* Color.swift in Sources */,
+				E238CCE22CF3E10E008B3158 /* ClaimTitleList.swift in Sources */,
 				E2DACD7D2CD9BE8D00C9E9D5 /* CredentialDetailView.swift in Sources */,
 				E2B513932CC5953800D5A957 /* CredentialList.swift in Sources */,
 				E4D6F166B7CC70F6321FE5BF /* wallet.udl in Sources */,

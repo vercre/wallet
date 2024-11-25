@@ -80,6 +80,9 @@ pub enum Event {
 
     /// Event emitted by the shell when the user scans an offer QR code.
     IssuanceOffer(String),
+
+    /// Event emitted by the shell to cancel an issuance.
+    CancelIssuance,
 }
 
 /// Set of capabilities available to the application.
@@ -104,6 +107,12 @@ impl crux_core::App for App {
     type ViewModel = ViewModel;
 
     fn update(&self, msg: Self::Event, model: &mut Self::Model, caps: &Self::Capabilities) {
+        let provider = Provider::new(
+            caps.http.clone(),
+            caps.key_store.clone(),
+            caps.kv.clone(),
+            caps.store.clone(),
+        );
         match msg {
             Event::Error(e) => {
                 model.error(e);
@@ -150,13 +159,11 @@ impl crux_core::App for App {
                 caps.render.render();
             }
             Event::IssuanceOffer(encoded_offer) => {
-                let provider = Provider::new(
-                    caps.http.clone(),
-                    caps.key_store.clone(),
-                    caps.kv.clone(),
-                    caps.store.clone(),
-                );
                 model.issuance_offer(&provider, &encoded_offer);
+                caps.render.render();
+            }
+            Event::CancelIssuance => {
+                model.cancel_issuance(&provider);
                 caps.render.render();
             }
             Event::CredentialsLoaded(Err(error))

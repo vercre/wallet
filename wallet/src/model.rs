@@ -79,4 +79,18 @@ impl Model {
             Err(e) => self.error(e.to_string()),
         }
     }
+
+    /// The user has decided to no longer go ahead with the issuance process.
+    pub fn cancel_issuance<Ev>(&mut self, provider: &Provider<Ev>)
+    where
+        Ev: 'static
+    {
+        self.active_view = Aspect::CredentialList;
+        if let Some(issuance) = &mut self.issuance {
+            match issuance.cancel(provider) {
+                Ok(_) => self.issuance = None,
+                Err(e) => self.error(e.to_string()),
+            }
+        }
+    }
 }

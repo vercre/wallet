@@ -3783,6 +3783,7 @@ dependencies = [
  "serde",
  "serde_bytes",
  "serde_json",
+ "serde_urlencoded",
  "thiserror",
  "uniffi",
  "url",

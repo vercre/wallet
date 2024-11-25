@@ -20,11 +20,11 @@ struct CredentialDetailView: View {
             CredentialCard(credential: credential)
             ScrollView {
                 VStack(alignment: .leading) {
-                    DetailRow(title: "Description", content: credential.description)
-                    DetailRow(title: "Issued by", content: credential.issuer)
-                    DetailRow(title: "Issued on", content: credential.issuance_date)
-                    DetailRow(title: "Valid from", content: credential.valid_from.isEmpty ? "Issuance" : credential.valid_from)
-                    DetailRow(title: "Expires", content:
+                    DetailItem(title: "Description", content: credential.description)
+                    DetailItem(title: "Issued by", content: credential.issuer_name + " (" + credential.issuer + ")")
+                    DetailItem(title: "Issued on", content: credential.issuance_date)
+                    DetailItem(title: "Valid from", content: credential.valid_from.isEmpty ? "Issuance" : credential.valid_from)
+                    DetailItem(title: "Expires", content:
                                 credential.valid_until.isEmpty ? "Never" : credential.valid_until)
                     Text("Details").font(.headline).fontWeight(.bold).padding(.top, 12).padding(.horizontal, 12)
                     ForEach(credential.claims.keys.sorted(), id: \.self) {key in

@@ -5,8 +5,8 @@ use std::collections::HashMap;
 use futures::executor::block_on;
 use serde::{Deserialize, Serialize};
 use vercre_holder::credential::ImageData;
-use vercre_holder::issuance::OfferRequest;
-use vercre_holder::{CredentialConfiguration, CredentialOffer, TxCode};
+use vercre_holder::issuance::{CancelRequest, OfferRequest};
+use vercre_holder::{CredentialConfiguration, CredentialOffer, Grants, TxCode};
 
 use crate::config;
 use crate::provider::Provider;
@@ -57,8 +57,27 @@ impl IssuanceState {
     ) -> anyhow::Result<Self>
     where Ev: 'static
     {
-        let offer_str = urlencoding::decode(encoded_offer)?;
-        let offer: CredentialOffer = serde_json::from_str(&offer_str)?;
+        let fields: Vec<(String, String)> = serde_urlencoded::from_str(encoded_offer)?;
+
+        let mut offer = CredentialOffer::default();
+        if let Some(credential_issuer) = &fields.iter().find(|(k, _)| k == "credential_issuer") {
+            offer.credential_issuer = credential_issuer.1.clone();
+        } else {
+            return Err(anyhow::anyhow!("credential_issuer not found"));
+        }
+
+        if let Some(credential_configuration_ids) = &fields.iter().find(|(k, _)| k == "credential_configuration_ids") {
+            offer.credential_configuration_ids = serde_json::from_str::<Vec<String>>(&credential_configuration_ids.1)?;
+        } else {
+            return Err(anyhow::anyhow!("credential_configuration_ids not found"));
+        }
+
+        if let Some(grants) = &fields.iter().find(|(k, _)| k == "grants") {
+            offer.grants = Some(serde_json::from_str::<Grants>(&grants.1)?);
+        } else {
+            offer.grants = None;
+        }
+
         let tx_code = {
             if let Some(grants) = offer.grants.clone() {
                 if let Some(pre_auth) = grants.pre_authorized_code {
@@ -69,6 +88,7 @@ impl IssuanceState {
             }
             else { None }
         };
+
         let offer_req = OfferRequest {
             client_id: config::client_id(),
             subject_id: config::subject_id(),
@@ -113,5 +133,16 @@ impl IssuanceState {
             tx_code,
             pin: None,
         })
+    }
+
+    /// Cancel the issuance process.
+    pub fn cancel<Ev>(&mut self, provider: &Provider<Ev>) -> anyhow::Result<()>
+    where Ev: 'static
+    {
+        let cancel_request = CancelRequest {
+            issuance_id: self.id.clone(),
+        };
+        block_on(vercre_holder::issuance::cancel(provider.clone(), &cancel_request))?;
+        Ok(())
     }
 }

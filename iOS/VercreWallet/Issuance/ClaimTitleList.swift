@@ -1,20 +1,20 @@
 //
-//  ClaimList.swift
+//  ClaimTitleList.swift
 //  VercreWallet
 //
-//  Created by Andrew Goldie on 22/11/2024.
+//  Created by Andrew Goldie on 25/11/2024.
 //
 
 import SharedTypes
 import SwiftUI
 
-struct ClaimList: View {
+struct ClaimTitleList: View {
     let claims: [ClaimView]
     
     var body: some View {
         VStack(alignment: .leading) {
             ForEach(claims, id: \.self.name) { claim in
-                DetailItem(title: claim.name, content: claim.value, compact: true)
+                ClaimTitleItem(title: claim.name, compact: true)
             }
         }
     }
@@ -25,5 +25,5 @@ struct ClaimList: View {
         .init(name: "Given Name", value: "Normal"),
         .init(name: "Family Name", value: "Person"),
     ]
-    ClaimList(claims: claims)
+    ClaimTitleList(claims: claims)
 }

@@ -1,21 +1,19 @@
 //
-//  DetailRow.swift
+//  ClaimTitleItem.swift
 //  VercreWallet
 //
-//  Created by Andrew Goldie on 05/11/2024.
+//  Created by Andrew Goldie on 25/11/2024.
 //
 
 import SwiftUI
 
-struct DetailRow: View {
+struct ClaimTitleItem: View {
     var title: String
-    var content: String
     var compact: Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text(title).font(.caption).opacity(0.5)
-            Text(content)
+            Text(title)
         }.padding(.top, compact ? 0 : 12)
             .padding(.bottom, 4)
         .padding(.leading, 12)
@@ -24,5 +22,5 @@ struct DetailRow: View {
 }
 
 #Preview {
-    DetailRow(title: "Information", content: "This is a preview of your application.")
+    ClaimTitleItem(title: "Information")
 }
