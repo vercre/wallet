@@ -26,6 +26,9 @@ class Core: ObservableObject {
     }
     
     func processEffect(_ request: Request) {
+        
+        debugPrint("Processing effect: \(request)")
+        
         switch request.effect {
         case .render:
             view = try! .bincodeDeserialize(input: [UInt8](VercreWallet.view()))

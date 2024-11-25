@@ -21,6 +21,8 @@ func requestHttp(_ request: HttpRequest) async -> Result<HttpResponse, HttpError
         req.addValue(header.value, forHTTPHeaderField: header.name)
     }
     
+    debugPrint(request.method + ": " + request.url)
+    
     do {
         let (data, response) = try await URLSession.shared.data(for: req)
         if let httpResponse = response as? HTTPURLResponse {

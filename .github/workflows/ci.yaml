@@ -98,5 +98,6 @@ jobs:
           version: latest
       - run: |
           sudo apt-get update
+      - run: rustup component add clippy
 
       - run: cargo clippy

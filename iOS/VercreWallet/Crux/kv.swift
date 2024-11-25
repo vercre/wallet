@@ -14,6 +14,9 @@ enum KeyValueError: Error {
 }
 
 func requestKeyValue(_ request: KeyValueOperation) async -> Result<KeyValueResponse, KeyValueError> {
+    
+    debugPrint("Requesting key value: \(request)")
+    
     switch request {
     case .get(key: let key):
         if let storedValue = UserDefaults.standard.data(forKey: key) {
