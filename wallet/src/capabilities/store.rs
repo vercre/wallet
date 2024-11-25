@@ -90,7 +90,7 @@ pub enum StoreOperation {
 }
 
 impl Debug for StoreOperation {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             StoreOperation::Save { catalog, id, data } => {
                 let body = format!("<binary data - {} bytes>", data.len());
