@@ -2,9 +2,11 @@
 //! the model, events, and effects that drive the application.
 
 use crux_core::render::Render;
-use crux_http::Http;
+use crux_http::{Http, HttpError};
 use crux_kv::KeyValue;
 use serde::{Deserialize, Serialize};
+use vercre_holder::credential::{self, Credential, ImageData};
+use vercre_holder::{Issuer, TokenResponse};
 
 use crate::capabilities::key::KeyStore;
 use crate::capabilities::sse::ServerSentEvents;
@@ -80,6 +82,42 @@ pub enum Event {
 
     /// Event emitted by the shell when the user scans an offer QR code.
     IssuanceOffer(String),
+
+    /// Event emitted by the core when issuer metadata has been received.
+    #[serde(skip)]
+    IssuanceIssuer(Result<Issuer, HttpError>),
+
+    /// Event emitted by the core when an offered credential's logo has been
+    /// fetched.
+    #[serde(skip)]
+    IssuanceLogo(Result<(String, ImageData), HttpError>),
+
+    /// Event emitted by the core when an offered credential's background image
+    /// has been fetched.
+    #[serde(skip)]
+    IssuanceBackground(Result<(String, ImageData), HttpError>),
+
+    /// Event emitted by the shell when the user has accepted an issuance offer.
+    IssuanceAccepted,
+
+    /// Event emitted by the shell when the user has entered a PIN.
+    IssuancePin(String),
+
+    /// Event emitted by the core when an access token has been received.
+    #[serde(skip)]
+    IssuanceToken(Result<TokenResponse, HttpError>),
+
+    /// Event emitted by the core when a proof has been created.
+    #[serde(skip)]
+    IssuanceProof(Result<String, String>),
+
+    /// Event emitted by the core when a credential has been received.
+    #[serde(skip)]
+    IssuanceCredential(Result<(String, Credential), HttpError>),
+
+    /// Event emitted by the core when a credential has been stored.
+    #[serde(skip)]
+    IssuanceStored(Result<String, StoreError>),
 
     /// Event emitted by the shell to cancel an issuance.
     CancelIssuance,
@@ -159,17 +197,59 @@ impl crux_core::App for App {
                 caps.render.render();
             }
             Event::IssuanceOffer(encoded_offer) => {
-                model.issuance_offer(&provider, &encoded_offer);
-                caps.render.render();
+                model.issuance_offer(&encoded_offer);
+            }
+            Event::IssuanceIssuer(Ok(issuer)) => {
+                todo!();
+            }
+            Event::IssuanceLogo(Ok((config_id, image))) => {
+                todo!();
+            }
+            Event::IssuanceBackground(Ok((config_id, image))) => {
+                todo!();
+            }
+            Event::IssuanceAccepted => {
+                todo!();
+            }
+            Event::IssuancePin(pin) => {
+                todo!();
+            }
+            Event::IssuanceToken(Ok(token)) => {
+                todo!();
+            }
+            Event::IssuanceProof(Ok(jwt)) => {
+                todo!();
+            }
+            Event::IssuanceCredential(Ok((config_id, credential))) => {
+                todo!();
+            }
+            Event::IssuanceStored(Ok(config_id)) => {
+                todo!();
             }
             Event::CancelIssuance => {
                 model.cancel_issuance(&provider);
                 caps.render.render();
             }
+            // Store errors
             Event::CredentialsLoaded(Err(error))
             | Event::CredentialStored(Err(error))
-            | Event::CredentialDeleted(Err(error)) => {
+            | Event::CredentialDeleted(Err(error))
+            | Event::IssuanceStored(Err(error)) => {
                 model.error(error.to_string());
+                caps.render.render();
+            }
+            // HTTP errors
+            Event::IssuanceIssuer(Err(error))
+            | Event::IssuanceLogo(Err(error))
+            | Event::IssuanceBackground(Err(error))
+            | Event::IssuanceToken(Err(error))
+            | Event::IssuanceCredential(Err(error)) => {
+                model.error(error.to_string());
+                caps.render.render();
+            }
+            // Error as string
+            Event::IssuanceProof(Err(error)) => {
+                model.error(error);
                 caps.render.render();
             }
         }

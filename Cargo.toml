@@ -1,5 +1,5 @@
 [workspace]
-members = ["shared", "wallet", "examples/issuer", "examples/issuer-types"]
+members = ["shared_types", "wallet", "examples/issuer", "examples/issuer-types"]
 resolver = "1"
 
 [workspace.package]

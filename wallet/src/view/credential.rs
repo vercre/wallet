@@ -363,6 +363,8 @@ mod tests {
             config,
             logo: None,
             background: None,
+            received: true,
+            stored: false,
         };
         let credential = Credential::from_offer("issuer", "Issuer", offer);
         assert_yaml_snapshot!("offer", credential, {

@@ -60,26 +60,8 @@ pub struct IssuanceView {
 impl From<Option<IssuanceState>> for IssuanceView {
     fn from(state: Option<IssuanceState>) -> Self {
         match state {
-            Some(state) => {
-                // Pick the first credential in the issuance state to display. Since the
-                // app is intended to allow the holder to accept or reject the
-                // credential and/or claims one at a time.
-                if state.offered.is_empty() {
-                    return Self::default();
-                }
-                let Some(next_config) = state.offered.iter().next() else {
-                    return Self::default();
-                };
-                Self {
-                    issuer: state.issuer.clone(),
-                    issuer_name: state.issuer_name.clone(),
-                    tx_code: state.tx_code.into(),
-                    offered: Credential::from_offer(
-                        &state.issuer,
-                        &state.issuer_name,
-                        next_config.1.clone(),
-                    ),
-                }
+            Some(_state) => {
+                todo!()
             }
             None => Self::default(),
         }

@@ -1,18 +1,17 @@
 //! Issuance sub-app state.
-
 use std::collections::HashMap;
 
-use futures::executor::block_on;
-use serde::{Deserialize, Serialize};
+use anyhow::bail;
 use vercre_holder::credential::ImageData;
-use vercre_holder::issuance::{CancelRequest, OfferRequest};
-use vercre_holder::{CredentialConfiguration, CredentialOffer, Grants, TxCode};
+use vercre_holder::issuance::{
+    Accepted, IssuanceFlow, NotAccepted, PreAuthorized, WithOffer, WithToken, WithoutToken,
+};
+use vercre_holder::{CredentialConfiguration, CredentialOffer, PreAuthorizedCodeGrant};
 
-use crate::config;
 use crate::provider::Provider;
 
 /// Configuration and image information for an offered credential.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default)]
 pub struct OfferedCredential {
     /// Credential configuration.
     pub config: CredentialConfiguration,
@@ -22,127 +21,113 @@ pub struct OfferedCredential {
 
     /// Background image data.
     pub background: Option<ImageData>,
+
+    /// Credential has been received.
+    pub received: bool,
+
+    /// Credential has been stored.
+    pub stored: bool,
+}
+
+impl OfferedCredential {
+    /// Determine if the credential logo needs to be fetched.
+    pub fn needs_logo(&self) -> bool {
+        if self.logo.is_some() {
+            return false;
+        }
+        if let Some(display) = &self.config.display {
+            if let Some(logo) = &display[0].logo {
+                if logo.uri.is_some() {
+                    return true;
+                }
+            }
+        }
+        false
+    }
+
+    /// Determine if the credential background needs to be fetched.
+    pub fn needs_background(&self) -> bool {
+        if self.background.is_some() {
+            return false;
+        }
+        if let Some(display) = &self.config.display {
+            if let Some(background) = &display[0].background_image {
+                if background.uri.is_some() {
+                    return true;
+                }
+            }
+        }
+        false
+    }
 }
 
 /// Application state for the issuance sub-app.
-#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[derive(Clone, Debug, Default)]
 #[allow(clippy::module_name_repetitions)]
-pub struct IssuanceState {
-    /// Issuance flow identifier to pass to the vercre-holder crate for state
-    /// management.
-    pub id: String,
+#[allow(clippy::large_enum_variant)]
+pub enum IssuanceState {
+    /// No issuance is in progress.
+    #[default]
+    Inactive,
 
-    /// Identifier of the issuer of the credential(s)
-    pub issuer: String,
+    /// An offer has been received
+    Offered { offer: CredentialOffer, grant: PreAuthorizedCodeGrant },
 
-    /// Issuer's name.
-    pub issuer_name: String,
+    /// Issuer metadata has been received. Can use this state to keep updating
+    /// the offered credentials' logo and background images.
+    IssuerMetadata {
+        flow: IssuanceFlow<WithOffer, PreAuthorized, NotAccepted, WithoutToken>,
+        offerred: HashMap<String, OfferedCredential>,
+    },
 
-    /// Description of the credential(s) offered, keyed by credential
-    /// configuration ID.
-    pub offered: HashMap<String, OfferedCredential>,
+    /// The offer has been accepted by the user. Can use this state to update
+    /// the PIN number if needed.
+    Accepted {
+        flow: IssuanceFlow<WithOffer, PreAuthorized, Accepted, WithoutToken>,
+        offerred: HashMap<String, OfferedCredential>,
+    },
 
-    /// Description of the type of PIN needed to accept the offer.
-    pub tx_code: Option<TxCode>,
+    /// An access token has been received.
+    Token {
+        flow: IssuanceFlow<WithOffer, PreAuthorized, Accepted, WithToken>,
+        offerred: HashMap<String, OfferedCredential>,
+    },
 
-    /// PIN set by the holder.
-    pub pin: Option<String>,
+    /// A proof has been created. Can use this state to receive credentials and
+    /// update the offered list to keep track of outstanding credentials. Can
+    /// also use it to keep track of the credentials stored.
+    Proof {
+        flow: IssuanceFlow<WithOffer, PreAuthorized, Accepted, WithToken>,
+        offerred: HashMap<String, OfferedCredential>,
+        proof: String,
+    },
 }
 
 /// State change implementation.
 impl IssuanceState {
     /// Create an issuance state from a URL-encoded offer.
-    pub fn from_offer<Ev>(
-        provider: &Provider<Ev>, encoded_offer: &str
-    ) -> anyhow::Result<Self>
-    where Ev: 'static
-    {
-        let fields: Vec<(String, String)> = serde_urlencoded::from_str(encoded_offer)?;
+    pub fn from_offer(encoded_offer: &str) -> anyhow::Result<Self> {
+        let offer_str = urlencoding::decode(encoded_offer)?;
+        let offer = serde_json::from_str::<CredentialOffer>(&offer_str)?;
 
-        let mut offer = CredentialOffer::default();
-        if let Some(credential_issuer) = &fields.iter().find(|(k, _)| k == "credential_issuer") {
-            offer.credential_issuer = credential_issuer.1.clone();
-        } else {
-            return Err(anyhow::anyhow!("credential_issuer not found"));
-        }
-
-        if let Some(credential_configuration_ids) = &fields.iter().find(|(k, _)| k == "credential_configuration_ids") {
-            offer.credential_configuration_ids = serde_json::from_str::<Vec<String>>(&credential_configuration_ids.1)?;
-        } else {
-            return Err(anyhow::anyhow!("credential_configuration_ids not found"));
-        }
-
-        if let Some(grants) = &fields.iter().find(|(k, _)| k == "grants") {
-            offer.grants = Some(serde_json::from_str::<Grants>(&grants.1)?);
-        } else {
-            offer.grants = None;
-        }
-
-        let tx_code = {
-            if let Some(grants) = offer.grants.clone() {
-                if let Some(pre_auth) = grants.pre_authorized_code {
-                    pre_auth.tx_code    
-                } else {
-                    None
-                }
-            }
-            else { None }
+        // Check the offer has a pre-authorized grant. This is the only flow
+        // type supported by this wallet (for now).
+        let Some(pre_auth_code_grant) = offer.pre_authorized_code() else {
+            bail!("grant other than pre-authorized code is not supported");
         };
 
-        let offer_req = OfferRequest {
-            client_id: config::client_id(),
-            subject_id: config::subject_id(),
+        Ok(Self::Offered {
             offer,
-        };
-        let offer_response = block_on(vercre_holder::issuance::offer(provider.clone(), &offer_req))?;
-
-        let mut offered = HashMap::new();
-        for (config_id, config) in offer_response.offered {
-            let (logo, background) = match &config.display {
-                Some(display) => {
-                    let logo = if let Some(logo_info) = &display[0].logo {
-                        if let Some(uri) = &logo_info.uri {
-                            Some(block_on(vercre_holder::provider::Issuer::image(provider.clone(), uri))?)
-                        } else {
-                            None
-                        }
-                    } else {
-                        None
-                    };
-                    let background = if let Some(background_info) = &display[0].background_image {
-                        if let Some(uri) = &background_info.uri {
-                            Some(block_on(vercre_holder::provider::Issuer::image(provider.clone(), uri))?)
-                        } else {
-                            None
-                        }
-                    } else {
-                        None
-                    };
-                    (logo, background)
-                }
-                None => (None, None),
-            };
-            offered.insert(config_id.clone(), OfferedCredential { config, logo, background });
-        }        
-
-        Ok(Self {
-            id: offer_response.issuance_id,
-            issuer: offer_response.issuer,
-            issuer_name: offer_response.issuer_name,
-            offered,
-            tx_code,
-            pin: None,
+            grant: pre_auth_code_grant,
         })
     }
 
     /// Cancel the issuance process.
-    pub fn cancel<Ev>(&mut self, provider: &Provider<Ev>) -> anyhow::Result<()>
-    where Ev: 'static
+    pub fn cancel<Ev>(&mut self, _provider: &Provider<Ev>) -> anyhow::Result<()>
+    where
+        Ev: 'static,
     {
-        let cancel_request = CancelRequest {
-            issuance_id: self.id.clone(),
-        };
-        block_on(vercre_holder::issuance::cancel(provider.clone(), &cancel_request))?;
+        // TODO: Reset state
         Ok(())
     }
 }

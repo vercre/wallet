@@ -1,5 +1,5 @@
 [package]
-name = "shared"
+name = "shared_types"
 description = "Shared types used to generate types in other languages"
 authors.workspace = true
 edition.workspace = true
