@@ -2880,6 +2880,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "service"
+version = "0.1.0-alpha.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "axum-extra",
+ "chrono",
+ "dotenv",
+ "serde",
+ "serde_json",
+ "test-utils",
+ "tokio",
+ "tower-http",
+ "tracing",
+ "tracing-subscriber",
+ "url",
+ "vercre-issuer",
+ "vercre-verifier",
+]
+
+[[package]]
 name = "sha1"
 version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3750,6 +3771,26 @@ dependencies = [
  "thiserror 1.0.69",
  "vercre-core",
  "vercre-infosec",
+ "vercre-w3c-vc",
+]
+
+[[package]]
+name = "vercre-verifier"
+version = "0.1.0-alpha.6"
+source = "git+https://github.com/vercre/vc#653905082c1b463d37e162b9aa3a509d82b7eecb"
+dependencies = [
+ "chrono",
+ "derive_builder",
+ "serde",
+ "serde_json",
+ "serde_json_path",
+ "tracing",
+ "uuid",
+ "vercre-core",
+ "vercre-did",
+ "vercre-dif-exch",
+ "vercre-infosec",
+ "vercre-openid",
  "vercre-w3c-vc",
 ]
 

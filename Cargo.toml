@@ -1,5 +1,5 @@
 [workspace]
-members = ["shared_types", "wallet", "examples/issuer", "examples/issuer-types"]
+members = ["service", "shared_types", "wallet", "examples/issuer", "examples/issuer-types"]
 resolver = "1"
 
 [workspace.package]
@@ -39,6 +39,7 @@ url = "2.5.2"
 vercre-did = { git = "https://github.com/vercre/did" }
 vercre-holder = { git = "https://github.com/vercre/vc" }
 vercre-issuer = { git = "https://github.com/vercre/vc" }
+vercre-verifier = { git = "https://github.com/vercre/vc" }
 
 [workspace.metadata.bin]
 cargo-xcode = { version = "=1.7.0" }
