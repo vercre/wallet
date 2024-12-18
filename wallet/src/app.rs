@@ -5,7 +5,7 @@ use crux_core::render::Render;
 use crux_http::{Http, HttpError};
 use crux_kv::KeyValue;
 use serde::{Deserialize, Serialize};
-use vercre_holder::credential::{self, Credential, ImageData};
+use vercre_holder::credential::{Credential, ImageData};
 use vercre_holder::{Issuer, TokenResponse};
 
 use crate::capabilities::key::KeyStore;
@@ -199,31 +199,31 @@ impl crux_core::App for App {
             Event::IssuanceOffer(encoded_offer) => {
                 model.issuance_offer(&encoded_offer);
             }
-            Event::IssuanceIssuer(Ok(issuer)) => {
+            Event::IssuanceIssuer(Ok(_issuer)) => {
                 todo!();
             }
-            Event::IssuanceLogo(Ok((config_id, image))) => {
+            Event::IssuanceLogo(Ok((_config_id, _image))) => {
                 todo!();
             }
-            Event::IssuanceBackground(Ok((config_id, image))) => {
+            Event::IssuanceBackground(Ok((_config_id, _image))) => {
                 todo!();
             }
             Event::IssuanceAccepted => {
                 todo!();
             }
-            Event::IssuancePin(pin) => {
+            Event::IssuancePin(_pin) => {
                 todo!();
             }
-            Event::IssuanceToken(Ok(token)) => {
+            Event::IssuanceToken(Ok(_token)) => {
                 todo!();
             }
-            Event::IssuanceProof(Ok(jwt)) => {
+            Event::IssuanceProof(Ok(_jwt)) => {
                 todo!();
             }
-            Event::IssuanceCredential(Ok((config_id, credential))) => {
+            Event::IssuanceCredential(Ok((_config_id, _credential))) => {
                 todo!();
             }
-            Event::IssuanceStored(Ok(config_id)) => {
+            Event::IssuanceStored(Ok(_config_id)) => {
                 todo!();
             }
             Event::CancelIssuance => {

@@ -5,12 +5,14 @@
 
 /// Get the client ID for the wallet app. In practice this should be a unique
 /// device ID that has been registered with the issuer.
+#[allow(dead_code)]
 pub fn client_id() -> String {
     "96bfb9cb-0513-7d64-5532-bed74c48f9ab".to_string()
 }
 
 /// Get the subject ID for the wallet's user. In practice this should be an
 /// ID provided by the issuer during authentication.
+#[allow(dead_code)]
 pub fn subject_id() -> String {
     "normal_user".to_string()
 }
