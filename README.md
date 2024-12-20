@@ -59,21 +59,34 @@ To demonstrate the wallet you can use the services and web applications provided
 
 You can run these applications somewhere accessible to a mobile device or use the following steps to build and run locally using a Docker runtime and [ngrok](https://ngrok.com/) to expose localhost services to the internet.
 
-1. Start the vc service which provides a simple HTTP API for issuing and verifying some hard-coded credentials. By default, this will start on `http://localhost:8080`. You can change the host and port by setting the `VERCRE_HTTP_ADDR` environment variable if you wish. You will need to make sure the web application is configured to use the same host and port by setting the `VITE_VERCRE_HTTP_ADDR` environment variable in the `.env.development` file.
+By default the web application will be available at http://localhost:3000 and the service at http://localhost:8080.
+
+In order to serve the API over the internet so your mobile device can interact with it (for issuance or verification), point an ngrok domain to http://localhost:8080.
+
+Set up an [ngrok](https://ngrok.com/) account if you don't already have one then [install and configure the cli](https://dashboard.ngrok.com/get-started/setup/macos)
+
+Create a `.env` file in the root folder of this workspace and add the following:
 
 ```shell
-cd vcservice
-docker build -t vcservice .
-docker run -p 8081:8080 --name vcservice -d vcservice
+RUST_LOG=debug # or exclude to have info as default
+VERCRE_HTTP_ADDR=<your ngrok url>
 ```
 
-2. Start the React web application which provides a simple UI over the top of the issuer API. This will start on `http://localhost:3000`.
+Build and run containers
 
 ```shell
-cd examples/issuer-web
-pnpm install
-pnpm dev
+docker compose build
+docker compose up
 ```
+
+Point ngrok to your instance of the API:
+
+```shell
+ngrok config add-authtoken <your authtoken>
+ngrok http --url=<your url> 8080
+```
+
+Test ngrok is working by navigating to the root of that URL (browser/curl/Postman, etc) on a separate device and you should receive a valid response.
 
 
 ## Additional

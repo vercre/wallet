@@ -5,6 +5,7 @@
 
 mod handler;
 
+use std::borrow::Cow;
 use std::env;
 
 use axum::extract::rejection::JsonRejection;
@@ -19,6 +20,12 @@ use tower_http::{cors::{Any, CorsLayer}, set_header::SetResponseHeaderLayer, tra
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 use url::Url;
 
+/// Application state.
+#[derive(Clone)]
+pub struct AppState {
+    external_address: Cow<'static, str>,
+}
+
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
@@ -26,6 +33,11 @@ async fn main() {
     let subscriber =
         FmtSubscriber::builder().with_env_filter(EnvFilter::from_default_env()).finish();
     tracing::subscriber::set_global_default(subscriber).expect("set default subscriber");
+    let external_address = env::var("VERCRE_HTTP_ADDR").unwrap_or_else(|_| "http://0.0.0.0:8080".into());
+
+    let app_state = AppState {
+        external_address: external_address.into(),
+    };
 
     let cors = CorsLayer::new().allow_methods(Any).allow_origin(Any).allow_headers(Any);
     let router = Router::new()
@@ -35,10 +47,11 @@ async fn main() {
         .layer(SetResponseHeaderLayer::if_not_present(
             header::CACHE_CONTROL,
             HeaderValue::from_static("no-cache, no-store"),
-        ));
+        ))
+        .with_state(app_state);
 
-    let http_addr = env::var("VERCRE_HTTP_ADDR").unwrap_or_else(|_| "http://0.0.0.0:8080".into());
-    let parsed = Url::parse(&http_addr).expect("VERCRE_HTTP_ADDR should be a valid URL");
+    let http_addr = "http://0.0.0.0:8080";
+    let parsed = Url::parse(http_addr).expect("http_addr should be a valid URL");
     let addr = format!("{}:{}", parsed.host_str().unwrap(), parsed.port().unwrap_or(8080));
     let listener = TcpListener::bind(addr).await.expect("should bind to address");
     tracing::info!("listening on {}", listener.local_addr().expect("listener should have address"));
