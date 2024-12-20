@@ -76,7 +76,7 @@ install_crate = "cargo-outdated"
 dependencies = ["audit", "fmt", "lint", "outdated", "unused"]
 
 # -----------------------------------------------------------------------------
-# Type generation for user interfaces
+# Type generation for user interface
 # -----------------------------------------------------------------------------
 
 [tasks.typegen-issuer]

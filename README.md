@@ -2,7 +2,7 @@
 
 The Vercre Wallet is a simple example of a wallet that can be used to receive, store and present Verifiable Credentials. It is a demonstration of the interactions between a wallet and issuance service that conforms to [OpenID for Verifiable Credential Issuance](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html) and a verification service that conforms to [OpenID for Verifiable Presentations](https://openid.net/specs/openid-4-verifiable-presentations-1_0.html).
 
-An conformant issuer service can be constructed using the Vercre Issuer crate, and a conformant verification service can be constructed using the Vercre Verifier crate. This wallet is built using the Vercre Holder crate. See the open source [Vercre](https://github.com/vercre/vercre) repository for details.
+A conformant issuer service can be constructed using the Vercre Issuer crate, and a conformant verification service can be constructed using the Vercre Verifier crate. This wallet is built using the Vercre Holder crate which provides a set of convenient data types and functions for constructing a wallet. The Holder crate and this Wallet, while adhering to the OpenID standards for issuance and presentation flows do not conform internally to any standards but simply provide a "for-instance" example you may wish to use to influence your own wallet project for use with standards-compliant issuers and verifiers. See the open source [Vercre](https://github.com/vercre/vercre) repository for details.
 
 ## Multiplatform with Crux
 
@@ -53,18 +53,18 @@ cd iOS
 open VercreWallet.xcodeproj
 ```
 
-## Sample Issuance
+## Sample Issuance and Verification
 
-To demonstrate the wallet you can use the services and web applications provided in the
-`examples` directory.
+To demonstrate the wallet you can use the services and web applications provided in the `vcservice` and `vcweb` folders.
 
-### Issuance Service
+You can run these applications somewhere accessible to a mobile device or use the following steps to build and run locally using a Docker runtime and [ngrok](https://ngrok.com/) to expose localhost services to the internet.
 
-1. Start the issuer service which provides a simple HTTP API for issuing some hard-coded credentials. By default, this will start on `http://localhost:8080`. You can change the host and port by setting the `VERCRE_HTTP_ADDR` environment variable if you wish. You will need to make sure the web application is configured to use the same host and port by setting the `VITE_VERCRE_HTTP_ADDR` environment variable in the `.env.development` file.
+1. Start the vc service which provides a simple HTTP API for issuing and verifying some hard-coded credentials. By default, this will start on `http://localhost:8080`. You can change the host and port by setting the `VERCRE_HTTP_ADDR` environment variable if you wish. You will need to make sure the web application is configured to use the same host and port by setting the `VITE_VERCRE_HTTP_ADDR` environment variable in the `.env.development` file.
 
 ```shell
-cd examples/issuer
-cargo run
+cd vcservice
+docker build -t vcservice .
+docker run -p 8081:8080 --name vcservice -d vcservice
 ```
 
 2. Start the React web application which provides a simple UI over the top of the issuer API. This will start on `http://localhost:3000`.

@@ -2880,27 +2880,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "service"
-version = "0.1.0-alpha.0"
-dependencies = [
- "anyhow",
- "axum",
- "axum-extra",
- "chrono",
- "dotenv",
- "serde",
- "serde_json",
- "test-utils",
- "tokio",
- "tower-http",
- "tracing",
- "tracing-subscriber",
- "url",
- "vercre-issuer",
- "vercre-verifier",
-]
-
-[[package]]
 name = "sha1"
 version = "0.10.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3598,6 +3577,27 @@ name = "value-bag"
 version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3ef4c4aa54d5d05a279399bfa921ec387b7aba77caf7a682ae8d86785b8fdad2"
+
+[[package]]
+name = "vcservice"
+version = "0.1.0-alpha.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "axum-extra",
+ "chrono",
+ "dotenv",
+ "serde",
+ "serde_json",
+ "test-utils",
+ "tokio",
+ "tower-http",
+ "tracing",
+ "tracing-subscriber",
+ "url",
+ "vercre-issuer",
+ "vercre-verifier",
+]
 
 [[package]]
 name = "vercre-core"
