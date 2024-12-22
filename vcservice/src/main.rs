@@ -4,19 +4,23 @@
 //! Assumes pre-authorized, issuer-initiated flow only.
 
 mod handler;
+mod issuer;
+mod provider;
 
 use std::borrow::Cow;
 use std::env;
 
 use axum::extract::rejection::JsonRejection;
 use axum::extract::FromRequest;
-use axum::http::{HeaderValue, StatusCode};
+use axum::http::{header, HeaderValue, StatusCode};
 use axum::response::{IntoResponse, Response};
-use axum::{http::header, routing::get};
+use axum::routing::{get, post};
 use axum::Router;
 use serde::{Deserialize, Serialize};
 use tokio::net::TcpListener;
-use tower_http::{cors::{Any, CorsLayer}, set_header::SetResponseHeaderLayer, trace::TraceLayer};
+use tower_http::cors::{Any, CorsLayer};
+use tower_http::set_header::SetResponseHeaderLayer;
+use tower_http::trace::TraceLayer;
 use tracing_subscriber::{EnvFilter, FmtSubscriber};
 use url::Url;
 
@@ -24,6 +28,7 @@ use url::Url;
 #[derive(Clone)]
 pub struct AppState {
     external_address: Cow<'static, str>,
+    issuer_provider: provider::issuer::Provider,
 }
 
 #[tokio::main]
@@ -33,15 +38,19 @@ async fn main() {
     let subscriber =
         FmtSubscriber::builder().with_env_filter(EnvFilter::from_default_env()).finish();
     tracing::subscriber::set_global_default(subscriber).expect("set default subscriber");
-    let external_address = env::var("VERCRE_HTTP_ADDR").unwrap_or_else(|_| "http://0.0.0.0:8080".into());
+    let external_address =
+        env::var("VERCRE_HTTP_ADDR").unwrap_or_else(|_| "http://0.0.0.0:8080".into());
 
     let app_state = AppState {
         external_address: external_address.into(),
+        issuer_provider: provider::issuer::Provider::new(),
     };
 
     let cors = CorsLayer::new().allow_methods(Any).allow_origin(Any).allow_headers(Any);
     let router = Router::new()
         .route("/", get(handler::index))
+        .route("/create_offer", post(issuer::create_offer))
+        .route("/.well-known/openid-credential-issuer", get(issuer::metadata))
         .layer(TraceLayer::new_for_http())
         .layer(cors)
         .layer(SetResponseHeaderLayer::if_not_present(
@@ -50,9 +59,8 @@ async fn main() {
         ))
         .with_state(app_state);
 
-    let http_addr = "http://0.0.0.0:8080";
-    let parsed = Url::parse(http_addr).expect("http_addr should be a valid URL");
-    let addr = format!("{}:{}", parsed.host_str().unwrap(), parsed.port().unwrap_or(8080));
+    let http_addr = Url::parse("http://0.0.0.0:8080").expect("http_addr should be a valid URL");
+    let addr = format!("{}:{}", http_addr.host_str().unwrap(), http_addr.port().unwrap_or(8080));
     let listener = TcpListener::bind(addr).await.expect("should bind to address");
     tracing::info!("listening on {}", listener.local_addr().expect("listener should have address"));
     axum::serve(listener, router).await.expect("server should run");

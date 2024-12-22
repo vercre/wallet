@@ -1,4 +1,4 @@
-//! # Request handlers
+//! # Request handlers for issuer endpoints.
 
 use std::vec;
 
@@ -9,16 +9,62 @@ use axum::response::Result;
 use axum::Json;
 use axum_extra::headers::Host;
 use axum_extra::TypedHeader;
-use issuer_types::{CreateOfferRequest, CreateOfferResponse};
+use serde::{Deserialize, Serialize};
+use typeshare::typeshare;
 use vercre_issuer::{MetadataResponse, OfferType, SendType};
 
+use crate::AppState;
+
 use super::{AppError, AppJson};
-use crate::provider::Provider;
+
+/// Create offer request.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[typeshare]
+pub struct CreateOfferRequest {
+    /// Credential issuer identifier (URL).
+    pub credential_issuer: String,
+
+    /// Issuer's identifier of the intended holder of the credential.
+    pub subject_id: String,
+
+    /// The identifier of the type of credential to be issued.
+    pub credential_configuration_id: String,
+
+    /// Type of authorization grant to include in the offer.
+    pub grant_type: String,
+
+    /// Whether or not a PIN is required to validate requester of the credential
+    /// offer is the person accepting the credential.
+    pub tx_code_required: bool,
+}
+
+/// Create offer response.
+#[derive(Clone, Debug, Deserialize, Serialize)]
+#[typeshare]
+pub struct CreateOfferResponse {
+    /// QR code for the credential offer
+    pub qr_code: String,
+
+    /// PIN code required to accept the credential offer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tx_code: Option<String>,
+}
+
+/// Error response from the API
+#[derive(Clone, Debug, Default, Deserialize, Serialize)]
+#[typeshare]
+pub struct ErrorResult {
+    /// The error type
+    error: String,
+
+    /// The error message
+    error_description: String,
+}
 
 // Create a credential offer
 #[axum::debug_handler]
 pub async fn create_offer(
-    State(provider): State<Provider>, TypedHeader(host): TypedHeader<Host>,
+    State(state): State<AppState>, TypedHeader(host): TypedHeader<Host>,
     Json(req): Json<CreateOfferRequest>,
 ) -> Result<AppJson<CreateOfferResponse>, AppError> {
     let gt = format!("\"{}\"", req.grant_type);
@@ -36,7 +82,7 @@ pub async fn create_offer(
     };
 
     let response: vercre_issuer::CreateOfferResponse =
-        vercre_issuer::create_offer(provider, request).await?;
+        vercre_issuer::create_offer(state.issuer_provider, request).await?;
     let offer = match response.offer_type {
         OfferType::Object(offer) => offer,
         OfferType::Uri(s) => return Err(anyhow!("unexpected URI offer {s}").into()),
@@ -60,7 +106,7 @@ pub async fn create_offer(
 // Metadata endpoint
 #[axum::debug_handler]
 pub async fn metadata(
-    headers: HeaderMap, State(provider): State<Provider>, TypedHeader(host): TypedHeader<Host>,
+    headers: HeaderMap, State(state): State<AppState>, TypedHeader(host): TypedHeader<Host>,
 ) -> Result<AppJson<MetadataResponse>, AppError> {
     let request = vercre_issuer::MetadataRequest {
         credential_issuer: format!("http://{host}"),
@@ -69,6 +115,6 @@ pub async fn metadata(
             .and_then(|v| v.to_str().ok())
             .map(ToString::to_string),
     };
-    let response = vercre_issuer::metadata(provider.clone(), request).await?;
+    let response = vercre_issuer::metadata(state.issuer_provider.clone(), request).await?;
     Ok(AppJson(response))
 }

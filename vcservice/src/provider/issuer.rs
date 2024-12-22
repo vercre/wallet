@@ -1,3 +1,8 @@
+//! # Issuer Service Callbacks
+//!
+//! Provider implementation for the issuer aspect of the service.
+//! 
+
 use chrono::{DateTime, Utc};
 use serde::de::DeserializeOwned;
 use serde::Serialize;

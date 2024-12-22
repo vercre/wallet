@@ -79,7 +79,7 @@ dependencies = ["audit", "fmt", "lint", "outdated", "unused"]
 # Type generation for user interface
 # -----------------------------------------------------------------------------
 
-[tasks.typegen-issuer]
+[tasks.typegen]
 command = "typeshare"
-args = ["./examples/issuer-types", "--lang=typescript", "--output-file=./examples/issuer-web/src/types/generated.ts"]
+args = ["./vcservice", "--lang=typescript", "--output-file=./vcweb/src/types/generated.ts"]
 install_crate = "typeshare-cli"
