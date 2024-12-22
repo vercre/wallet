@@ -8,10 +8,10 @@ import Typography from '@mui/material/Typography';
 import { useMutation } from '@tanstack/react-query';
 
 import { createOffer } from '../api';
-import FullLogo from '../components/FullLogo';
-import { CreateOfferRequest } from '../types/generated';
 import CreateOffer from './CreateOffer';
 import QrCode from './QrCode';
+import FullLogo from '../components/FullLogo';
+import { CreateOfferRequest } from '../types/generated';
 
 const Offer = () => {
     const [processing, setProcessing] = useState<'EmployeeID_JWT' | 'Developer_JWT' | null>(null);
@@ -31,7 +31,7 @@ const Offer = () => {
     // API call to create a credential offer
     const mut = useMutation({
         mutationFn: async (createOfferRequest: CreateOfferRequest) => {
-            let response = await createOffer(createOfferRequest);
+            const response = await createOffer(createOfferRequest);
             setQrCode(response.qr_code);
             setPin(response.tx_code || '');
         }
@@ -40,10 +40,15 @@ const Offer = () => {
     const handleCreateOffer = async (configId: 'EmployeeID_JWT' | 'Developer_JWT') => {
         setProcessing(configId);
         const req: CreateOfferRequest = {
+            // eslint-disable-next-line camelcase
             credential_issuer: 'http://vercre.io', // Gets ignored by the sample API.
+            // eslint-disable-next-line camelcase
             subject_id: 'normal_user',
+            // eslint-disable-next-line camelcase
             credential_configuration_id: configId,
+            // eslint-disable-next-line camelcase
             grant_type: 'urn:ietf:params:oauth:grant-type:pre-authorized_code',
+            // eslint-disable-next-line camelcase
             tx_code_required: true,
         };
         mut.mutate(req);

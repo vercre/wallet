@@ -3,19 +3,11 @@ import Container from '@mui/material/Container';
 import Stack from '@mui/material/Stack';
 import Toolbar from '@mui/material/Toolbar';
 import { Outlet } from 'react-router-dom';
-import { atom, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import Footer from './Footer';
-import Header, { HeaderProps } from './Header';
-
-export const headerState = atom<HeaderProps>({
-    key: 'header',
-    default: {
-        title: 'Credential Issuer',
-        action: undefined,
-        secondaryAction: undefined,
-    },
-});
+import Header from './Header';
+import { headerState } from '../state';
 
 const Layout = () => {
     const headerProps = useRecoilValue(headerState);

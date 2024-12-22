@@ -46,9 +46,9 @@ export const doRequest = async <Req, Res>(
     }
     // We cannot parse JSON directly because an empty response is possible in some cases, but is
     // not valid JSON. So get the response as a string, then parse it if it is not empty.
-    let str_result = await response.text();
-    let result = JSON.parse(str_result);
-    if (!!result?.error) {
+    const strResult = await response.text();
+    const result = JSON.parse(strResult);
+    if (result?.error) {
         const err = result as ErrorResult;
         const msg = `${err.error}: ${err.error_description}`;
         console.error("failed request", { "request_endpoint": endpoint, "message": msg });

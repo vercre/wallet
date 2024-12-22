@@ -78,6 +78,7 @@ export const typography = {
     button: {
         fontSize: '1rem',
         lineHeight: 1.125,
+        // eslint-disable-next-line @typescript-eslint/prefer-as-const
         textTransform: 'uppercase' as 'uppercase',
     },
     caption: {
