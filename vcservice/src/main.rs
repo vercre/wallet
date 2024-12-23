@@ -24,14 +24,16 @@ use tracing_subscriber::{EnvFilter, FmtSubscriber};
 use typeshare::typeshare;
 use url::Url;
 
-use handler::issuer;
+use handler::{issuer, verifier};
 
 /// Application state.
 #[derive(Clone)]
 pub struct AppState {
     external_address: Cow<'static, str>,
     issuer: Cow<'static, str>,
+    verifier: Cow<'static, str>,
     issuer_provider: provider::issuer::Provider,
+    verifier_provider: provider::verifier::Provider,
 }
 
 #[tokio::main]
@@ -44,11 +46,14 @@ async fn main() {
     let external_address =
         env::var("VERCRE_HTTP_ADDR").unwrap_or_else(|_| "http://0.0.0.0:8080".into());
     let issuer = env::var("VERCRE_ISSUER").unwrap_or_else(|_| "http://vercre.io".into());
+    let verifier = env::var("VERCRE_VERIFIER").unwrap_or_else(|_| "http://vercre.io".into());
 
     let app_state = AppState {
         external_address: external_address.into(),
         issuer: issuer.into(),
+        verifier: verifier.into(),
         issuer_provider: provider::issuer::Provider::new(),
+        verifier_provider: provider::verifier::Provider::new(),
     };
 
     let cors = CorsLayer::new().allow_methods(Any).allow_origin(Any).allow_headers(Any);
