@@ -6,17 +6,28 @@ import Grid from '@mui/material/Grid2';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useMutation } from '@tanstack/react-query';
+import { useSetRecoilState } from 'recoil';
 
 import { createOffer } from '../api';
 import CreateOffer from './CreateOffer';
 import QrCode from './QrCode';
 import FullLogo from '../components/FullLogo';
+import { headerState } from '../state';
 import { CreateOfferRequest } from '../types/generated';
 
 const Offer = () => {
     const [processing, setProcessing] = useState<'EmployeeID_JWT' | 'Developer_JWT' | null>(null);
     const [pin, setPin] = useState<string>('');
     const [qrCode, setQrCode] = useState<string>('');
+    const setHeader = useSetRecoilState(headerState);
+
+    useEffect(() => {
+        setHeader({
+            title: 'Credential Issuer',
+            action: undefined,
+            secondaryAction: undefined,
+        });
+    }, [setHeader]);
 
     // Effect to scroll back to top on reset
     useEffect(() => {

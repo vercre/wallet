@@ -5,7 +5,7 @@ import { HeaderProps } from "./Layout/Header";
 export const headerState = atom<HeaderProps>({
     key: 'header',
     default: {
-        title: 'Credential Issuer',
+        title: undefined,
         action: undefined,
         secondaryAction: undefined,
     },
