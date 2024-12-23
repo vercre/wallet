@@ -63,6 +63,7 @@ async fn main() {
         .route("/.well-known/openid-credential-issuer", get(issuer::metadata))
         .route("/token", post(issuer::token))
         .route("/credential", post(issuer::credential))
+        .route("/create_request", post(verifier::create_request))
         .layer(TraceLayer::new_for_http())
         .layer(cors)
         .layer(SetResponseHeaderLayer::if_not_present(
