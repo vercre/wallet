@@ -3,3 +3,5 @@
 This crate provides a simple integrated Verifiable Credential Issuer and Verifier service over HTTP. It can only issue and verify a couple of hard-coded credentials and is intended to be used simply to test and demonstrate the `wallet` application, the main target of this workspace.
 
 See the workspace README for how to get started demonstrating the wallet using this service.
+
+For a more full-featured example of an issuance service, see the `examples/issuer` folder in the [Vercre VC repository](https://github.com/vercre/vc).

@@ -1,7 +1,7 @@
 import {
     CreateOfferRequest,
     CreateOfferResponse,
-    ErrorResult,
+    ErrorResponse,
 } from '../types/generated';
 
 const stdHeaders = {
@@ -49,8 +49,8 @@ export const doRequest = async <Req, Res>(
     const strResult = await response.text();
     const result = JSON.parse(strResult);
     if (result?.error) {
-        const err = result as ErrorResult;
-        const msg = `${err.error}: ${err.error_description}`;
+        const err = result as ErrorResponse;
+        const msg = err.message;
         console.error("failed request", { "request_endpoint": endpoint, "message": msg });
         throw Error(msg);
     }

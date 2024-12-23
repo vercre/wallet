@@ -27,11 +27,8 @@ export interface CreateOfferResponse {
 	tx_code?: string;
 }
 
-/** Error response from the API */
-export interface ErrorResult {
-	/** The error type */
-	error: string;
-	/** The error message */
-	error_description: string;
+/** Error response. */
+export interface ErrorResponse {
+	message: string;
 }
 
