@@ -14,8 +14,7 @@ use axum_extra::TypedHeader;
 use serde::{Deserialize, Serialize};
 use typeshare::typeshare;
 use vercre_issuer::{
-    CredentialRequest, CredentialResponse, MetadataResponse, OfferType, SendType, TokenRequest,
-    TokenResponse,
+    CredentialRequest, CredentialResponse, MetadataRequest, MetadataResponse, OfferType, SendType, TokenRequest, TokenResponse
 };
 
 use super::{AppError, AppJson};
@@ -105,7 +104,7 @@ pub async fn create_offer(
 pub async fn metadata(
     headers: HeaderMap, State(state): State<AppState>,
 ) -> Result<AppJson<MetadataResponse>, AppError> {
-    let request = vercre_issuer::MetadataRequest {
+    let request = MetadataRequest {
         credential_issuer: state.issuer.to_string(),
         languages: headers
             .get("accept-language")

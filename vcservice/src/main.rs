@@ -64,6 +64,8 @@ async fn main() {
         .route("/token", post(issuer::token))
         .route("/credential", post(issuer::credential))
         .route("/create_request", post(verifier::create_request))
+        .route("/request/:object_id", get(verifier::request_object))
+        .route("/post", post(verifier::response))
         .layer(TraceLayer::new_for_http())
         .layer(cors)
         .layer(SetResponseHeaderLayer::if_not_present(

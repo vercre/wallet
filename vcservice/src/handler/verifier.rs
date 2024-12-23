@@ -1,13 +1,18 @@
 //! # Request handlers for verifier endpoints.
 
+use std::collections::HashMap;
 use std::vec;
 
 use anyhow::anyhow;
-use axum::extract::State;
-use axum::Json;
+use axum::extract::{Path, State};
+use axum::http::StatusCode;
+use axum::{Form, Json};
 use serde::{Deserialize, Serialize};
 use typeshare::typeshare;
-use vercre_verifier::{Constraints, CreateRequestRequest, DeviceFlow, Field, Filter, FilterValue, InputDescriptor};
+use vercre_verifier::{
+    Constraints, CreateRequestRequest, DeviceFlow, Field, Filter, FilterValue, InputDescriptor,
+    RequestObjectRequest, RequestObjectResponse, ResponseRequest, ResponseResponse,
+};
 
 use super::{AppError, AppJson};
 use crate::AppState;
@@ -74,10 +79,8 @@ pub struct GenerateRequestResponse {
 // Generate Authorization Request endpoint
 #[axum::debug_handler]
 pub async fn create_request(
-    State(state): State<AppState>,
-    Json(req): Json<GenerateRequest>,
+    State(state): State<AppState>, Json(req): Json<GenerateRequest>,
 ) -> Result<AppJson<GenerateRequestResponse>, AppError> {
-
     let mut input_descriptors = vec![];
     for in_desc in req.input_descriptors {
         let mut fields = Vec::<Field>::new();
@@ -91,7 +94,7 @@ pub async fn create_request(
                 ..Default::default()
             });
         }
-        input_descriptors.push(InputDescriptor{
+        input_descriptors.push(InputDescriptor {
             id: in_desc.id,
             constraints: Constraints {
                 fields: Some(fields),
@@ -108,17 +111,47 @@ pub async fn create_request(
         device_flow: DeviceFlow::CrossDevice, // we will get a URI, not a full request object.
         purpose: req.purpose,
         input_descriptors,
-        ..Default::default()   
+        ..Default::default()
     };
-    let response = vercre_verifier::create_request(state.verifier_provider.clone(), &request).await?;
+    let response =
+        vercre_verifier::create_request(state.verifier_provider.clone(), &request).await?;
 
     let Some(request_uri) = response.request_uri else {
         return Err(anyhow!("No request URI returned").into());
     };
 
-    let gen_response = GenerateRequestResponse {
-        request_uri,
-    };
+    let gen_response = GenerateRequestResponse { request_uri };
 
     Ok(AppJson(gen_response))
+}
+
+// Return an authorization request object.
+#[axum::debug_handler]
+pub async fn request_object(
+    State(state): State<AppState>, Path(object_id): Path<String>,
+) -> Result<AppJson<RequestObjectResponse>, AppError> {
+    let request = RequestObjectRequest {
+        client_id: state.verifier.to_string(),
+        id: object_id,
+    };
+    let response =
+        vercre_verifier::request_object(state.verifier_provider.clone(), &request).await?;
+    Ok(AppJson(response))
+}
+
+// Wallet authorization response (the actual presentation of the credential to
+// the verifier).
+#[axum::debug_handler]
+pub async fn response(
+    State(state): State<AppState>, Form(req): Form<HashMap<String, String>>,
+) -> Result<AppJson<ResponseResponse>, AppError> {
+    let Ok(response_request) = ResponseRequest::form_decode(&req) else {
+        return Err(AppError::Status(
+            StatusCode::BAD_REQUEST,
+            format!("unable to turn HashMap {req:?} into ResponseRequest"),
+        ));
+    };
+    let response =
+        vercre_verifier::response(state.verifier_provider.clone(), &response_request).await?;
+    Ok(AppJson(response))
 }
