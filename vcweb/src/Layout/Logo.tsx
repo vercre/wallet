@@ -1,8 +1,8 @@
-import Box from '@mui/material/Box';
-import { useNavigate } from 'react-router-dom';
+import Box from "@mui/material/Box";
+import { useNavigate } from "react-router-dom";
 
-import logo from './logo.svg';
-import { useAppBarHeight } from './useAppBarHeight';
+import logo from "./logo.svg";
+import { useAppBarHeight } from "./useAppBarHeight";
 
 const Logo = () => {
     const appBarHeight = useAppBarHeight();
@@ -13,8 +13,10 @@ const Logo = () => {
             component="img"
             src={logo}
             alt="Vercre Veriable Credentials"
-            sx={{ cursor: 'pointer', height: `calc(0.8 * ${appBarHeight}px)`}}
-            onClick={() => navigate('/')}
+            sx={{
+                cursor: "pointer", height: `calc(0.8 * ${appBarHeight}px)`
+            }}
+            onClick={() => navigate("/")}
         />
     );
 };

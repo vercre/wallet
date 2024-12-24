@@ -32,3 +32,61 @@ export interface ErrorResponse {
 	message: string;
 }
 
+/**
+ * Type-generation friendly copy of the `Field` struct from the
+ * `vercre-diff-exch` crate, omitting any fields that are not applicable to
+ * this sample application.
+ */
+export interface GenerateField {
+	/** `JSONPath` expression that selects the target value from the input. */
+	path: string[];
+	/**
+	 * JSON Schema descriptor used to filter against the values returned from
+	 * evaluation of the `JSONPath` expressions in the path array.
+	 */
+	filter_value: string;
+}
+
+/**
+ * Type-generation friendly copy of the `Constraints` struct from the
+ * `vercre-diff-exch` crate, omitting any fields that are not applicable to
+ * this sample application.
+ */
+export interface GenerateConstraints {
+	fields: GenerateField[];
+}
+
+/**
+ * Input descriptor for the request. Type-generation friendly copy of the
+ * `InputDescriptor` struct from the `vercre-diff-exch` crate, omitting any
+ * fields that are not applicable to this sample application.
+ */
+export interface GenerateInputDescriptor {
+	/** ID of the input descriptor. */
+	id: string;
+	/**
+	 * Contraints specify constraints on data values, and an explanation why a
+	 * certain item or set of data is being requested.
+	 */
+	constraints: GenerateConstraints;
+}
+
+/**
+ * Create authorization request. This is almost a copy of the
+ * `CreateRequestRequest` struct from the `vercre_verifier` crate but repeated
+ * here to allow `typeshare` to generate the TypeScript equivalent for the
+ * sample Verifier application.
+ */
+export interface GenerateRequest {
+	/** Purpose of the request. */
+	purpose: string;
+	/** Input Descriptors describe the information required from the holder. */
+	input_descriptors: GenerateInputDescriptor[];
+}
+
+/** Create authorization request response. */
+export interface GenerateRequestResponse {
+	/** URI to the authorization request. */
+	request_uri: string;
+}
+

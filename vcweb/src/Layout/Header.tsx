@@ -1,11 +1,11 @@
-import { JSX } from 'react';
+import { JSX } from "react";
 
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
 
-import Logo from './Logo';
+import Logo from "./Logo";
 
 export type HeaderProps = {
     action?: JSX.Element;
@@ -25,7 +25,7 @@ const Header = (props: HeaderProps) => {
             <Toolbar>
                 {action || <Logo />}
                 <Box sx={{ flexGrow: 1 }}>
-                    <Typography variant="h4" sx={{ px: 3}}>{title}</Typography>
+                    <Typography variant="h4" sx={{ px: 3 }}>{title}</Typography>
                 </Box>
                 {secondaryAction}
             </Toolbar>

@@ -1,29 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid2';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { useMutation } from '@tanstack/react-query';
-import { useSetRecoilState } from 'recoil';
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid2";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useMutation } from "@tanstack/react-query";
+import { useSetRecoilState } from "recoil";
 
-import { createOffer } from '../api';
-import CreateOffer from './CreateOffer';
-import QrCode from './QrCode';
-import FullLogo from '../components/FullLogo';
-import { headerState } from '../state';
-import { CreateOfferRequest } from '../types/generated';
+import CreateOffer from "./CreateOffer";
+import QrCode from "./QrCode";
+import { instanceOfErrorResponse } from "../api";
+import { createOffer } from "../api/issuance";
+import FullLogo from "../components/FullLogo";
+import { headerState } from "../state";
+import { CreateOfferRequest, CreateOfferResponse } from "../types/generated";
 
 const Offer = () => {
-    const [processing, setProcessing] = useState<'EmployeeID_JWT' | 'Developer_JWT' | null>(null);
-    const [pin, setPin] = useState<string>('');
-    const [qrCode, setQrCode] = useState<string>('');
+    const [processing, setProcessing] = useState<"EmployeeID_JWT" | "Developer_JWT" | null>(null);
+    const [pin, setPin] = useState<string>("");
+    const [qrCode, setQrCode] = useState<string>("");
     const setHeader = useSetRecoilState(headerState);
 
     useEffect(() => {
         setHeader({
-            title: 'Credential Issuer',
+            title: "Credential Issuer",
             action: undefined,
             secondaryAction: undefined,
         });
@@ -32,9 +33,9 @@ const Offer = () => {
     // Effect to scroll back to top on reset
     useEffect(() => {
         if (processing === null) {
-            document.getElementById('pageContent')?.scrollTo({
+            document.getElementById("pageContent")?.scrollTo({
                 top: 0,
-                behavior: 'smooth',
+                behavior: "smooth",
             });
         }
     }, [processing]);
@@ -43,22 +44,31 @@ const Offer = () => {
     const mut = useMutation({
         mutationFn: async (createOfferRequest: CreateOfferRequest) => {
             const response = await createOffer(createOfferRequest);
-            setQrCode(response.qr_code);
-            setPin(response.tx_code || '');
-        }
+            if (instanceOfErrorResponse(response)) {
+                console.error(response);
+            } else {
+                const res = response as CreateOfferResponse;
+                setQrCode(res.qr_code);
+                setPin(res.tx_code || "");
+            }
+        },
+        onError: (err) => {
+            console.error(err);
+        },
+        retry: false,
     });
 
-    const handleCreateOffer = async (configId: 'EmployeeID_JWT' | 'Developer_JWT') => {
+    const handleCreateOffer = async (configId: "EmployeeID_JWT" | "Developer_JWT") => {
         setProcessing(configId);
         const req: CreateOfferRequest = {
             // eslint-disable-next-line camelcase
-            credential_issuer: 'http://vercre.io', // Gets ignored by the sample API.
+            credential_issuer: "http://vercre.io", // Gets ignored by the sample API.
             // eslint-disable-next-line camelcase
-            subject_id: 'normal_user',
+            subject_id: "normal_user",
             // eslint-disable-next-line camelcase
             credential_configuration_id: configId,
             // eslint-disable-next-line camelcase
-            grant_type: 'urn:ietf:params:oauth:grant-type:pre-authorized_code',
+            grant_type: "urn:ietf:params:oauth:grant-type:pre-authorized_code",
             // eslint-disable-next-line camelcase
             tx_code_required: true,
         };
@@ -67,7 +77,7 @@ const Offer = () => {
 
     const handleReset = () => {
         setProcessing(null);
-        setPin('');
+        setPin("");
     };
 
     return (
@@ -83,43 +93,43 @@ const Offer = () => {
             }
             <Grid container spacing={4}>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                    {processing !== 'EmployeeID_JWT' &&
-                        <CreateOffer
+                    {processing !== "EmployeeID_JWT" &&
+                        < CreateOffer
                             configId="EmployeeID_JWT"
                             disabled={processing !== null}
-                            onCreate={() => handleCreateOffer('EmployeeID_JWT')}
+                            onCreate={() => handleCreateOffer("EmployeeID_JWT")}
                         />
                     }
-                    {processing === 'EmployeeID_JWT' &&
-                        <QrCode image={qrCode} pin={pin} />
+                    {processing === "EmployeeID_JWT" &&
+                        < QrCode image={qrCode} pin={pin} />
                     }
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
-                    {processing !== 'Developer_JWT' &&
-                        <CreateOffer
+                    {processing !== "Developer_JWT" &&
+                        < CreateOffer
                             configId="Developer_JWT"
                             disabled={processing !== null}
-                        onCreate={() => handleCreateOffer('Developer_JWT')}
+                            onCreate={() => handleCreateOffer("Developer_JWT")}
                         />
                     }
-                    {processing === 'Developer_JWT' &&
-                        <QrCode image={qrCode} pin={pin} />
+                    {processing === "Developer_JWT" &&
+                        < QrCode image={qrCode} pin={pin} />
                     }
                 </Grid>
             </Grid>
-            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <Button
                     disabled={processing === null}
                     variant="contained"
                     color="secondary"
                     onClick={handleReset}
-                    sx={{ maxWidth: '200px' }}
+                    sx={{ maxWidth: "200px" }}
                 >
                     Start Over
                 </Button>
             </Box>
             <FullLogo />
-        </Stack>
+        </Stack >
     );
 };
 
