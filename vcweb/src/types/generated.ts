@@ -88,5 +88,7 @@ export interface GenerateRequest {
 export interface GenerateRequestResponse {
 	/** URI to the authorization request. */
 	request_uri: string;
+	/** QR code for the request URI. */
+	qr_code: string;
 }
 

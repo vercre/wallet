@@ -3,13 +3,13 @@ import Button from "@mui/material/Button";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 
-export type CreateOfferProps = {
+export type CreateRequestProps = {
     configId: "EmployeeID_JWT" | "Developer_JWT";
     disabled?: boolean;
     onCreate: () => void;
 };
 
-const CreateOffer = (props: CreateOfferProps) => {
+const CreateRequest = (props: CreateRequestProps) => {
     const { configId, disabled, onCreate } = props;
 
     const title = () => {
@@ -24,9 +24,9 @@ const CreateOffer = (props: CreateOfferProps) => {
     const discription = () => {
         switch (configId) {
             case "EmployeeID_JWT":
-                return "A credential that asserts the holder is an employee of the issuer organization";
+                return "Present a credential that asserts you are an employee of the issuer organization";
             case "Developer_JWT":
-                return "A credential that asserts the holder has a certain level of proficiency in software development";
+                return "Present a credential that asserts you have proficiency in software development";
         }
     };
 
@@ -58,12 +58,12 @@ const CreateOffer = (props: CreateOfferProps) => {
                             maxWidth: "200px"
                         }}
                     >
-                        Create Offer
+                        Present Credential
                     </Button>
                 </Box>
             </Stack >
-        </Box >
+        </Box>
     );
 };
 
-export default CreateOffer;
+export default CreateRequest;

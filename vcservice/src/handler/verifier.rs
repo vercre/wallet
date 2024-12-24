@@ -74,6 +74,9 @@ pub struct GenerateField {
 pub struct GenerateRequestResponse {
     /// URI to the authorization request.
     pub request_uri: String,
+
+    /// QR code for the request URI.
+    pub qr_code: String,
 }
 
 // Generate Authorization Request endpoint
@@ -116,11 +119,19 @@ pub async fn create_request(
     let response =
         vercre_verifier::create_request(state.verifier_provider.clone(), &request).await?;
 
-    let Some(request_uri) = response.request_uri else {
-        return Err(anyhow!("No request URI returned").into());
-    };
+    if response.request_uri.is_none() {
+        return Err(AppError::Status(
+            StatusCode::INTERNAL_SERVER_ERROR,
+            anyhow!("no request URI returned").to_string(),
+        ));
+    }
 
-    let gen_response = GenerateRequestResponse { request_uri };
+    let qr_code = response.to_qrcode(None)?;
+
+    let gen_response = GenerateRequestResponse {
+        request_uri: response.request_uri,
+        qr_code,
+    };
 
     Ok(AppJson(gen_response))
 }

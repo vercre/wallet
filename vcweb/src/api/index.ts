@@ -18,7 +18,7 @@ export const returnError = (action: string): string => {
 };
 
 // A weak type guard for ErrorResponse. Good enough for this example app since
-// we know all of the other possible types the API can return.
+// we know all the other possible types the API can return.
 export const instanceOfErrorResponse = (obj: unknown): obj is ErrorResponse => {
     return typeof obj === "object" && obj !== null && "message" in obj;
 };

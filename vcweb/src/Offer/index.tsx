@@ -9,10 +9,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useSetRecoilState } from "recoil";
 
 import CreateOffer from "./CreateOffer";
-import QrCode from "./QrCode";
 import { instanceOfErrorResponse } from "../api";
 import { createOffer } from "../api/issuance";
 import FullLogo from "../components/FullLogo";
+import QrCode from "../components/QrCode";
 import { headerState } from "../state";
 import { CreateOfferRequest, CreateOfferResponse } from "../types/generated";
 
@@ -101,7 +101,7 @@ const Offer = () => {
                         />
                     }
                     {processing === "EmployeeID_JWT" &&
-                        < QrCode image={qrCode} pin={pin} />
+                        < QrCode type="issue" image={qrCode} pin={pin} />
                     }
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
@@ -113,7 +113,7 @@ const Offer = () => {
                         />
                     }
                     {processing === "Developer_JWT" &&
-                        < QrCode image={qrCode} pin={pin} />
+                        < QrCode type="issue" image={qrCode} pin={pin} />
                     }
                 </Grid>
             </Grid>
